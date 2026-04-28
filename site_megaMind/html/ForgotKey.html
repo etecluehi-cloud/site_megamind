@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    
+    <header>
+        
+        <div class="logo-container">
+            <img src="../img/megamindlogo.png" class="MMLogo" alt="">
+            <img src="../img/MegaMind.png" class="MMlogo" alt="">
+        </div>
+
+        <button onclick="MudarCor()" type="button" class="btnColor" >
+        <img class="BackColor" id="iconeCor" src="../img/Lua.png" alt="">
+        </button>
+
+
+    </header>
+
+    <main>
+
+        <div class="boxFk">
+
+            <h1 class="txtLogin">Recuperar senha</h1>
+
+            <form class="form" action="../php/recuperarSenha.php" method="POST">
+
+                <label class="txtlFk">Digite o e-mail cadastrado</label>
+                <input type="text" name="email" class="txtbox" required>
+
+                <button type="submit" class="btnlogin">
+                    <span class="txtbtnLogin">Enviar código</span>
+                </button>
+
+            </form>
+
+        </div>
+
+    </main>
+
+    <footer>
+        <img class="MMlogof" src="../img/MegaMindlf.png" alt="">
+    </footer>
+
+    <script src="../js/script.js"></script>
+
+</body>
+</html>
