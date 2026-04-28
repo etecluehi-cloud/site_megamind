@@ -1,0 +1,240 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Corpo */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header */
+nav.header {
+    background: linear-gradient(to right, #9056b4, #6c07ab);
+    width: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin: 0 auto; /* Centralizar horizontalmente se necessário */
+}
+
+h1 {
+    color: white;
+    font-size: 40px;
+    margin: 0;
+    padding: 0 1rem;
+}
+
+/* Menu */
+nav.menu {
+    background: linear-gradient(to right, #9056b4, #6c07ab);
+    width: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
+
+button.botaoMenu {
+    border: none;
+    border-radius: 30px;
+    width: 100px;
+    padding: 4px 10px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    height: auto;
+    background-color: white;
+    color: black;
+    font-size: 20px;
+    transition: transform 0.3s, background-color 0.3s;
+    cursor: pointer;
+}
+
+button.botaoMenu:hover {
+    transform: scale(1.1);
+    background-color: #6c07ab;
+    color: white;
+}
+
+/* Main */
+main {
+    padding: 2rem;
+    margin-left: 250px;
+    padding-bottom: 80px; /* Espaço para footer fixo */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centralizar horizontalmente apenas */
+    /* Remover justify-content: center; e min-height para não centralizar verticalmente */
+}
+
+/* Box de conteúdos */
+.box-conteudos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start; /* evita stretch nos irmãos */
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 20px;
+}
+
+/* opcional: garante cada article independente */
+article.conteudo {
+    align-self: flex-start;
+}
+
+/* Artigos de conteúdo */
+article.conteudo {
+    background: linear-gradient(135deg, #6c07ab, #9056b4);
+    width: 300px;
+    max-width: 100%;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    margin: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: white;
+    padding: 16px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    height: auto;
+    min-height: 120px; /* se quiser um tamanho base */
+}
+
+article.conteudo:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 18px rgba(0,0,0,0.2);
+}
+
+article.conteudo .descricao {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin-top: 8px;
+    transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+}
+
+article.conteudo.show .descricao {
+    max-height: 240px;
+    opacity: 1;
+}
+
+article.conteudo .toggle-icon {
+    font-size: 1.2rem;
+    margin-top: 8px;
+    transition: transform 0.3s ease-in-out;
+}
+
+article.conteudo.show .toggle-icon {
+    transform: rotate(180deg); /* Girar ícone quando expandido */
+}
+
+/* Sidebar: regras consolidadas para evitar conflitos */
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: 0; /* Sempre visível em desktop */
+    width: 250px;
+    height: 100%;
+    color: white;
+    background-color: #000;
+    padding: 20px;
+    z-index: 1000;
+    display: none; /* padrão oculto */
+}
+
+img.MegaMindLogo {
+    margin-bottom: 50px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%; /* Responsivo */
+    height: auto;
+    max-width: 200px; /* Limite máximo */
+    transition: transform 0.6s ease-in-out; /* Animação */
+}
+
+img.MegaMindLogo:hover {
+    transform: scale(1.05); /* Exemplo de efeito no hover */
+}
+
+ul {
+    border-bottom: 1px solid gray;
+    margin: 10px 0;
+    padding: 0;
+    list-style: none;
+}
+
+li a {
+    text-decoration: none;
+    color: gray;
+    display: block;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+li:hover a {
+    transform: scale(1.1);
+    background-color: #6c07ab;
+    color: white;
+    cursor: pointer;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    nav.header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    h1 {
+        font-size: 30px;
+        padding: 0;
+    }
+    
+    main {
+        margin-left: 0; /* Sem sidebar em mobile */
+        padding: 1rem;
+    }
+    
+    #sidebar {
+        display: none; /* Ocultar em mobile */
+    }
+    
+    /* Adicionar classe para mostrar sidebar em mobile */
+    #sidebar.show {
+        display: block; /* Mostrar quando toggleado */
+        width: 200px;
+    }
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+    nav.header {
+        width: calc(100% - 250px); /* Compensar sidebar para centralizar na área visível */
+        margin-left: 250px;
+    }
+    nav.menu {
+        width: calc(100% - 250px);
+        margin-left: 250px;
+    }
+    #sidebar {
+        display: block; /* Sempre visível no desktop, igual ao home */
+    }
+    main {
+        margin-left: 250px; /* Ajustar main para compensar sidebar */
+    }
+}
