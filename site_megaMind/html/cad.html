@@ -1,63 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="/css/cad.css">
+    <title>Cadastro - MegaMind</title>
+    <link rel="stylesheet" href="../css/cad.css">
 </head>
 <body>
-    
-    <header>
-        
-        <div class="logo-container">
-            <img src="../img/megamindlogo.png" class="MMLogo" alt="">
-            <img src="../img/MegaMind.png" class="MMlogo" alt="">
+
+<header>
+
+```
+<div class="logo-container">
+    <img src="../img/megamindlogo.png" class="MMLogo" alt="Logo MegaMind símbolo">
+    <img src="../img/MegaMind.png" class="MMlogo" alt="Nome MegaMind">
+</div>
+
+<a class="navbar" href="index.html">Login</a>
+
+<button onclick="mudarCor()" type="button" class="btnColor">
+    <img class="BackColor" id="iconeCor" src="../img/Lua.png" alt="Alternar tema">
+</button>
+```
+
+</header>
+
+<main>
+
+```
+<div class="box">
+
+    <h1 class="txtLogin">Cadastro</h1>
+
+    <form class="form" action="/php/insertCad.php" method="POST">
+
+        <label class="txtl" for="usuarioCad">Nome</label>
+        <input type="text" name="usuarioCad" id="usuarioCad" class="txtbox" required>
+
+        <label class="txtl" for="emailCad">E-mail</label>
+        <input type="email" name="emailCad" id="emailCad" class="txtbox" required>
+
+        <label class="txtl" for="senhaCad">Senha</label>
+
+        <div class="input-container">
+            <input type="password" name="senhaCad" id="senhaCad" class="txtbox" required>
+
+            <button type="button" class="btnEye" onclick="toggleSenha()">
+                <img id="IconeSenha" src="../img/invisivel.png" class="Eye" alt="Mostrar senha">
+            </button>
         </div>
 
-        <a class="navbar" href="/html/index.html">
-            <h1 class="navbar">Login</h1>
-        </a>
+        <button type="submit" class="btnLogin">Cadastrar</button>
 
-        <button onclick="MudarCor()" type="button" class="btnColor" >
-        <img class="BackColor" id="iconeCor" src="../img/Lua.png" alt="">
+    </form>
 
-    </header>
+</div>
+```
 
-    <main>
+</main>
 
-        <div class="box">
+<footer>
+    <img class="MMlogof" src="../img/MegaMindlf.png" alt="Logo MegaMind rodapé">
+</footer>
 
-            <h1 class="txtLogin">Cadastro</h1>
-
-            <form class="form" action="/php/insertCad.php" method="POST">
-                <label class="txtl">Nome</label>
-                <input type="text" name="usuarioCad" id="usuarioCad" class="txtbox" required>
-
-                <label class="txtl">E-mail</label>
-                <input type="email" name="emailCad" id="emailCad" class="txtbox" required>
-
-                <label class="txtl">Senha</label>
-
-                <div class="input-container">
-                    <input type="password" name="senhaCad" id="SenhaCad" class="txtbox" required>
-                    <button type="button" class="btnEye" onclick="toggleSenha()">
-                        <img id="IconeSenha" src="../img/invisivel.png" class="Eye">
-                    </button>
-                </div>
-
-                <button type="submit" class="btnLogin">Cadastrar</button>
-            </form>
-
-        </div>
-
-    </main>
-
-    <footer>
-        <img class="MMlogof" src="../img/MegaMindlf.png" alt="">
-    </footer>
-
-    <script src="../js/script.js"></script>
+<script src="../js/script.js"></script>
 
 </body>
 </html>
