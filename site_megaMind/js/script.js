@@ -1,15 +1,13 @@
-function toggleSenha() {
-    const senha = document.getElementById("Senha");
-    const icone = document.getElementById("IconeSenha");
+function toggleSenha(botao) {
+    const input = botao.parentElement.querySelector("input");
+    const icone = botao.querySelector("img");
 
-    if (!senha || !icone) return;
-
-    if (senha.type === "password") {
-        senha.type = "text";
-        icone.src = "img/olho.png";
+    if (input.type === "password") {
+        input.type = "text";
+        icone.src = "../img/olho.png";
     } else {
-        senha.type = "password";
-        icone.src = "img/invisivel.png";
+        input.type = "password";
+        icone.src = "../img/invisivel.png";
     }
 }
 
