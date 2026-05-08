@@ -46,7 +46,8 @@ svg {
 }
 
 .dashboard-page.simple-layout {
-    width: min(100%, 1400px);
+    width: 100%;
+    max-width: 1600px;
     margin: 0 auto;
 }
 
@@ -111,14 +112,15 @@ svg {
 }
 
 .question-page {
-    padding: 0 24px 32px;
+    padding: 0 12px 32px;
 }
 
 .subject-panel {
-    padding: 28px;
+    padding: 24px;
     border-radius: 22px;
     background: rgba(235, 248, 253, 0.78);
     box-shadow: var(--shadow-card);
+    width: 100%;
 }
 
 .subject-panel h2 {
@@ -130,17 +132,18 @@ svg {
 
 .subject-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 28px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 22px;
+    width: 100%;
 }
 
 .subject-card {
-    min-height: 132px;
+    min-height: 115px;
     display: grid;
     grid-template-columns: 76px minmax(0, 1fr);
     align-items: center;
     gap: 18px;
-    padding: 22px;
+    padding: 18px;
     border: 1px solid rgba(233, 238, 247, 0.84);
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.9);
@@ -288,5 +291,11 @@ svg {
     }
 }
 
+@media (min-width: 1500px) {
 
+    .subject-grid {
+        grid-template-columns: repeat(3, minmax(320px, 1fr));
+    }
+
+}
 
