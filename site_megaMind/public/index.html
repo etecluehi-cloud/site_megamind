@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MegaMind</title>
     <link rel="stylesheet" href="css/homeStyle.css">
+    <link rel="stylesheet" href="css/perfil.css">
 </head>
 <body class="home">
     <main class="dashboard-page">
@@ -84,9 +85,20 @@
 
                 <!-- Welcome Banner -->
                 <section class="welcome-banner" aria-label="Boas-vindas">
-                    <div class="banner-avatar">
-                        <img src="img/logo.png" alt="Logo do Megamind">
+
+                    <!-- Avatar com upload de foto -->
+                    <div class="banner-avatar" title="Clique para trocar a foto de perfil" onclick="document.getElementById('avatar-input').click()">
+                        <img id="avatar-img" src="img/logo.png" alt="Foto de perfil">
+                        <div class="avatar-overlay">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                                <circle cx="12" cy="13" r="4"/>
+                            </svg>
+                            <span>Trocar<br>foto</span>
+                        </div>
+                        <input type="file" id="avatar-input" accept="image/*" aria-label="Selecionar foto de perfil">
                     </div>
+
                     <div class="banner-copy">
                         <h1>Bem-vindo(a)! <span aria-hidden="true">&#128075;</span></h1>
                         <p class="student-name">Nome do estudante</p>
@@ -230,7 +242,13 @@
             </section>
         </div>
     </main>
+
+    <!-- Toast de confirmação -->
+    <div class="avatar-toast" id="avatar-toast" role="status" aria-live="polite">
+        ✅ Foto de perfil atualizada!
+    </div>
+
+    <!-- Script de perfil -->
+    <script src="js/perfil.js"></script>
 </body>
 </html>
-
-
