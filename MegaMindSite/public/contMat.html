@@ -3,120 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conteúdo - Matemática - Megamind</title>
-    <link rel="stylesheet" href="css/contentStyle.css">
-    <link rel="stylesheet" href="css/perfil.css">
+    <title>Matemática – Megamind</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/conteudo-matematica.css">
+    <script src="js/perfil.js" defer></script>
+    <script type="module" src="js/conteudo-matematica.js"></script>
 </head>
 <body>
-    <main class="pagina-painel layout-simples">
-        <!-- Cabeçalho da página -->
-        <header class="cabecalho-simples">
-            <a class="botao-voltar" href="home.html">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M19 12H5M12 19l-7-7 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Voltar
-            </a>
-            <h1>Conteúdo - Matemática</h1>
-        </header>
 
-        <!-- Seção de Conteúdo -->
-        <section class="area-conteudo">
-            <div class="grade-topicos">
-                <div class="cartao-topico">
-                    <div class="icone-topico" style="background: linear-gradient(135deg, #6c07ab, #5a0591);">
-                        2+2
-                    </div>
-                    <div class="conteudo-topico">
-                        <h3>Matemática Básica</h3>
-                        <p>Introdução às operações fundamentais</p>
-                        <div class="container-progresso">
-                            <div class="barra-progresso" style="width: 100%;"></div>
-                        </div>
-                        <span class="texto-progresso">100% concluído</span>
-                    </div>
-                </div>
+    <header class="topo">
+        <a class="btn-voltar" href="home.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Voltar
+        </a>
+        <div class="topo-centro">
+            <span class="topo-materia">Matemática</span>
+            <h1 class="topo-titulo">Escolha um conteúdo</h1>
+        </div>
+        <div class="topo-deco" aria-hidden="true">∑</div>
+    </header>
 
-                <div class="cartao-topico">
-                    <div class="icone-topico" style="background: linear-gradient(135deg, #6c07ab, #5a0591);">
-                        1,2,3...
-                    </div>
-                    <div class="conteudo-topico">
-                        <h3>Progressões</h3>
-                        <p>Sequências e padrões numéricos</p>
-                        <div class="container-progresso">
-                            <div class="barra-progresso" style="width: 75%;"></div>
-                        </div>
-                        <span class="texto-progresso">75% concluído</span>
-                    </div>
-                </div>
-
-                <div class="cartao-topico">
-                    <div class="icone-topico" style="background: linear-gradient(135deg, #6c07ab, #5a0591);">
-                        ■
-                    </div>
-                    <div class="conteudo-topico">
-                        <h3>Geometria de Posição</h3>
-                        <p>Conceitos espaciais e formas</p>
-                        <div class="container-progresso">
-                            <div class="barra-progresso" style="width: 50%;"></div>
-                        </div>
-                        <span class="texto-progresso">50% concluído</span>
-                    </div>
-                </div>
-
-                <div class="cartao-topico">
-                    <div class="icone-topico" style="background: linear-gradient(135deg, #6c07ab, #5a0591);">
-                        ◆
-                    </div>
-                    <div class="conteudo-topico">
-                        <h3>Geometria Plana</h3>
-                        <p>Figuras bidimensionais e seus atributos</p>
-                        <div class="container-progresso">
-                            <div class="barra-progresso" style="width: 60%;"></div>
-                        </div>
-                        <span class="texto-progresso">60% concluído</span>
-                    </div>
-                </div>
-
-                <div class="cartao-topico">
-                    <div class="icone-topico" style="background: linear-gradient(135deg, #6c07ab, #5a0591);">
-                        ▲
-                    </div>
-                    <div class="conteudo-topico">
-                        <h3>Geometria Espacial</h3>
-                        <p>Figuras tridimensionais</p>
-                        <div class="container-progresso">
-                            <div class="barra-progresso" style="width: 40%;"></div>
-                        </div>
-                        <span class="texto-progresso">40% concluído</span>
-                    </div>
-                </div>
-
-                <div class="cartao-topico">
-                    <div class="icone-topico" style="background: linear-gradient(135deg, #6c07ab, #5a0591);">
-                        Σ
-                    </div>
-                    <div class="conteudo-topico">
-                        <h3>Álgebra</h3>
-                        <p>Equações e expressões algébricas</p>
-                        <div class="container-progresso">
-                            <div class="barra-progresso" style="width: 55%;"></div>
-                        </div>
-                        <span class="texto-progresso">55% concluído</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <main class="pagina">
+        <div class="grade" id="grade-conteudos">
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+        </div>
     </main>
+
+    <div id="modal-overlay" class="modal-overlay"></div>
+
+    <aside id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+        <div class="modal-inner">
+            <button class="modal-fechar" id="modal-fechar" aria-label="Fechar">✕</button>
+            <h2 id="modal-titulo" class="modal-titulo"></h2>
+            <p  id="modal-resumo"  class="modal-resumo"></p>
+            <div class="modal-secao-label">Vídeos</div>
+            <div id="modal-videos" class="modal-videos"></div>
+            <button id="modal-btn-questoes" class="btn-questoes" disabled>
+                Ir para as Questões →
+            </button>
+        </div>
+    </aside>
+
     <div id="mm-toast" role="status" aria-live="polite"></div>
-    <script src="js/perfil.js"></script>
+
 </body>
 </html>
-
-
-
-
-
-
-

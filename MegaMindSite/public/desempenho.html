@@ -1,94 +1,808 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desempenho - Megamind</title>
-    <link rel="stylesheet" href="css/otherStyle.css">
-    <link rel="stylesheet" href="css/perfil.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desempenho – Megamind</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<style>
+/* ═══════════════════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════════════════ */
+:root {
+  --brand:       #6c07ab;
+  --brand-deep:  #4a0578;
+  --brand-mid:   #9b38d0;
+  --brand-light: #c97ef5;
+  --accent:      #d946ef;
+  --accent-2:    #f472b6;
+
+  --bg:          #0d0618;
+  --surface:     #150d22;
+  --surface-2:   #1e1433;
+  --surface-3:   #271c40;
+
+  --text-1:      #f0e8ff;
+  --text-2:      #b8a8d4;
+  --text-3:      #7a6a99;
+
+  --border:      rgba(155, 56, 208, 0.18);
+  --glow:        0 0 40px rgba(108, 7, 171, 0.35);
+  --shadow-card: 0 8px 32px rgba(0,0,0,0.5);
+
+  --radius:      20px;
+  --font:        'Inter', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100%; font-family: var(--font); background: var(--bg); color: var(--text-1); -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; border: none; }
+
+/* ═══════════════════════════════════════════════════════
+   FUNDO ANIMADO
+═══════════════════════════════════════════════════════ */
+.bg-deco {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+}
+.bg-deco::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 85% -10%, rgba(217,70,239,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 60% at -10% 80%, rgba(108,7,171,0.25) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 40% at 50% 110%, rgba(155,56,208,0.12) 0%, transparent 50%);
+}
+
+/* SVG cérebros flutuantes */
+.brain-float {
+  position: absolute;
+  opacity: 0.06;
+  animation: float 12s ease-in-out infinite;
+}
+.brain-float:nth-child(2) { animation-delay: -4s; animation-duration: 15s; }
+.brain-float:nth-child(3) { animation-delay: -8s; animation-duration: 18s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33%       { transform: translateY(-22px) rotate(3deg); }
+  66%       { transform: translateY(14px) rotate(-2deg); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   TOPO
+═══════════════════════════════════════════════════════ */
+.topo {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 32px;
+  background: rgba(13, 6, 24, 0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+}
+.topo::after {
+  content: ""; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--brand-mid), transparent);
+}
+
+.btn-voltar {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 18px; border-radius: 999px;
+  background: rgba(108,7,171,0.18);
+  color: var(--brand-light);
+  font-weight: 700; font-size: 14px;
+  border: 1px solid var(--border);
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  white-space: nowrap;
+}
+.btn-voltar:hover { background: var(--brand); color: #fff; transform: translateY(-1px); }
+
+.topo-centro { flex: 1; text-align: center; }
+.topo-eyebrow {
+  display: block; font-size: 11px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--brand-mid); margin-bottom: 2px;
+}
+.topo-titulo { font-size: 20px; font-weight: 800; color: var(--text-1); }
+
+.topo-brain {
+  font-size: 26px; opacity: .35; user-select: none; min-width: 40px; text-align: right;
+}
+
+/* ═══════════════════════════════════════════════════════
+   PÁGINA
+═══════════════════════════════════════════════════════ */
+.pagina {
+  position: relative; z-index: 1;
+  padding: 40px 32px 80px;
+  max-width: 1280px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 36px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   HERO STATS
+═══════════════════════════════════════════════════════ */
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  display: flex; align-items: center; gap: 16px;
+  box-shadow: var(--shadow-card);
+  position: relative; overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.stat-card:hover { transform: translateY(-3px); box-shadow: var(--glow), var(--shadow-card); }
+.stat-card::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(108,7,171,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.stat-icon {
+  width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--brand), var(--brand-deep));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 4px 18px rgba(108,7,171,0.45);
+}
+.stat-body { flex: 1; }
+.stat-value {
+  font-size: 32px; font-weight: 900; color: var(--text-1);
+  line-height: 1; margin-bottom: 4px;
+  background: linear-gradient(135deg, #fff, var(--brand-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.stat-label { font-size: 12px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; }
+
+/* ═══════════════════════════════════════════════════════
+   SEÇÃO DE GRÁFICOS
+═══════════════════════════════════════════════════════ */
+.section-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--brand-mid);
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-label::after {
+  content: ""; flex: 1; height: 1px;
+  background: linear-gradient(90deg, var(--border), transparent);
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 20px;
+}
+
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 24px 24px;
+  box-shadow: var(--shadow-card);
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; gap: 20px;
+}
+.chart-card::before {
+  content: ""; position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--brand), var(--accent));
+}
+
+.chart-card-title {
+  font-size: 16px; font-weight: 800; color: var(--text-1);
+}
+.chart-card-sub { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+
+.chart-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 280px;
+  display: flex; align-items: center; justify-content: center;
+}
+.chart-wrap canvas { max-width: 100%; max-height: 320px; }
+
+/* Legenda custom pizza */
+.pizza-legend {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.legend-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--text-2);
+}
+.legend-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+.legend-pct {
+  margin-left: auto; font-weight: 700; color: var(--text-1); font-size: 13px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   GRÁFICO DE COLUNAS POR CONTEÚDO
+═══════════════════════════════════════════════════════ */
+.bar-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 24px 24px;
+  box-shadow: var(--shadow-card);
+  position: relative; overflow: hidden;
+}
+.bar-card::before {
+  content: ""; position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--brand));
+}
+.bar-card-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; margin-bottom: 24px;
+}
+.bar-chart-wrap { min-height: 320px; position: relative; }
+
+/* ═══════════════════════════════════════════════════════
+   PROGRESSO POR MATÉRIA (lista detalhada)
+═══════════════════════════════════════════════════════ */
+.subject-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.subject-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex; align-items: center; gap: 14px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.subject-row:hover { border-color: rgba(155,56,208,0.4); transform: translateX(3px); }
+
+.subject-icon {
+  width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+  background: var(--surface-3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: var(--brand-light);
+  border: 1px solid var(--border);
+}
+.subject-info { flex: 1; min-width: 0; }
+.subject-name { font-size: 13px; font-weight: 700; color: var(--text-1); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.subject-bar-bg { height: 5px; border-radius: 999px; background: var(--surface-3); overflow: hidden; margin-bottom: 4px; }
+.subject-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--brand), var(--accent)); transition: width 0.7s cubic-bezier(.4,0,.2,1); }
+.subject-meta { font-size: 11px; color: var(--text-3); font-weight: 600; }
+
+.subject-pct {
+  font-size: 16px; font-weight: 900; color: var(--brand-light);
+  min-width: 40px; text-align: right;
+}
+
+/* ═══════════════════════════════════════════════════════
+   LOADING / EMPTY
+═══════════════════════════════════════════════════════ */
+.loading-overlay {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 16px; padding: 60px 0; color: var(--text-3); font-size: 14px;
+}
+.spin {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 3px solid var(--surface-3);
+  border-top-color: var(--brand-mid);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Skeleton */
+.skeleton {
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 50%, var(--surface-2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ═══════════════════════════════════════════════════════
+   BADGE DE CONQUISTA
+═══════════════════════════════════════════════════════ */
+.badge-area {
+  display: flex; gap: 12px; flex-wrap: wrap;
+}
+.badge {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px; border-radius: 999px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  font-size: 13px; font-weight: 600; color: var(--text-2);
+  transition: all 0.2s;
+}
+.badge.earned {
+  background: linear-gradient(135deg, rgba(108,7,171,0.25), rgba(217,70,239,0.15));
+  border-color: rgba(155,56,208,0.45);
+  color: var(--brand-light);
+}
+.badge-icon { font-size: 18px; }
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .charts-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .topo { padding: 14px 16px; }
+  .topo-titulo { font-size: 16px; }
+  .topo-brain { display: none; }
+  .pagina { padding: 24px 16px 60px; }
+  .hero-stats { grid-template-columns: 1fr 1fr; }
+  .stat-value { font-size: 24px; }
+}
+</style>
 </head>
 <body>
-    <main class="pagina-painel layout-simples">
-        <!-- Cabeçalho da página -->
-        <header class="cabecalho-simples">
-            <a class="botao-voltar" href="home.html">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M19 12H5M12 19l-7-7 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Voltar
-            </a>
-            <h1>Desempenho</h1>
-        </header>
 
-        <!-- Seção de Conteúdo -->
-        <section class="area-conteudo">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
-                <div style="padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; text-align: center;">
-                    <div style="font-size: 28px; font-weight: bold; margin-bottom: 5px;">85%</div>
-                    <div style="font-size: 14px;">Matemática</div>
-                </div>
-                <div style="padding: 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border-radius: 8px; text-align: center;">
-                    <div style="font-size: 28px; font-weight: bold; margin-bottom: 5px;">72%</div>
-                    <div style="font-size: 14px;">Português</div>
-                </div>
-                <div style="padding: 20px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; border-radius: 8px; text-align: center;">
-                    <div style="font-size: 28px; font-weight: bold; margin-bottom: 5px;">78%</div>
-                    <div style="font-size: 14px;">vermelhoação</div>
-                </div>
-                <div style="padding: 20px; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; border-radius: 8px; text-align: center;">
-                    <div style="font-size: 28px; font-weight: bold; margin-bottom: 5px;">78%</div>
-                    <div style="font-size: 14px;">Média Geral</div>
-                </div>
-            </div>
+<!-- Fundo decorativo com cérebros -->
+<div class="bg-deco" aria-hidden="true">
+  <!-- Cérebro grande esquerda topo -->
+  <svg class="brain-float" style="left:5%;top:8%;width:320px" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M100 20 C55 20 25 55 25 90 C25 115 38 130 50 140 C50 155 60 170 80 170 C85 170 90 168 95 165 C97 168 100 170 100 170 C100 170 103 168 105 165 C110 168 115 170 120 170 C140 170 150 155 150 140 C162 130 175 115 175 90 C175 55 145 20 100 20 Z" stroke="#c97ef5" stroke-width="3" fill="rgba(108,7,171,0.15)"/>
+    <path d="M60 80 C60 70 70 65 80 70 C85 60 95 58 100 65" stroke="#c97ef5" stroke-width="2" stroke-linecap="round"/>
+    <path d="M140 80 C140 70 130 65 120 70 C115 60 105 58 100 65" stroke="#c97ef5" stroke-width="2" stroke-linecap="round"/>
+    <path d="M60 100 C55 110 65 122 75 120" stroke="#c97ef5" stroke-width="2" stroke-linecap="round"/>
+    <path d="M140 100 C145 110 135 122 125 120" stroke="#c97ef5" stroke-width="2" stroke-linecap="round"/>
+    <path d="M80 130 C85 140 95 142 100 138 C105 142 115 140 120 130" stroke="#c97ef5" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="100" cy="95" r="8" stroke="#d946ef" stroke-width="1.5" fill="rgba(217,70,239,0.1)"/>
+    <line x1="100" y1="65" x2="100" y2="87" stroke="#d946ef" stroke-width="1.5"/>
+  </svg>
+  <!-- Cérebro médio direita -->
+  <svg class="brain-float" style="right:3%;top:40%;width:220px" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M100 25 C62 25 32 58 32 92 C32 118 44 134 57 143 C57 158 67 172 86 172 C91 172 96 170 100 167 C104 170 109 172 114 172 C133 172 143 158 143 143 C156 134 168 118 168 92 C168 58 138 25 100 25 Z" stroke="#9b38d0" stroke-width="2.5" fill="rgba(108,7,171,0.1)"/>
+    <path d="M65 82 C65 73 74 68 83 73 C88 64 97 62 100 68" stroke="#9b38d0" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M135 82 C135 73 126 68 117 73 C112 64 103 62 100 68" stroke="#9b38d0" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M65 103 C61 112 70 123 79 121" stroke="#9b38d0" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M135 103 C139 112 130 123 121 121" stroke="#9b38d0" stroke-width="1.8" stroke-linecap="round"/>
+  </svg>
+  <!-- Cérebro pequeno canto inferior -->
+  <svg class="brain-float" style="left:40%;bottom:5%;width:160px;opacity:0.04" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M100 30 C68 30 40 60 40 92 C40 116 51 130 62 140 C62 154 71 166 88 166 C93 166 97 164 100 161 C103 164 107 166 112 166 C129 166 138 154 138 140 C149 130 160 116 160 92 C160 60 132 30 100 30 Z" stroke="#d946ef" stroke-width="2" fill="none"/>
+    <path d="M70 88 C70 80 78 76 86 80 M130 88 C130 80 122 76 114 80" stroke="#d946ef" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>
+</div>
 
-            <div style="padding: 20px; background: #fbf9ff; border-radius: 8px; margin-bottom: 20px;">
-                <h4 style="color: #333; margin-bottom: 15px;">Atividades Recentes</h4>
-                <div style="display: flex; align-items: center; padding: 12px; background: white; border-left: 4px solid #6c07ab; margin-bottom: 10px; border-radius: 4px;">
-                    <div style="flex: 1;">
-                        <div style="color: #333; font-weight: 500;">Questões de Matemática</div>
-                        <div style="color: #999; font-size: 12px;">Há 2 horas - 15/20 acertos</div>
-                    </div>
-                    <span style="background: #f0edff; color: #6c07ab; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;">75%</span>
-                </div>
+<!-- Topo -->
+<header class="topo">
+  <a class="btn-voltar" href="home.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+      <path d="M19 12H5M12 19l-7-7 7-7"/>
+    </svg>
+    Voltar
+  </a>
+  <div class="topo-centro">
+    <span class="topo-eyebrow">Megamind</span>
+    <h1 class="topo-titulo">Meu Desempenho</h1>
+  </div>
+  <div class="topo-brain" aria-hidden="true">🧠</div>
+</header>
 
-                <div style="display: flex; align-items: center; padding: 12px; background: white; border-left: 4px solid #f5576c; margin-bottom: 10px; border-radius: 4px;">
-                    <div style="flex: 1;">
-                        <div style="color: #333; font-weight: 500;">Prática de vermelhoação</div>
-                        <div style="color: #999; font-size: 12px;">Há 5 horas - Enviada para correção</div>
-                    </div>
-                    <span style="background: #fff0f3; color: #f5576c; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;">Aguardando</span>
-                </div>
+<!-- Conteúdo principal -->
+<main class="pagina" id="pagina">
 
-                <div style="display: flex; align-items: center; padding: 12px; background: white; border-left: 4px solid #43e97b; margin-bottom: 10px; border-radius: 4px;">
-                    <div style="flex: 1;">
-                        <div style="color: #333; font-weight: 500;">Questões de Português</div>
-                        <div style="color: #999; font-size: 12px;">Ontem - 18/20 acertos</div>
-                    </div>
-                    <span style="background: #e8f8f3; color: #43e97b; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;">90%</span>
-                </div>
-            </div>
+  <!-- Cards de resumo rápido -->
+  <section class="hero-stats" id="hero-stats">
+    <div class="stat-card skeleton" style="height:100px"></div>
+    <div class="stat-card skeleton" style="height:100px"></div>
+    <div class="stat-card skeleton" style="height:100px"></div>
+    <div class="stat-card skeleton" style="height:100px"></div>
+  </section>
 
-            <div style="padding: 20px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;">
-                <h4 style="color: #333; margin-bottom: 15px;">Estatísticas da Semana</h4>
-                <p style="color: #666; font-size: 14px; line-height: 1.8;">
-                    <strong>Total de atividades:</strong> 12<br>
-                    <strong>Tempo gasto:</strong> 8 horas 30 minutos<br>
-                    <strong>Melhor desempenho:</strong> Matemática (85%)<br>
-                    <strong>Progresso:</strong> +5% em relação à semana passada
-                </p>
-            </div>
-        </section>
-    </main>
-    <div id="mm-toast" role="status" aria-live="polite"></div>
-    <script src="js/perfil.js"></script>
+  <!-- Gráficos lado a lado: pizza + barras -->
+  <div>
+    <div class="section-label">Visão Geral</div>
+    <div class="charts-grid">
+      <!-- Pizza: vídeos assistidos vs não assistidos -->
+      <div class="chart-card" id="pizza-card">
+        <div>
+          <div class="chart-card-title">Progresso Total</div>
+          <div class="chart-card-sub">Vídeos assistidos vs pendentes</div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chart-pizza"></canvas>
+        </div>
+        <div class="pizza-legend" id="pizza-legend"></div>
+      </div>
+      <!-- Barras: progresso por matéria -->
+      <div class="chart-card" id="bar-materia-card">
+        <div>
+          <div class="chart-card-title">Progresso por Matéria</div>
+          <div class="chart-card-sub">% de vídeos assistidos em cada área</div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chart-bar-materia"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráfico de colunas: detalhamento por conteúdo -->
+  <div class="bar-card">
+    <div class="bar-card-header">
+      <div>
+        <div class="section-label" style="margin-bottom:4px">Detalhamento</div>
+        <div class="chart-card-title">Vídeos por Conteúdo — Matemática</div>
+        <div class="chart-card-sub">Quantos vídeos foram assistidos em cada tópico</div>
+      </div>
+    </div>
+    <div class="bar-chart-wrap">
+      <canvas id="chart-col"></canvas>
+    </div>
+  </div>
+
+  <!-- Lista de progresso por conteúdo -->
+  <div>
+    <div class="section-label">Conteúdos de Matemática</div>
+    <div class="subject-grid" id="subject-grid">
+      <!-- preenchido por JS -->
+      <div class="subject-row skeleton" style="height:74px"></div>
+      <div class="subject-row skeleton" style="height:74px"></div>
+      <div class="subject-row skeleton" style="height:74px"></div>
+      <div class="subject-row skeleton" style="height:74px"></div>
+    </div>
+  </div>
+
+  <!-- Conquistas -->
+  <div>
+    <div class="section-label">Conquistas</div>
+    <div class="badge-area" id="badge-area">
+      <div class="badge"><span class="badge-icon">🎯</span> Primeiro vídeo assistido</div>
+      <div class="badge"><span class="badge-icon">🔥</span> 5 vídeos assistidos</div>
+      <div class="badge"><span class="badge-icon">⚡</span> 10 vídeos assistidos</div>
+      <div class="badge"><span class="badge-icon">💎</span> Conteúdo completo</div>
+      <div class="badge"><span class="badge-icon">🏆</span> Mestre da Matemática</div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Firebase + Chart logic -->
+<script type="module">
+import { initializeApp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, collection, getDocs }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyAXoLRatnIuZSEXYENjFGWgloV3-xaDf9Q",
+  authDomain:        "megamindapp-4e60c.firebaseapp.com",
+  projectId:         "megamindapp-4e60c",
+  storageBucket:     "megamindapp-4e60c.firebasestorage.app",
+  messagingSenderId: "114881660257",
+  appId:             "1:114881660257:web:d0b6ae935486429bfb3120"
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+const CONTEUDOS_MAT = [
+  { id: "matematica_basica",                 label: "Mat. Básica",       icon: "2+2" },
+  { id: "porcentagem",                       label: "Porcentagem",       icon: "%"   },
+  { id: "algebra",                           label: "Álgebra",           icon: "Σ"   },
+  { id: "funcoes",                           label: "Funções",           icon:"f(x)" },
+  { id: "geometria_plana",                   label: "Geom. Plana",       icon: "◆"   },
+  { id: "geometria_espacial",                label: "Geom. Espacial",    icon: "▲"   },
+  { id: "unidades_medida_velocidade_escala", label: "Grandezas",         icon: "📐"  },
+  { id: "estatistica",                       label: "Estatística",       icon: "📊"  },
+  { id: "probabilidade",                     label: "Probabilidade",     icon: "🎲"  },
+  { id: "matematica_financeira",             label: "Mat. Financeira",   icon: "$"   }
+];
+
+const MATERIAS = [
+  { label: "Matemática",  conteudos: CONTEUDOS_MAT,  color: "#9b38d0" },
+  // Adicione aqui outras matérias conforme criar os arquivos JS delas
+];
+
+// Paleta para gráficos
+const PALETTE = [
+  "#9b38d0","#d946ef","#6c07ab","#c97ef5","#f472b6",
+  "#a855f7","#e879f9","#7c3aed","#db2777","#8b5cf6"
+];
+
+// Chart.js defaults para tema escuro
+Chart.defaults.color = "#7a6a99";
+Chart.defaults.borderColor = "rgba(155,56,208,0.15)";
+Chart.defaults.font.family = "'Inter', sans-serif";
+
+// ─── Auth guard ──────────────────────────────────────────
+onAuthStateChanged(auth, user => {
+  if (!user) { window.location.href = "index.html"; return; }
+  carregarTudo(user.uid);
+});
+
+// ─── Carrega tudo ─────────────────────────────────────────
+async function carregarTudo(uid) {
+  // Busca progresso de todos os conteúdos de Matemática
+  const resultados = await Promise.all(
+    CONTEUDOS_MAT.map(c => carregarProgressoConteudo(uid, c.id))
+  );
+
+  // resultados: [ { total, vistos }, ... ]
+  const dados = CONTEUDOS_MAT.map((c, i) => ({
+    ...c,
+    total:  resultados[i].total,
+    vistos: resultados[i].vistos,
+    pct:    resultados[i].total > 0
+              ? Math.round((resultados[i].vistos / resultados[i].total) * 100)
+              : 0
+  }));
+
+  const totalVideos  = dados.reduce((s, d) => s + d.total,  0);
+  const totalVistos  = dados.reduce((s, d) => s + d.vistos, 0);
+  const totalPend    = totalVideos - totalVistos;
+  const pctGeral     = totalVideos > 0 ? Math.round((totalVistos / totalVideos) * 100) : 0;
+  const conclCompleto = dados.filter(d => d.pct === 100).length;
+
+  renderHeroStats(totalVistos, totalVideos, pctGeral, conclCompleto);
+  renderPizza(totalVistos, totalPend);
+  renderBarMateria(dados);
+  renderColCont(dados);
+  renderSubjectGrid(dados);
+  renderBadges(totalVistos, conclCompleto);
+}
+
+async function carregarProgressoConteudo(uid, conteudoId) {
+  try {
+    const snap = await getDoc(doc(db, "conteudo", conteudoId));
+    if (!snap.exists()) return { total: 0, vistos: 0 };
+    const data = snap.data();
+    const v1 = data.videoId1 || data.videoId || "";
+    const v2 = data.videoId2 || "";
+    const v3 = data.videoId3 || "";
+    const total = [v1, v2, v3].filter(Boolean).length;
+
+    const pSnap = await getDocs(collection(db, "progresso_videos", uid, conteudoId));
+    let vistos = 0;
+    pSnap.forEach(d => { if (d.data().visto === true) vistos++; });
+    return { total, vistos };
+  } catch {
+    return { total: 0, vistos: 0 };
+  }
+}
+
+// ─── Hero Stats ───────────────────────────────────────────
+function renderHeroStats(vistos, total, pct, concluidos) {
+  document.getElementById("hero-stats").innerHTML = `
+    <div class="stat-card">
+      <div class="stat-icon">🎬</div>
+      <div class="stat-body">
+        <div class="stat-value">${vistos}</div>
+        <div class="stat-label">Vídeos assistidos</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📚</div>
+      <div class="stat-body">
+        <div class="stat-value">${total}</div>
+        <div class="stat-label">Total de vídeos</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">⚡</div>
+      <div class="stat-body">
+        <div class="stat-value">${pct}%</div>
+        <div class="stat-label">Progresso geral</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🏆</div>
+      <div class="stat-body">
+        <div class="stat-value">${concluidos}</div>
+        <div class="stat-label">Conteúdos completos</div>
+      </div>
+    </div>
+  `;
+}
+
+// ─── Gráfico Pizza ────────────────────────────────────────
+function renderPizza(vistos, pendentes) {
+  const ctx = document.getElementById("chart-pizza").getContext("2d");
+  new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: ["Assistidos", "Pendentes"],
+      datasets: [{
+        data: [vistos, pendentes],
+        backgroundColor: ["#9b38d0", "#271c40"],
+        borderColor: ["#d946ef", "#3d2a5a"],
+        borderWidth: 2,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      cutout: "68%",
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.label}: ${ctx.raw} vídeos`
+          }
+        }
+      },
+      animation: { animateRotate: true, duration: 900 }
+    }
+  });
+
+  // Legenda customizada
+  const total = vistos + pendentes;
+  document.getElementById("pizza-legend").innerHTML = `
+    <div class="legend-item">
+      <span class="legend-dot" style="background:#9b38d0"></span>
+      Assistidos
+      <span class="legend-pct">${total > 0 ? Math.round(vistos/total*100) : 0}%</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot" style="background:#271c40;border:1px solid #3d2a5a"></span>
+      Pendentes
+      <span class="legend-pct">${total > 0 ? Math.round(pendentes/total*100) : 0}%</span>
+    </div>
+  `;
+}
+
+// ─── Gráfico Barras Horizontais por Conteúdo ──────────────
+function renderBarMateria(dados) {
+  const ctx = document.getElementById("chart-bar-materia").getContext("2d");
+  const labels = dados.map(d => d.label);
+  const pcts   = dados.map(d => d.pct);
+
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        label: "% Assistido",
+        data: pcts,
+        backgroundColor: pcts.map(p =>
+          p === 100 ? "#d946ef" : p >= 50 ? "#9b38d0" : "#3d2a5a"
+        ),
+        borderColor: "#6c07ab",
+        borderWidth: 1,
+        borderRadius: 8,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      indexAxis: "y",
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          min: 0, max: 100,
+          ticks: { callback: v => v + "%" },
+          grid: { color: "rgba(155,56,208,0.12)" }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { font: { size: 11, weight: "600" }, color: "#b8a8d4" }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: { label: ctx => ` ${ctx.raw}% assistido` }
+        }
+      },
+      animation: { duration: 900 }
+    }
+  });
+}
+
+function renderColCont(dados) {
+  const ctx = document.getElementById("chart-col").getContext("2d");
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: dados.map(d => d.label),
+      datasets: [
+        {
+          label: "Assistidos",
+          data: dados.map(d => d.vistos),
+          backgroundColor: "rgba(155,56,208,0.85)",
+          borderColor: "#d946ef",
+          borderWidth: 1,
+          borderRadius: 8,
+          borderSkipped: false,
+        },
+        {
+          label: "Pendentes",
+          data: dados.map(d => d.total - d.vistos),
+          backgroundColor: "rgba(39,28,64,0.85)",
+          borderColor: "rgba(108,7,171,0.5)",
+          borderWidth: 1,
+          borderRadius: 8,
+          borderSkipped: false,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          stacked: true,
+          grid: { display: false },
+          ticks: { font: { size: 10, weight: "600" }, color: "#b8a8d4", maxRotation: 30 }
+        },
+        y: {
+          stacked: true,
+          ticks: { stepSize: 1, color: "#7a6a99" },
+          grid: { color: "rgba(155,56,208,0.10)" }
+        }
+      },
+      plugins: {
+        legend: {
+          labels: { color: "#b8a8d4", font: { size: 12, weight: "600" }, boxWidth: 14, borderRadius: 4 }
+        },
+        tooltip: {
+          mode: "index",
+          intersect: false,
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.raw} vídeo(s)`
+          }
+        }
+      },
+      animation: { duration: 900 }
+    }
+  });
+}
+
+// ─── Lista de conteúdos ───────────────────────────────────
+function renderSubjectGrid(dados) {
+  const grid = document.getElementById("subject-grid");
+  grid.innerHTML = dados.map(d => `
+    <div class="subject-row">
+      <div class="subject-icon">${d.icon}</div>
+      <div class="subject-info">
+        <div class="subject-name">${d.label}</div>
+        <div class="subject-bar-bg">
+          <div class="subject-bar-fill" style="width:${d.pct}%"></div>
+        </div>
+        <div class="subject-meta">${d.vistos} de ${d.total} vídeos</div>
+      </div>
+      <div class="subject-pct">${d.pct}%</div>
+    </div>
+  `).join("");
+}
+
+// ─── Conquistas ───────────────────────────────────────────
+function renderBadges(totalVistos, concluidos) {
+  const area = document.getElementById("badge-area");
+  const badges = [
+    { icon: "🎯", label: "Primeiro vídeo assistido", earned: totalVistos >= 1 },
+    { icon: "🔥", label: "5 vídeos assistidos",      earned: totalVistos >= 5 },
+    { icon: "⚡", label: "10 vídeos assistidos",     earned: totalVistos >= 10 },
+    { icon: "💎", label: "Conteúdo completo",        earned: concluidos >= 1  },
+    { icon: "🏆", label: "Mestre da Matemática",     earned: concluidos >= 10  },
+  ];
+  area.innerHTML = badges.map(b => `
+    <div class="badge ${b.earned ? "earned" : ""}">
+      <span class="badge-icon">${b.icon}</span>
+      ${b.label}
+      ${b.earned ? "<span style='margin-left:4px;font-size:11px;opacity:.7'>✓</span>" : ""}
+    </div>
+  `).join("");
+}
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
