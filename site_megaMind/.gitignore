@@ -1,6 +1,0 @@
-node_modules/
-.firebase/
-*.cache
-package-lock.json
-package.json
-site_megMind.zip
