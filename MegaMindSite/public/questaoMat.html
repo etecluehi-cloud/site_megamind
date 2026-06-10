@@ -1,101 +1,844 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Questões - Matemática - Megamind</title>
-    <link rel="stylesheet" href="css/questionsStyle.css">
-    <link rel="stylesheet" href="css/perfil.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Questões – EduApp TCC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+  <style>
+    :root {
+      --bg:        #F4F2FA;
+      --card:      #FFFFFF;
+      --border:    rgba(123,47,190,.13);
+      --purple:    #7B2FBE;
+      --purple-l:  #9D55D4;
+      --purple-bg: #F0E8FA;
+      --purple-icon: linear-gradient(135deg, #7B2FBE 0%, #9D55D4 100%);
+      --green:     #16A34A;
+      --green-bg:  #F0FDF4;
+      --red:       #DC2626;
+      --red-bg:    #FEF2F2;
+      --text:      #1A1A2E;
+      --muted:     #6B7280;
+      --radius:    14px;
+      --radius-sm: 10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── TELAS ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ══════════════════════════════════════════
+       HEADER — igual ao contPort.html do site
+    ══════════════════════════════════════════ */
+    .topbar {
+      background: #FFFFFF;
+      border-bottom: 1px solid rgba(123,47,190,.1);
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    /* Lado esquerdo: botão voltar */
+    .topbar-left { width: 120px; display: flex; align-items: center; }
+
+    .topbar-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--purple);
+      font-family: 'Inter', sans-serif;
+      font-size: .88rem;
+      font-weight: 600;
+      padding: 6px 12px 6px 8px;
+      border-radius: 8px;
+      transition: background .15s;
+    }
+    .topbar-back:hover { background: var(--purple-bg); }
+    .topbar-back svg { flex-shrink: 0; }
+
+    /* Centro: label + título */
+    .topbar-center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.2;
+    }
+    .topbar-label {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--purple);
+    }
+    .topbar-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* Lado direito: espaço espelho */
+    .topbar-right { width: 120px; }
+
+    /* ══════════════════════════════════════════
+       TELA 1 — SELEÇÃO DE MATÉRIAS
+    ══════════════════════════════════════════ */
+    #screen-materias-content {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 36px 24px 60px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 860px) { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .cards-grid { grid-template-columns: 1fr; } }
+
+    /* Card — idêntico ao padrão contPort */
+    .mat-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 18px 16px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: box-shadow .2s, border-color .2s, transform .2s;
+    }
+    .mat-card:hover {
+      box-shadow: 0 6px 24px rgba(123,47,190,.13);
+      border-color: rgba(123,47,190,.3);
+      transform: translateY(-2px);
+    }
+
+    .mat-card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    /* Ícone — quadrado roxo com gradiente, igual ao português */
+    .mat-card-icon {
+      width: 44px; height: 44px;
+      border-radius: 11px;
+      background: var(--purple-icon);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .mat-card-text { flex: 1; min-width: 0; }
+    .mat-card-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: .97rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 3px;
+    }
+    .mat-card-desc {
+      font-size: .78rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* Linha divisória fina */
+    .mat-card-divider {
+      height: 1px;
+      background: rgba(123,47,190,.1);
+      margin-bottom: 10px;
+    }
+
+    .mat-card-meta {
+      font-size: .72rem;
+      color: var(--muted);
+    }
+
+    /* ══════════════════════════════════════════
+       TELA 2 — QUESTÕES
+    ══════════════════════════════════════════ */
+    #screen-questoes-content {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 24px 60px;
+    }
+
+    /* Barra de progresso */
+    .progress-bar-wrap {
+      background: rgba(123,47,190,.1);
+      border-radius: 100px;
+      height: 5px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--purple), var(--purple-l));
+      border-radius: 100px;
+      transition: width .5s cubic-bezier(.4,0,.2,1);
+      width: 0%;
+    }
+
+    .q-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .q-counter {
+      font-size: .75rem;
+      font-weight: 600;
+      color: var(--purple);
+      background: var(--purple-bg);
+      border: 1px solid rgba(123,47,190,.2);
+      border-radius: 20px;
+      padding: 4px 14px;
+    }
+    .q-subtitulo {
+      font-size: .78rem;
+      color: var(--muted);
+    }
+
+    .q-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+      margin-bottom: 14px;
+    }
+    .q-enunciado {
+      font-size: .97rem;
+      line-height: 1.75;
+      color: var(--text);
+    }
+
+    .alternativas { display: flex; flex-direction: column; gap: 9px; }
+
+    .alt-btn {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 13px 16px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: .92rem;
+      text-align: left;
+      cursor: pointer;
+      transition: background .15s, border-color .15s, transform .12s;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      line-height: 1.5;
+    }
+    .alt-btn:hover:not(:disabled) {
+      background: var(--purple-bg);
+      border-color: var(--purple);
+      transform: translateX(3px);
+    }
+    .alt-btn:disabled { cursor: default; transform: none; }
+
+    .alt-letra {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: .82rem;
+      color: var(--purple);
+      min-width: 20px;
+      margin-top: 1px;
+    }
+
+    .alt-btn.correta { background: var(--green-bg); border-color: var(--green); }
+    .alt-btn.correta .alt-letra { color: var(--green); }
+    .alt-btn.errada  { background: var(--red-bg);   border-color: var(--red); }
+    .alt-btn.errada  .alt-letra { color: var(--red); }
+
+    .feedback-box {
+      border-radius: var(--radius-sm);
+      padding: 13px 16px;
+      font-size: .86rem;
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 9px;
+      margin-top: 12px;
+    }
+    .feedback-box.show  { display: flex; }
+    .feedback-box.acerto { background: var(--green-bg); border: 1px solid rgba(22,163,74,.22); color: var(--green); }
+    .feedback-box.erro   { background: var(--red-bg);   border: 1px solid rgba(220,38,38,.18); color: var(--red); }
+
+    .btn-proxima {
+      display: none;
+      width: 100%;
+      margin-top: 14px;
+      padding: 15px;
+      background: var(--purple);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: .97rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: .02em;
+      transition: opacity .18s, transform .14s;
+    }
+    .btn-proxima.show { display: block; }
+    .btn-proxima:hover { opacity: .88; transform: translateY(-1px); }
+
+    /* Loading */
+    .loading { text-align: center; padding: 56px 0; color: var(--muted); font-size: .92rem; }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(123,47,190,.12);
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin .75s linear infinite;
+      margin: 0 auto 14px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ══════════════════════════════════════════
+       TELA 3 — RESULTADO
+    ══════════════════════════════════════════ */
+    #screen-resultado-content {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 48px 24px 60px;
+      text-align: center;
+    }
+
+    .result-emoji { font-size: 3.6rem; margin-bottom: 10px; }
+    .result-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+    .result-sub { color: var(--muted); font-size: .88rem; margin-bottom: 28px; }
+
+    .result-stats {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .stat-box {
+      flex: 1;
+      max-width: 130px;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 14px;
+    }
+    .stat-box .num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-box .lbl { font-size: .72rem; color: var(--muted); }
+    .stat-box.acertos .num { color: var(--green); }
+    .stat-box.erros   .num { color: var(--red); }
+    .stat-box.total   .num { color: var(--purple); }
+
+    .result-bar-wrap {
+      background: rgba(123,47,190,.08);
+      border-radius: 100px;
+      height: 8px;
+      margin-bottom: 22px;
+      overflow: hidden;
+    }
+    .result-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: linear-gradient(90deg, var(--purple), var(--green));
+      transition: width 1s ease;
+    }
+
+    .result-msg {
+      color: var(--muted);
+      font-size: .88rem;
+      margin-bottom: 24px;
+      padding: 14px 18px;
+      background: #FFFFFF;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      line-height: 1.6;
+      text-align: left;
+    }
+    .result-msg strong { color: var(--text); }
+
+    .btn-voltar-mat {
+      width: 100%;
+      padding: 15px;
+      background: var(--purple);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: .97rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: .02em;
+      transition: opacity .18s;
+    }
+    .btn-voltar-mat:hover { opacity: .88; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1A1A2E;
+      color: #fff;
+      padding: 11px 22px;
+      border-radius: 100px;
+      font-size: .86rem;
+      font-weight: 500;
+      box-shadow: 0 6px 24px rgba(0,0,0,.18);
+      transition: transform .28s;
+      z-index: 999;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
 </head>
 <body>
-    <main class="pagina-painel layout-simples">
-        <header class="cabecalho-simples">
-            <a class="botao-voltar" href="home.html">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M19 12H5M12 19l-7-7 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Voltar
-            </a>
-            <h1>Matemática</h1>
-        </header>
 
-        <section class="pagina-questoes">
-            <section class="painel-assuntos">
-                <h2>Escolha um assunto</h2>
-                <div class="grade-assuntos">
-                    <a class="cartao-assunto" href="questoes.html">
-                        <span class="icone-assunto vermelho">2+2</span>
-                        <span class="texto-assunto">
-                            <strong>Matemática básica</strong>
-                            <small>70 questões</small>
-                            <span class="texto-progresso-assunto">2 de 70</span>
-                            <span class="trilha-progresso"><span style="width: 3%;"></span></span>
-                        </span>
-                    </a>
+<!-- ══ TELA 1: MATÉRIAS ══════════════════════════════════════ -->
+<div id="screen-materias" class="screen active">
 
-                    <a class="cartao-assunto" href="#">
-                        <span class="icone-assunto verde-azulado">∩</span>
-                        <span class="texto-assunto">
-                            <strong>Conjuntos</strong>
-                            <small>25 questões</small>
-                            <span class="texto-progresso-assunto">0 de 25</span>
-                            <span class="trilha-progresso"><span style="width: 0%;"></span></span>
-                        </span>
-                    </a>
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-back" onclick="window.location.href='home.html'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Voltar
+      </button>
+    </div>
+    <div class="topbar-center">
+      <span class="topbar-label">MATEMÁTICA</span>
+      <span class="topbar-title">Escolha um conteúdo</span>
+    </div>
+    <div class="topbar-right"></div>
+  </header>
 
-                    <a class="cartao-assunto" href="#">
-                        <span class="icone-assunto verde">1,3,9</span>
-                        <span class="texto-assunto">
-                            <strong>Progressões</strong>
-                            <small>15 questões</small>
-                            <span class="texto-progresso-assunto">1 de 15</span>
-                            <span class="trilha-progresso"><span style="width: 7%;"></span></span>
-                        </span>
-                    </a>
+  <div id="screen-materias-content">
+    <div class="cards-grid" id="cards-container"></div>
+  </div>
+</div>
 
-                    <a class="cartao-assunto" href="#">
-                        <span class="icone-assunto azul">⬡</span>
-                        <span class="texto-assunto">
-                            <strong>Geometria plana</strong>
-                            <small>30 questões</small>
-                            <span class="texto-progresso-assunto">0 de 30</span>
-                            <span class="trilha-progresso"><span style="width: 0%;"></span></span>
-                        </span>
-                    </a>
+<!-- ══ TELA 2: QUESTÕES ══════════════════════════════════════ -->
+<div id="screen-questoes" class="screen">
 
-                    <a class="cartao-assunto" href="#">
-                        <span class="icone-assunto amarelo">○</span>
-                        <span class="texto-assunto">
-                            <strong>Geometria de posição</strong>
-                            <small>7 questões</small>
-                            <span class="texto-progresso-assunto">0 de 7</span>
-                            <span class="trilha-progresso"><span style="width: 0%;"></span></span>
-                        </span>
-                    </a>
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-back" id="btn-back-questoes">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Voltar
+      </button>
+    </div>
+    <div class="topbar-center">
+      <span class="topbar-label" id="topbar-label-q">MATEMÁTICA</span>
+      <span class="topbar-title" id="topbar-materia-nome">Questões</span>
+    </div>
+    <div class="topbar-right"></div>
+  </header>
 
-                    <a class="cartao-assunto" href="#">
-                        <span class="icone-assunto rosa">△</span>
-                        <span class="texto-assunto">
-                            <strong>Geometria espacial</strong>
-                            <small>25 questões</small>
-                            <span class="texto-progresso-assunto">0 de 25</span>
-                            <span class="trilha-progresso"><span style="width: 0%;"></span></span>
-                        </span>
-                    </a>
-                </div>
-            </section>
-        </section>
-    </main>
-    <div id="mm-toast" role="status" aria-live="polite"></div>
-    <script src="js/perfil.js"></script>
+  <div id="screen-questoes-content">
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-fill"></div>
+    </div>
+
+    <div class="q-meta">
+      <span class="q-counter" id="q-counter">Questão 1 de 5</span>
+      <span class="q-subtitulo" id="q-subtitulo"></span>
+    </div>
+
+    <div id="loading-questoes" class="loading">
+      <div class="spinner"></div>
+      Carregando questões…
+    </div>
+
+    <div id="questao-wrap" style="display:none">
+      <div class="q-card">
+        <div class="q-enunciado" id="q-enunciado"></div>
+      </div>
+
+      <div class="alternativas" id="alternativas-wrap"></div>
+
+      <div class="feedback-box" id="feedback-box">
+        <span id="feedback-icon"></span>
+        <span id="feedback-txt"></span>
+      </div>
+
+      <button class="btn-proxima" id="btn-proxima">Próxima questão →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TELA 3: RESULTADO ══════════════════════════════════════ -->
+<div id="screen-resultado" class="screen">
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-back" id="btn-back-resultado">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Voltar
+      </button>
+    </div>
+    <div class="topbar-center">
+      <span class="topbar-label">MATEMÁTICA</span>
+      <span class="topbar-title">Resultado</span>
+    </div>
+    <div class="topbar-right"></div>
+  </header>
+
+  <div id="screen-resultado-content">
+    <div class="result-emoji" id="result-emoji">🎯</div>
+    <div class="result-title" id="result-title">Bloco Concluído!</div>
+    <div class="result-sub" id="result-sub"></div>
+
+    <div class="result-stats">
+      <div class="stat-box acertos"><div class="num" id="res-acertos">0</div><div class="lbl">Acertos</div></div>
+      <div class="stat-box erros">  <div class="num" id="res-erros">0</div>  <div class="lbl">Erros</div></div>
+      <div class="stat-box total">  <div class="num" id="res-total">5</div>  <div class="lbl">Questões</div></div>
+    </div>
+
+    <div class="result-bar-wrap">
+      <div class="result-bar-fill" id="result-bar" style="width:0%"></div>
+    </div>
+
+    <div class="result-msg" id="result-msg"></div>
+    <button class="btn-voltar-mat" id="btn-voltar-materias">← Voltar às matérias</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     LÓGICA — espelha TelaQuestoes.java + salvarBlocoGamificacao
+══════════════════════════════════════════════════════════ -->
+<script>
+  // ── CONFIG FIREBASE ─────────────────────────────────────
+  // ⚠️ Substitua pelos dados do seu projeto (mesmo google-services.json do app)
+  const firebaseConfig = {
+    apiKey:            "AIzaSyAXoLRatnIuZSEXYENjFGWgloV3-xaDf9Q",
+    authDomain:        "megamindapp-4e60c.firebaseapp.com",
+    projectId:         "megamindapp-4e60c",
+    storageBucket:     "megamindapp-4e60c.firebasestorage.app",
+    messagingSenderId: "114881660257",
+    appId:             "1:114881660257:web:d0b6ae935486429bfb3120"
+};
+  firebase.initializeApp(firebaseConfig);
+  const db   = firebase.firestore();
+  const auth = firebase.auth();
+
+  // ── CATÁLOGO DE MATÉRIAS (mesmo TelaSecaoQuestoesMat) ───
+  const MATERIAS = [
+    { id: "geometria_plana",       nome: "Geometria Plana",       desc: "Perímetros, áreas e figuras planas",         icon: "📐" },
+    { id: "geometria_espacial",    nome: "Geometria Espacial",    desc: "Sólidos, volumes e superfícies",             icon: "🔷" },
+    { id: "funcoes",               nome: "Funções",               desc: "Funções e representações gráficas",          icon: "📈" },
+    { id: "estatistica",           nome: "Estatística",           desc: "Médias, medidas e representações",           icon: "📊" },
+    { id: "probabilidade",         nome: "Probabilidade",         desc: "Cálculo de chances e eventos",               icon: "🎲" },
+    { id: "analise_combinatoria",  nome: "Análise Combinatória",  desc: "Arranjos, permutações e combinações",        icon: "🔢" },
+    { id: "razao_proporcao",       nome: "Razão e Proporção",     desc: "Relações entre grandezas",                   icon: "⚖️" },
+    { id: "regra_de_tres",         nome: "Regra de Três",         desc: "Proporcionalidade direta e inversa",         icon: "📏" },
+    { id: "porcentagem",           nome: "Porcentagem",           desc: "Cálculos percentuais e variações",           icon: "💯" },
+    { id: "matematica_financeira", nome: "Matemática Financeira", desc: "Juros simples, composto e descontos",        icon: "💰" },
+    { id: "trigonometria",         nome: "Trigonometria",         desc: "Seno, cosseno, tangente e identidades",      icon: "📐" },
+    { id: "matrizes",              nome: "Matrizes",              desc: "Operações e determinantes matriciais",       icon: "🧮" },
+    { id: "sistemas_lineares",     nome: "Sistemas Lineares",     desc: "Resolução de sistemas de equações",          icon: "🔗" },
+  ];
+
+  const COLECAO   = "questoes_matematica";
+  const MAX_QUEST = 5;
+
+  // ── ESTADO ───────────────────────────────────────────────
+  let listaQuestoes    = [];
+  let indiceAtual      = 0;
+  let jaRespondeu      = false;
+  let totalAcertos     = 0;
+  let totalErros       = 0;
+  let materiaAtualNome = "";
+  let materiaAtualId   = "";
+
+  // ── UTILITÁRIOS ──────────────────────────────────────────
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function showToast(msg, dur = 3000) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), dur);
+  }
+
+  // ── RENDERIZA CARDS ──────────────────────────────────────
+  function renderCards() {
+    const grid = document.getElementById('cards-container');
+    grid.innerHTML = '';
+    MATERIAS.forEach(m => {
+      const div = document.createElement('div');
+      div.className = 'mat-card';
+      div.innerHTML = `
+        <div class="mat-card-top">
+          <div class="mat-card-icon">${m.icon}</div>
+          <div class="mat-card-text">
+            <div class="mat-card-name">${m.nome}</div>
+            <div class="mat-card-desc">${m.desc}</div>
+          </div>
+        </div>
+        <div class="mat-card-divider"></div>
+        <div class="mat-card-meta">0 de 5 questões · 0%</div>
+      `;
+      div.addEventListener('click', () => iniciarBloco(m.id, m.nome));
+      grid.appendChild(div);
+    });
+  }
+
+  // ── INICIA BLOCO ─────────────────────────────────────────
+  function iniciarBloco(conteudoId, nomeMateria) {
+    materiaAtualNome = nomeMateria;
+    materiaAtualId   = conteudoId;
+    listaQuestoes    = [];
+    indiceAtual      = 0;
+    jaRespondeu      = false;
+    totalAcertos     = 0;
+    totalErros       = 0;
+
+    document.getElementById('topbar-materia-nome').textContent = nomeMateria;
+    document.getElementById('topbar-label-q').textContent      = 'MATEMÁTICA';
+    document.getElementById('q-subtitulo').textContent         = nomeMateria;
+    document.getElementById('loading-questoes').style.display  = 'block';
+    document.getElementById('questao-wrap').style.display      = 'none';
+    document.getElementById('progress-fill').style.width       = '0%';
+
+    showScreen('screen-questoes');
+    buscarQuestoes(conteudoId);
+  }
+
+  // ── BUSCA QUESTÕES NO FIRESTORE ──────────────────────────
+  function buscarQuestoes(conteudoId) {
+    db.collection(COLECAO).doc(conteudoId).get()
+      .then(doc => {
+        if (!doc.exists) { showToast("Conteúdo não encontrado."); showScreen('screen-materias'); return; }
+
+        const raw = doc.data().questoes || [];
+        if (!raw.length) { showToast("Nenhuma questão encontrada!"); showScreen('screen-materias'); return; }
+
+        const todas = raw.map(q => ({
+          enunciado:        q.enunciado,
+          alternativa_a:    q.alternativa_a,
+          alternativa_b:    q.alternativa_b,
+          alternativa_c:    q.alternativa_c,
+          alternativa_d:    q.alternativa_d,
+          alternativa_e:    q.alternativa_e,
+          resposta_correta: q.resposta_correta
+        }));
+
+        shuffle(todas);
+        listaQuestoes = todas.slice(0, Math.min(MAX_QUEST, todas.length));
+
+        document.getElementById('loading-questoes').style.display = 'none';
+        document.getElementById('questao-wrap').style.display     = 'block';
+        exibirQuestao(0);
+      })
+      .catch(err => { showToast("Erro: " + err.message); showScreen('screen-materias'); });
+  }
+
+  // ── EXIBE QUESTÃO ────────────────────────────────────────
+  function exibirQuestao(idx) {
+    jaRespondeu = false;
+    const q     = listaQuestoes[idx];
+    const total = listaQuestoes.length;
+
+    document.getElementById('q-counter').textContent         = `Questão ${idx + 1} de ${total}`;
+    document.getElementById('progress-fill').style.width     = `${(idx / total) * 100}%`;
+    document.getElementById('q-enunciado').textContent       = q.enunciado;
+
+    // Shuffle das alternativas — igual ao app
+    const alts = [
+      { texto: q.alternativa_a, correta: q.resposta_correta === 'A' },
+      { texto: q.alternativa_b, correta: q.resposta_correta === 'B' },
+      { texto: q.alternativa_c, correta: q.resposta_correta === 'C' },
+      { texto: q.alternativa_d, correta: q.resposta_correta === 'D' },
+      { texto: q.alternativa_e, correta: q.resposta_correta === 'E' },
+    ];
+    shuffle(alts);
+    const letras = ['A','B','C','D','E'];
+    let letraCorreta = 'A';
+    alts.forEach((a, i) => { if (a.correta) letraCorreta = letras[i]; });
+
+    const wrap = document.getElementById('alternativas-wrap');
+    wrap.innerHTML = '';
+    alts.forEach((alt, i) => {
+      const btn = document.createElement('button');
+      btn.className         = 'alt-btn';
+      btn.dataset.letra     = letras[i];
+      btn.innerHTML         = `<span class="alt-letra">${letras[i]})</span><span>${alt.texto || ''}</span>`;
+      btn.addEventListener('click', () => responder(btn, letras[i], letraCorreta));
+      wrap.appendChild(btn);
+    });
+
+    document.getElementById('feedback-box').className = 'feedback-box';
+    document.getElementById('btn-proxima').classList.remove('show');
+  }
+
+  // ── RESPONDER ────────────────────────────────────────────
+  function responder(btn, letraEscolhida, letraCorreta) {
+    if (jaRespondeu) return;
+    jaRespondeu = true;
+
+    document.querySelectorAll('.alt-btn').forEach(b => b.disabled = true);
+
+    const fb = document.getElementById('feedback-box');
+
+    if (letraEscolhida === letraCorreta) {
+      btn.classList.add('correta');
+      fb.className = 'feedback-box show acerto';
+      document.getElementById('feedback-icon').textContent = '✅';
+      document.getElementById('feedback-txt').textContent  = 'Resposta correta! Muito bem!';
+      totalAcertos++;
+    } else {
+      btn.classList.add('errada');
+      fb.className = 'feedback-box show erro';
+      document.getElementById('feedback-icon').textContent = '❌';
+      document.getElementById('feedback-txt').textContent  = `Incorreto. A alternativa correta era ${letraCorreta}.`;
+      totalErros++;
+      document.querySelectorAll('.alt-btn').forEach(b => {
+        if (b.dataset.letra === letraCorreta) b.classList.add('correta');
+      });
+    }
+
+    document.getElementById('btn-proxima').classList.add('show');
+  }
+
+  // ── PRÓXIMA / FIM ────────────────────────────────────────
+  document.getElementById('btn-proxima').addEventListener('click', () => {
+    if (indiceAtual < listaQuestoes.length - 1) {
+      indiceAtual++;
+      exibirQuestao(indiceAtual);
+    } else {
+      mostrarResultado();
+    }
+  });
+
+  // ── RESULTADO ────────────────────────────────────────────
+  function mostrarResultado() {
+    const total = listaQuestoes.length;
+    const pct   = Math.round((totalAcertos / total) * 100);
+
+    document.getElementById('res-acertos').textContent = totalAcertos;
+    document.getElementById('res-erros').textContent   = totalErros;
+    document.getElementById('res-total').textContent   = total;
+
+    let emoji, titulo, msg;
+    if (pct === 100)    { emoji='🏆'; titulo='Perfeito!';      msg=`Você acertou <strong>todas</strong> as ${total} questões de <strong>${materiaAtualNome}</strong>. Excelente desempenho!`; }
+    else if (pct >= 80) { emoji='🌟'; titulo='Excelente!';     msg=`Ótimo resultado em <strong>${materiaAtualNome}</strong>! Mais um bloco assim e você estará dominando o assunto.`; }
+    else if (pct >= 60) { emoji='👍'; titulo='Bom trabalho!';  msg=`Você acertou ${totalAcertos} de ${total} em <strong>${materiaAtualNome}</strong>. Continue praticando!`; }
+    else if (pct >= 40) { emoji='📖'; titulo='Continue!';      msg=`Ainda há pontos a reforçar em <strong>${materiaAtualNome}</strong>. Revise o conteúdo e tente novamente.`; }
+    else                { emoji='💪'; titulo='Não desista!';   msg=`<strong>${materiaAtualNome}</strong> é desafiador. Estude o material e repita o bloco!`; }
+
+    document.getElementById('result-emoji').textContent = emoji;
+    document.getElementById('result-title').textContent = titulo;
+    document.getElementById('result-sub').textContent   = `${materiaAtualNome} · ${pct}% de aproveitamento`;
+    document.getElementById('result-msg').innerHTML     = msg;
+
+    showScreen('screen-resultado');
+    setTimeout(() => { document.getElementById('result-bar').style.width = pct + '%'; }, 100);
+
+    const user = auth.currentUser;
+    if (user) salvarXP(user.uid, totalAcertos);
+  }
+
+  // ── SALVAR XP — mesma lógica de salvarBlocoGamificacao ──
+  function salvarXP(uid, acertos) {
+    const hoje  = new Date().toLocaleDateString('pt-BR');
+    const acertouMinimo = acertos >= 3;
+
+    db.collection('usuarios').doc(uid).get().then(doc => {
+      if (!doc.exists) return;
+      const data = doc.data();
+      let pontos      = data.pontos          || 0;
+      let streak      = data.streak          || 0;
+      let ultimoBloco = data.ultimoBlocoData || '';
+
+      const ontem = new Date();
+      ontem.setDate(ontem.getDate() - 1);
+      const ontemStr = ontem.toLocaleDateString('pt-BR');
+
+      let novosPontos = pontos;
+      let novoStreak  = streak;
+
+      if (acertouMinimo) {
+        novosPontos = pontos + 50;
+        if (hoje === ultimoBloco) {
+          // já jogou hoje — streak inalterado
+        } else if (ontemStr === ultimoBloco || ultimoBloco === '') {
+          novoStreak = streak + 1;
+        } else {
+          novoStreak = 1; // pulou um dia → reinicia
+        }
+      }
+
+      const update = { pontos: novosPontos, streak: novoStreak };
+      if (acertouMinimo) update.ultimoBlocoData = hoje;
+
+      db.collection('usuarios').doc(uid).update(update)
+        .catch(err => console.warn('Falha ao salvar XP:', err));
+    });
+  }
+
+  // ── NAVEGAÇÃO ────────────────────────────────────────────
+  document.getElementById('btn-back-questoes').addEventListener('click',  () => showScreen('screen-materias'));
+  document.getElementById('btn-back-resultado').addEventListener('click', () => showScreen('screen-materias'));
+  document.getElementById('btn-voltar-materias').addEventListener('click',() => showScreen('screen-materias'));
+
+  // ── INIT ─────────────────────────────────────────────────
+  renderCards();
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-

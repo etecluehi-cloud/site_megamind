@@ -1,125 +1,366 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conteúdo - vermelhoação - Megamind</title>
-    <link rel="stylesheet" href="css/contentStyle.css">
-    <link rel="stylesheet" href="css/perfil.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redação – MegaMind</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:      #7C3AED;
+      --purple-dark: #5B21B6;
+      --purple-light:#EDE9FE;
+      --text:        #1F1235;
+      --muted:       #6B7280;
+      --red:         #E53935;
+      --bg:          #F5F3FF;
+      --card:        #FFFFFF;
+      --border:      #E5E7EB;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER (estilo contPort) ── */
+    header {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 8px rgba(124,58,237,.07);
+    }
+
+    .btn-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      color: var(--purple);
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: background .18s;
+      text-decoration: none;
+    }
+    .btn-back:hover { background: var(--purple-light); }
+    .btn-back svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .header-center {
+      flex: 1;
+      text-align: center;
+    }
+    .header-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--purple);
+    }
+    .header-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .btn-notas {
+      background: var(--purple-light);
+      border: none;
+      color: var(--purple);
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .18s;
+      white-space: nowrap;
+    }
+    .btn-notas:hover { background: #ddd6fe; }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      padding: 20px 16px 32px;
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* ── CARD TEMA ── */
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(124,58,237,.08);
+      padding: 16px;
+    }
+
+    .card-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--purple);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    #inputTema {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      background: #FAFAFA;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    #inputTema::placeholder { color: #BBBBBB; font-weight: 400; }
+    #inputTema:focus {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px rgba(124,58,237,.12);
+    }
+
+    /* ── CONTADOR ── */
+    .counter-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2px;
+    }
+    .counter-hint { font-size: 12px; color: var(--muted); }
+    #txtLinhas {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--purple);
+      transition: color .2s;
+    }
+    #txtLinhas.abaixo { color: var(--red); }
+
+    /* ── TEXTAREA CARD ── */
+    .card-editor {
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(124,58,237,.08);
+      flex: 1;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #edtRedacao {
+      flex: 1;
+      border: none;
+      outline: none;
+      resize: none;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      padding: 16px;
+      background: transparent;
+      min-height: 320px;
+      line-height: 1.7;
+    }
+    #edtRedacao::placeholder { color: #BBBBBB; }
+
+    /* ── BOTÃO SALVAR ── */
+    .btn-salvar {
+      width: 100%;
+      height: 52px;
+      background: linear-gradient(135deg, var(--purple-dark), var(--purple));
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .2s, transform .15s;
+      box-shadow: 0 4px 14px rgba(124,58,237,.35);
+    }
+    .btn-salvar:hover:not(:disabled) { opacity: .92; transform: translateY(-1px); }
+    .btn-salvar:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #1F1235;
+      color: #fff;
+      padding: 11px 22px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s, transform .3s;
+      z-index: 200;
+      white-space: nowrap;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #toast.erro { background: var(--red); }
+  </style>
 </head>
 <body>
-    <main class="pagina-painel layout-simples">
-        <!-- Cabeçalho da página -->
-        <header class="cabecalho-simples">
-            <a class="botao-voltar" href="home.html">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M19 12H5M12 19l-7-7 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Voltar
-            </a>
-            <h1>Conteúdo - vermelhoação</h1>
 
-        </header>
+  <!-- HEADER -->
+  <header>
+    <a class="btn-back" href="home.html">
+      <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+      Voltar
+    </a>
 
-        <!-- Seção de Conteúdo -->
-        <section class="area-conteudo">
-            <div class="grade-topicos">
-                <div class="cartao-topico">
-                    <div class="icone-topico" style="background: linear-gradient(135deg, #6c07ab, #5a0591);">
-                        ▭
-                    </div>
-                    <div class="conteudo-topico">
-                        <h3>Estrutura da vermelhoação</h3>
-                        <p>Introdução, desenvolvimento e conclusão</p>
-                        <div class="container-progresso">
-                            <div class="barra-progresso" style="width: 90%;"></div>
-                        </div>
-                        <span class="texto-progresso">90% concluído</span>
-                    </div>
-                </div>
+    <div class="header-center">
+      <div class="header-eyebrow">Escrita</div>
+      <div class="header-title">Redação</div>
+    </div>
 
-                <div class="cartao-topico">
-                    <div class="icone-topico" style="background: linear-gradient(135deg, #6c07ab, #5a0591);">
-                        ⟷
-                    </div>
-                    <div class="conteudo-topico">
-                        <h3>Coesão e Coerência</h3>
-                        <p>Conexão entre ideias e pensamentos</p>
-                        <div class="container-progresso">
-                            <div class="barra-progresso" style="width: 75%;"></div>
-                        </div>
-                        <span class="texto-progresso">75% concluído</span>
-                    </div>
-                </div>
+    <a href="notas.html" class="btn-notas">📋 Notas</a>
+  </header>
 
-                <div class="cartao-topico">
-                    <div class="icone-topico" style="background: linear-gradient(135deg, #6c07ab, #5a0591);">
-                        ◻
-                    </div>
-                    <div class="conteudo-topico">
-                        <h3>Argumentação</h3>
-                        <p>Apresentação de argumentos sólidos</p>
-                        <div class="container-progresso">
-                            <div class="barra-progresso" style="width: 70%;"></div>
-                        </div>
-                        <span class="texto-progresso">70% concluído</span>
-                    </div>
-                </div>
+  <!-- MAIN -->
+  <main>
 
-                <div class="cartao-topico">
-                    <div class="icone-topico" style="background: linear-gradient(135deg, #6c07ab, #5a0591);">
-                        📝
-                    </div>
-                    <div class="conteudo-topico">
-                        <h3>Tipos de vermelhoação</h3>
-                        <p>Dissertativa, narrativa e descritiva</p>
-                        <div class="container-progresso">
-                            <div class="barra-progresso" style="width: 65%;"></div>
-                        </div>
-                        <span class="texto-progresso">65% concluído</span>
-                    </div>
-                </div>
+    <!-- Card: Tema -->
+    <div class="card">
+      <div class="card-label">🎯 Tema da redação</div>
+      <input
+        id="inputTema"
+        type="text"
+        maxlength="150"
+        placeholder="Digite o tema sobre o qual você irá escrever..."
+      />
+    </div>
 
-                <div class="cartao-topico">
-                    <div class="icone-topico" style="background: linear-gradient(135deg, #6c07ab, #5a0591);">
-                        ✓
-                    </div>
-                    <div class="conteudo-topico">
-                        <h3>Adequação vocabular</h3>
-                        <p>Uso correto de palavras e expressões</p>
-                        <div class="container-progresso">
-                            <div class="barra-progresso" style="width: 80%;"></div>
-                        </div>
-                        <span class="texto-progresso">80% concluído</span>
-                    </div>
-                </div>
+    <!-- Contador -->
+    <div class="counter-row">
+      <span class="counter-hint">Mín. 7 linhas · Máx. 30 linhas</span>
+      <span id="txtLinhas" class="abaixo">0 / 30 linhas</span>
+    </div>
 
-                <div class="cartao-topico">
-                    <div class="icone-topico" style="background: linear-gradient(135deg, #6c07ab, #5a0591);">
-                        ✎
-                    </div>
-                    <div class="conteudo-topico">
-                        <h3>Revisão e correção</h3>
-                        <p>Técnicas para melhorar seu texto</p>
-                        <div class="container-progresso">
-                            <div class="barra-progresso" style="width: 60%;"></div>
-                        </div>
-                        <span class="texto-progresso">60% concluído</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-    <div id="mm-toast" role="status" aria-live="polite"></div>
-    <script src="js/perfil.js"></script>
+    <!-- Editor -->
+    <div class="card-editor">
+      <textarea
+        id="edtRedacao"
+        placeholder="Introdução: apresente o tema e sua tese..."
+      ></textarea>
+    </div>
+
+    <!-- Salvar -->
+    <button class="btn-salvar" id="btnSalvar">💾 Salvar Redação</button>
+
+  </main>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, doc, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey:            "AIzaSyAXoLRatnIuZSEXYENjFGWgloV3-xaDf9Q",
+      authDomain:        "megamindapp-4e60c.firebaseapp.com",
+      projectId:         "megamindapp-4e60c",
+      storageBucket:     "megamindapp-4e60c.firebasestorage.app",
+      messagingSenderId: "114881660257",
+      appId:             "1:114881660257:web:d0b6ae935486429bfb3120"
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    // ── Contador de linhas ──────────────────────────────────────
+    const edtRedacao = document.getElementById("edtRedacao");
+    const txtLinhas  = document.getElementById("txtLinhas");
+
+    edtRedacao.addEventListener("input", () => {
+      const texto = edtRedacao.value;
+      const linhas = texto === "" ? 0 : texto.split("\n").length;
+      txtLinhas.textContent = `${linhas} / 30 linhas`;
+      txtLinhas.classList.toggle("abaixo", linhas < 7);
+    });
+
+    // ── Salvar ──────────────────────────────────────────────────
+    document.getElementById("btnSalvar").addEventListener("click", async () => {
+      const tema  = document.getElementById("inputTema").value.trim();
+      const texto = edtRedacao.value.trim();
+
+      if (!tema)  { showToast("⚠️ Digite o tema da sua redação!", true); return; }
+      if (!texto) { showToast("⚠️ Escreva sua redação antes de salvar!", true); return; }
+
+      const linhas = texto.split("\n").length;
+      if (linhas < 7) { showToast("⚠️ Sua redação precisa ter pelo menos 7 linhas!", true); return; }
+
+      const user = auth.currentUser;
+      if (!user) { showToast("⚠️ Você precisa estar logado!", true); return; }
+
+      const btn = document.getElementById("btnSalvar");
+      btn.disabled = true;
+      btn.textContent = "Salvando...";
+
+      try {
+        const agora = new Date();
+        const dataHora = agora.toLocaleDateString("pt-BR") + " • " +
+          agora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }).replace(":", "h");
+
+        await addDoc(
+          collection(doc(db, "usuarios", user.uid), "redacoes"),
+          { tema, texto, dataHora, timestamp: Date.now() }
+        );
+
+        showToast("✅ Redação salva com sucesso, MegaMinder!");
+        edtRedacao.value = "";
+        document.getElementById("inputTema").value = "";
+        txtLinhas.textContent = "0 / 30 linhas";
+        txtLinhas.classList.add("abaixo");
+
+      } catch (e) {
+        showToast("❌ Erro ao salvar: " + e.message, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "💾 Salvar Redação";
+      }
+    });
+
+    function showToast(msg, erro = false) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.className = "show" + (erro ? " erro" : "");
+      setTimeout(() => { t.className = ""; }, 3200);
+    }
+  </script>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-

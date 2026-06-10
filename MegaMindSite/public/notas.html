@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notas – MegaMind</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:      #7C3AED;
+      --purple-dark: #5B21B6;
+      --purple-light:#EDE9FE;
+      --text:        #1F1235;
+      --muted:       #6B7280;
+      --red:         #E53935;
+      --bg:          #F5F3FF;
+      --card:        #FFFFFF;
+      --border:      #E5E7EB;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER (estilo contPort) ── */
+    header {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 8px rgba(124,58,237,.07);
+    }
+
+    .btn-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      color: var(--purple);
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: background .18s;
+      text-decoration: none;
+    }
+    .btn-back:hover { background: var(--purple-light); }
+    .btn-back svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .header-center {
+      flex: 1;
+      text-align: center;
+    }
+    .header-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--purple);
+    }
+    .header-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .btn-nova {
+      background: var(--purple-light);
+      border: none;
+      color: var(--purple);
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .18s;
+      white-space: nowrap;
+    }
+    .btn-nova:hover { background: #ddd6fe; }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      padding: 20px 16px 32px;
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* ── LOADING ── */
+    #estadoCarregando {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 0;
+      gap: 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--purple-light);
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── ESTADO VAZIO ── */
+    #estadoVazio {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      text-align: center;
+      gap: 12px;
+    }
+    #estadoVazio .empty-icon { font-size: 52px; }
+    #estadoVazio h2 { font-size: 18px; font-weight: 700; }
+    #estadoVazio p  { font-size: 14px; color: var(--muted); max-width: 280px; }
+    .btn-ir-escrever {
+      margin-top: 8px;
+      background: linear-gradient(135deg, var(--purple-dark), var(--purple));
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(124,58,237,.3);
+    }
+
+    /* ── LISTA ── */
+    #listaRedacoes { display: none; flex-direction: column; gap: 14px; }
+
+    /* ── CARD NOTA ── */
+    .nota-card {
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(124,58,237,.08);
+      padding: 16px;
+      animation: fadeUp .25s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .nota-data    { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+    .nota-tema    { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .nota-preview {
+      font-size: 13px; color: #555; line-height: 1.5;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .nota-acoes { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .btn-ver, .btn-copiar, .btn-excluir {
+      border: none; border-radius: 9px;
+      padding: 7px 14px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 12px; font-weight: 600;
+      cursor: pointer;
+      transition: opacity .2s, transform .15s;
+    }
+    .btn-ver:hover, .btn-copiar:hover, .btn-excluir:hover { opacity: .85; transform: translateY(-1px); }
+    .btn-ver     { background: var(--purple);       color: #fff; }
+    .btn-copiar  { background: var(--purple-light); color: var(--purple); }
+    .btn-excluir { background: #FDECEA;             color: var(--red); }
+
+    /* ── MODAL VER ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.45); z-index: 300;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff; border-radius: 16px; padding: 24px;
+      max-width: 520px; width: 100%;
+      box-shadow: 0 8px 32px rgba(0,0,0,.18);
+      animation: popIn .2s ease;
+      display: flex; flex-direction: column; max-height: 90vh;
+    }
+    @keyframes popIn {
+      from { transform: scale(.92); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    .modal-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 12px; margin-bottom: 14px;
+    }
+    .modal-header h2 { font-size: 16px; font-weight: 700; flex: 1; }
+    .btn-modal-x {
+      background: none; border: none; font-size: 20px;
+      cursor: pointer; color: var(--muted); line-height: 1; flex-shrink: 0;
+    }
+    .modal-body {
+      flex: 1; overflow-y: auto; font-size: 14px; color: var(--muted);
+      white-space: pre-wrap; word-break: break-word; line-height: 1.7;
+    }
+    .modal-footer {
+      display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px;
+    }
+    .btn-modal-copy {
+      background: var(--purple-light); color: var(--purple);
+      border: none; border-radius: 10px; padding: 9px 18px;
+      font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 13px; cursor: pointer;
+    }
+    .btn-modal-close {
+      background: var(--purple); color: #fff;
+      border: none; border-radius: 10px; padding: 9px 18px;
+      font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 13px; cursor: pointer;
+    }
+
+    /* ── CONFIRM DIALOG ── */
+    .confirm-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.45); z-index: 400;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .confirm-overlay.open { display: flex; }
+    .confirm-box {
+      background: #fff; border-radius: 16px; padding: 24px;
+      max-width: 380px; width: 100%;
+      box-shadow: 0 8px 32px rgba(0,0,0,.18); animation: popIn .2s ease;
+    }
+    .confirm-box h2 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .confirm-box p  { font-size: 14px; color: var(--muted); }
+    .confirm-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+    .btn-cancelar {
+      background: var(--bg); color: var(--text); border: none; border-radius: 10px;
+      padding: 9px 18px; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 13px; cursor: pointer;
+    }
+    .btn-confirmar-excluir {
+      background: var(--red); color: #fff; border: none; border-radius: 10px;
+      padding: 9px 18px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 13px; cursor: pointer;
+    }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed; bottom: 32px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #1F1235; color: #fff;
+      padding: 11px 22px; border-radius: 50px;
+      font-size: 13px; font-weight: 600;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s, transform .3s;
+      z-index: 500; white-space: nowrap;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #toast.erro { background: var(--red); }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a class="btn-back" href="javascript:history.back()">
+      <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+      Voltar
+    </a>
+
+    <div class="header-center">
+      <div class="header-eyebrow">Escrita</div>
+      <div class="header-title">Minhas Notas</div>
+    </div>
+
+    <a href="redacao.html" class="btn-nova">✍️ Nova</a>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <div id="estadoCarregando">
+      <div class="spinner"></div>
+      Carregando suas redações...
+    </div>
+
+    <div id="estadoVazio">
+      <span class="empty-icon">📝</span>
+      <h2>Nenhuma redação ainda</h2>
+      <p>Escreva sua primeira redação e ela aparecerá aqui.</p>
+      <a href="redacao.html" class="btn-ir-escrever">✍️ Escrever agora</a>
+    </div>
+
+    <div id="listaRedacoes"></div>
+  </main>
+
+  <!-- Modal: Ver redação -->
+  <div class="modal-overlay" id="modalVer">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTema">—</h2>
+        <button class="btn-modal-x" id="btnFecharModal">✕</button>
+      </div>
+      <div class="modal-body" id="modalTexto"></div>
+      <div class="modal-footer">
+        <button class="btn-modal-copy" id="btnCopiarModal">📋 Copiar texto</button>
+        <button class="btn-modal-close" id="btnFecharModal2">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dialog: Confirmar exclusão -->
+  <div class="confirm-overlay" id="dialogExcluir">
+    <div class="confirm-box">
+      <h2>Excluir redação?</h2>
+      <p id="confirmMsg">Tem certeza que deseja excluir esta redação? Essa ação não pode ser desfeita.</p>
+      <div class="confirm-actions">
+        <button class="btn-cancelar" id="btnCancelarExcluir">Cancelar</button>
+        <button class="btn-confirmar-excluir" id="btnConfirmarExcluir">🗑 Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import {
+      getFirestore, collection, doc, query, orderBy, getDocs, deleteDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey:            "AIzaSyAXoLRatnIuZSEXYENjFGWgloV3-xaDf9Q",
+      authDomain:        "megamindapp-4e60c.firebaseapp.com",
+      projectId:         "megamindapp-4e60c",
+      storageBucket:     "megamindapp-4e60c.firebasestorage.app",
+      messagingSenderId: "114881660257",
+      appId:             "1:114881660257:web:d0b6ae935486429bfb3120"
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    let redacoes = [];
+    let pendingDeleteId = null;
+
+    onAuthStateChanged(auth, user => {
+      if (user) carregarRedacoes(user.uid);
+      else      mostrarVazio();
+    });
+
+    async function carregarRedacoes(uid) {
+      mostrarEstado("carregando");
+      try {
+        const q = query(
+          collection(doc(db, "usuarios", uid), "redacoes"),
+          orderBy("timestamp", "desc")
+        );
+        const snap = await getDocs(q);
+        redacoes = snap.docs.map(d => ({
+          id:       d.id,
+          tema:     d.data().tema     || "(sem tema)",
+          texto:    d.data().texto    || "",
+          dataHora: d.data().dataHora || ""
+        }));
+
+        if (redacoes.length === 0) mostrarVazio();
+        else { renderLista(); mostrarEstado("lista"); }
+      } catch (e) {
+        mostrarVazio();
+        showToast("❌ Erro ao carregar: " + e.message, true);
+      }
+    }
+
+    function renderLista() {
+      const container = document.getElementById("listaRedacoes");
+      container.innerHTML = "";
+      redacoes.forEach((r, i) => {
+        const preview = r.texto.length > 120 ? r.texto.substring(0, 120) + "..." : r.texto;
+        const card = document.createElement("div");
+        card.className = "nota-card";
+        card.style.animationDelay = `${i * 40}ms`;
+        card.innerHTML = `
+          <div class="nota-data">${r.dataHora}</div>
+          <div class="nota-tema">${escHtml(r.tema)}</div>
+          <div class="nota-preview">${escHtml(preview)}</div>
+          <div class="nota-acoes">
+            <button class="btn-ver"     data-id="${r.id}">👁 Ver</button>
+            <button class="btn-copiar"  data-id="${r.id}">📋 Copiar</button>
+            <button class="btn-excluir" data-id="${r.id}">🗑 Excluir</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      container.onclick = e => {
+        const id = e.target.dataset.id;
+        if (!id) return;
+        if (e.target.classList.contains("btn-ver"))     abrirModal(id);
+        if (e.target.classList.contains("btn-copiar"))  copiarRedacao(id);
+        if (e.target.classList.contains("btn-excluir")) pedirExclusao(id);
+      };
+    }
+
+    function abrirModal(id) {
+      const r = redacoes.find(x => x.id === id);
+      if (!r) return;
+      document.getElementById("modalTema").textContent  = r.tema;
+      document.getElementById("modalTexto").textContent = r.texto;
+      document.getElementById("modalVer").classList.add("open");
+      document.getElementById("btnCopiarModal").onclick = () => {
+        navigator.clipboard.writeText(r.texto).then(() => showToast("📋 Copiado!"));
+      };
+    }
+
+    document.getElementById("btnFecharModal").onclick  = fecharModal;
+    document.getElementById("btnFecharModal2").onclick = fecharModal;
+    document.getElementById("modalVer").onclick = e => {
+      if (e.target === document.getElementById("modalVer")) fecharModal();
+    };
+    function fecharModal() { document.getElementById("modalVer").classList.remove("open"); }
+
+    function copiarRedacao(id) {
+      const r = redacoes.find(x => x.id === id);
+      if (!r) return;
+      navigator.clipboard.writeText(r.texto)
+        .then(() => showToast("📋 Copiado! Cole no Corretor IA."))
+        .catch(() => showToast("❌ Não foi possível copiar.", true));
+    }
+
+    function pedirExclusao(id) {
+      const r = redacoes.find(x => x.id === id);
+      if (!r) return;
+      pendingDeleteId = id;
+      document.getElementById("confirmMsg").textContent =
+        `Tem certeza que deseja excluir "${r.tema}"? Essa ação não pode ser desfeita.`;
+      document.getElementById("dialogExcluir").classList.add("open");
+    }
+
+    document.getElementById("btnCancelarExcluir").onclick = () => {
+      pendingDeleteId = null;
+      document.getElementById("dialogExcluir").classList.remove("open");
+    };
+
+    document.getElementById("btnConfirmarExcluir").onclick = async () => {
+      if (!pendingDeleteId) return;
+      const uid = auth.currentUser?.uid;
+      if (!uid) return;
+      document.getElementById("dialogExcluir").classList.remove("open");
+      try {
+        await deleteDoc(doc(db, "usuarios", uid, "redacoes", pendingDeleteId));
+        redacoes = redacoes.filter(x => x.id !== pendingDeleteId);
+        pendingDeleteId = null;
+        showToast("🗑 Redação excluída.");
+        if (redacoes.length === 0) mostrarVazio();
+        else renderLista();
+      } catch (e) {
+        showToast("❌ Erro ao excluir: " + e.message, true);
+      }
+    };
+
+    function mostrarEstado(estado) {
+      document.getElementById("estadoCarregando").style.display = estado === "carregando" ? "flex"  : "none";
+      document.getElementById("estadoVazio").style.display      = estado === "vazio"      ? "flex"  : "none";
+      document.getElementById("listaRedacoes").style.display    = estado === "lista"      ? "flex"  : "none";
+    }
+    function mostrarVazio() { mostrarEstado("vazio"); }
+
+    function escHtml(str) {
+      return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+    function showToast(msg, erro = false) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.className = "show" + (erro ? " erro" : "");
+      setTimeout(() => { t.className = ""; }, 3200);
+    }
+  </script>
+
+</body>
+</html>
