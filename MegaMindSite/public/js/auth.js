@@ -13,7 +13,8 @@ import {
   getFirestore,
   doc,
   setDoc,
-  getDoc
+  getDoc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // CONFIGURAÇÃO DO FIREBASE
@@ -31,11 +32,24 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// Chave do localStorage — igual ao perfil.js
+const KEYS = {
+  name:   'megamind_nome',
+  handle: 'megamind_handle',
+  email:  'megamind_email',
+};
+
+// Expõe auth e db globalmente para que perfil.js possa usar
+window._mmAuth = auth;
+window._mmDb   = db;
+window._mmDoc  = doc;
+window._mmUpdateDoc = updateDoc;
+
 //
 // CADASTRO
 //
 window.cadastrar = async function () {
-  const nome = document.getElementById("nome").value.trim();
+  const nome  = document.getElementById("nome").value.trim();
   const email = document.getElementById("email").value.trim();
   const senha = document.getElementById("senha").value.trim();
 
@@ -45,15 +59,11 @@ window.cadastrar = async function () {
   }
 
   try {
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      senha
-    );
+    const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
 
     // Salva no Firestore
     await setDoc(doc(db, "usuarios", userCredential.user.uid), {
-      nome: nome,
+      nome:  nome,
       email: email
     });
 
@@ -136,13 +146,62 @@ window.recuperarSenha = async function () {
   }
 };
 
+// ─────────────────────────────────────────────────────────────
+//  UTILITÁRIO — sincroniza dados do Firestore → localStorage
+//  Regra: localStorage tem prioridade se já estiver preenchido
+//  (significa que o usuário editou o nome no app).
+//  Firestore só é usado na primeira carga (localStorage vazio).
+// ─────────────────────────────────────────────────────────────
+async function sincronizarUsuario(user) {
+  try {
+    // E-mail sempre vem do Firebase Auth
+    localStorage.setItem(KEYS.email, user.email);
 
-// HOME.HTML - MOSTRAR NOME DO USUÁRIO
+    // Se o localStorage já tem um nome salvo, mantém ele
+    const nomeSalvo = localStorage.getItem(KEYS.name);
+    if (nomeSalvo) {
+      if (!localStorage.getItem(KEYS.handle)) {
+        localStorage.setItem(KEYS.handle, nomeSalvo.split(" ")[0].toLowerCase());
+      }
+      return { nome: nomeSalvo, email: user.email };
+    }
+
+    // Primeiro acesso: busca no Firestore
+    const docRef  = doc(db, "usuarios", user.uid);
+    const docSnap = await getDoc(docRef);
+
+    let nome = null;
+    if (docSnap.exists()) {
+      nome = docSnap.data().nome || null;
+    }
+
+    // Fallback: parte do e-mail
+    if (!nome) nome = user.email.split("@")[0];
+
+    // Salva no localStorage para as próximas páginas
+    localStorage.setItem(KEYS.name, nome);
+    localStorage.setItem(KEYS.handle, nome.split(" ")[0].toLowerCase());
+
+    return { nome, email: user.email };
+
+  } catch (error) {
+    console.error("Erro ao sincronizar usuário:", error);
+    const nomeFallback = localStorage.getItem(KEYS.name) || "Aluno";
+    return { nome: nomeFallback, email: user.email };
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+//  HOME.HTML — exibe saudação com nome do usuário
+//  Mostra imediatamente do localStorage; confirma com Firebase
+// ─────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
   const bemVindo = document.getElementById("bemvindo");
-
-  // Se não existir o elemento, não estamos na home
   if (!bemVindo) return;
+
+  // Exibe o nome salvo instantaneamente (sem esperar Firebase)
+  const nomeCached = localStorage.getItem(KEYS.name);
+  if (nomeCached) bemVindo.textContent = nomeCached;
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -150,26 +209,34 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    try {
-      console.log("UID do usuário:", user.uid);
+    const { nome } = await sincronizarUsuario(user);
+    bemVindo.textContent = nome;
+  });
+});
 
-      const docRef = doc(db, "usuarios", user.uid);
-      const docSnap = await getDoc(docRef);
+// ─────────────────────────────────────────────────────────────
+//  PERFIL.HTML — preenche nome e e-mail
+//  Mostra imediatamente do localStorage; confirma com Firebase
+// ─────────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  const nomePerfil  = document.querySelector(".js-student-name");
+  const emailPerfil = document.querySelector(".js-student-handle");
+  if (!nomePerfil || !emailPerfil) return;
 
-      if (docSnap.exists()) {
-        const dados = docSnap.data();
-        console.log("Dados encontrados:", dados);
+  // Exibe instantaneamente do localStorage
+  const nomeCached  = localStorage.getItem(KEYS.name);
+  const emailCached = localStorage.getItem(KEYS.email);
+  if (nomeCached)  nomePerfil.textContent  = nomeCached;
+  if (emailCached) emailPerfil.textContent = emailCached;
 
-        bemVindo.textContent = dados.nome;
-      } else {
-        console.log("Documento não encontrado no Firestore.");
-
-        // Exibe parte do e-mail como fallback
-        bemVindo.textContent = user.email.split("@")[0];
-      }
-    } catch (error) {
-      console.error("Erro ao buscar nome:", error);
-      bemVindo.textContent = "Aluno";
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "index.html";
+      return;
     }
+
+    const { nome, email } = await sincronizarUsuario(user);
+    nomePerfil.textContent  = nome;
+    emailPerfil.textContent = email;
   });
 });
