@@ -127,7 +127,7 @@ window.recuperarSenha = async function () {
 
   try {
     const actionCodeSettings = {
-      url: "https://megamindapp-4e60c.web.app/resetar-senha.html",
+      url: "https://megamindapp-4e60c.web.app/reset.html",
       handleCodeInApp: false
     };
 
