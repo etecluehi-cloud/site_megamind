@@ -1,0 +1,284 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MegaMind</title>
+    <link rel="stylesheet" href="css/homeStyle.css">
+    <link rel="stylesheet" href="css/perfil.css">
+</head>
+<body class="inicio">
+    <main class="pagina-painel">
+        <div class="estrutura-painel">
+            <!-- Menu lateral principal -->
+            <aside class="barra-lateral-painel" aria-label="Menu lateral">
+
+                <!-- Logo MegaMind na sidebar -->
+                <div class="sidebar-logo">
+                    <div class="sidebar-logo-img">
+                        <img src="img/logo.png" alt="MegaMind Logo">
+                    </div>
+                    <span class="sidebar-logo-text">MegaMind</span>
+                </div>
+
+                <nav class="navegacao-lateral">
+                    <a class="link-lateral ativo" href="home.html" aria-current="page">
+                        <span class="icone-navegacao">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M4 11.2 12 5l8 6.2V19a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z" fill="currentColor"/>
+                            </svg>
+                        </span>
+                        Início
+                    </a>
+                    <a class="link-lateral" href="SobreNós.html">
+                        <span class="icone-navegacao">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                                <path d="M6.5 19a5.5 5.5 0 0 1 11 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                            </svg>
+                        </span>
+                        Sobre nós
+                    </a>
+                    <a class="link-lateral" href="duvidasFrequentes.html">
+                        <span class="icone-navegacao">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                                <path d="M10.6 9.1A2.1 2.1 0 0 1 12.5 8c1.5 0 2.6.9 2.6 2.3 0 1.8-2.2 2.1-2.2 3.8m-.1 2.8h.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                            </svg>
+                        </span>
+                        Dúvidas Frequentes
+                    </a>
+                    <a class="link-lateral" href="desempenho.html">
+                        <span class="icone-navegacao">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M5 18V9m7 9V6m7 12v-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                                <path d="M3.5 18.5h17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                            </svg>
+                        </span>
+                        Desempenho
+                    </a>
+                    <a class="link-lateral" href="perfil.html">
+                        <span class="icone-navegacao">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                                <path d="M6.5 19a5.5 5.5 0 0 1 11 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                            </svg>
+                        </span>
+                        Perfil
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Conteúdo principal da página -->
+            <section class="conteudo-painel">
+
+                <!-- Banner de boas-vindas -->
+                <section class="banner-boas-vindas" aria-label="Boas-vindas">
+
+                    <!-- Lado esquerdo: avatar + texto -->
+                    <div class="banner-esquerda">
+                        <div class="avatar-banner">
+                            <img id="avatar-img" class="mm-avatar-img" src="img/logo.png" alt="Foto de perfil">
+                        </div>
+                        <div class="texto-banner">
+                            <p class="banner-saudacao">Bem-vindo(a) de volta 👋</p>
+                            <h1><span id="bemvindo" class="js-student-name">estudante</span></h1>
+                            <p class="subtitulo-banner">Vamos juntos evoluir hoje?</p>
+                        </div>
+                    </div>
+
+                    <!-- Ilustração decorativa lado direito -->
+                    <div class="banner-ilustracao" aria-hidden="true">
+                        <svg viewBox="0 0 520 200" xmlns="http://www.w3.org/2000/svg">
+
+                            <!-- Livro grande aberto (centro-esquerda da ilustração) -->
+                            <g transform="translate(60,30)">
+                                <!-- Capa esquerda -->
+                                <path d="M10 140 Q8 20 70 10 L70 150 Q40 155 10 140Z" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.35)" stroke-width="1.2"/>
+                                <!-- Capa direita -->
+                                <path d="M130 140 Q132 20 70 10 L70 150 Q100 155 130 140Z" fill="rgba(255,255,255,0.13)" stroke="rgba(255,255,255,0.28)" stroke-width="1.2"/>
+                                <!-- Lombada -->
+                                <line x1="70" y1="10" x2="70" y2="150" stroke="rgba(255,255,255,0.45)" stroke-width="2"/>
+                                <!-- Linhas páginas esquerda -->
+                                <line x1="25" y1="45" x2="63" y2="40" stroke="rgba(255,255,255,0.30)" stroke-width="1"/>
+                                <line x1="24" y1="60" x2="63" y2="55" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>
+                                <line x1="23" y1="75" x2="62" y2="70" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>
+                                <line x1="22" y1="90" x2="61" y2="85" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+                                <line x1="21" y1="105" x2="60" y2="100" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+                                <!-- Linhas páginas direita -->
+                                <line x1="77" y1="40" x2="115" y2="45" stroke="rgba(255,255,255,0.30)" stroke-width="1"/>
+                                <line x1="77" y1="55" x2="116" y2="60" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>
+                                <line x1="77" y1="70" x2="117" y2="75" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>
+                                <line x1="77" y1="85" x2="118" y2="90" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+                                <line x1="77" y1="100" x2="119" y2="105" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+                            </g>
+
+                            <!-- Livro pequeno fechado inclinado (direita) -->
+                            <g transform="translate(330,55) rotate(-14)">
+                                <rect x="0" y="0" width="52" height="72" rx="4" fill="rgba(255,255,255,0.14)" stroke="rgba(255,255,255,0.30)" stroke-width="1.2"/>
+                                <rect x="0" y="0" width="7" height="72" rx="3" fill="rgba(255,255,255,0.22)"/>
+                                <line x1="14" y1="18" x2="44" y2="18" stroke="rgba(255,255,255,0.28)" stroke-width="1"/>
+                                <line x1="14" y1="26" x2="44" y2="26" stroke="rgba(255,255,255,0.20)" stroke-width="1"/>
+                                <line x1="14" y1="34" x2="38" y2="34" stroke="rgba(255,255,255,0.20)" stroke-width="1"/>
+                            </g>
+
+                            <!-- Lápis inclinado -->
+                            <g transform="translate(248,18) rotate(32)">
+                                <!-- Corpo -->
+                                <rect x="0" y="0" width="14" height="90" rx="3" fill="rgba(255,255,255,0.22)" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+                                <!-- Ponta -->
+                                <polygon points="0,90 14,90 7,108" fill="rgba(255,255,255,0.32)" stroke="rgba(255,255,255,0.40)" stroke-width="1"/>
+                                <!-- Borracha -->
+                                <rect x="0" y="0" width="14" height="14" rx="3" fill="rgba(255,200,200,0.35)" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+                                <!-- Detalhe lateral -->
+                                <line x1="5" y1="14" x2="5" y2="90" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+                            </g>
+
+                            <!-- Símbolo π flutuando -->
+                            <text x="420" y="55" font-family="Georgia, serif" font-size="52" fill="rgba(255,255,255,0.18)" font-weight="bold">π</text>
+
+                            <!-- Fórmula E=mc² -->
+                            <text x="370" y="155" font-family="Georgia, serif" font-size="22" fill="rgba(255,255,255,0.20)" font-style="italic">E=mc²</text>
+
+                            <!-- Letras avulsas flutuando -->
+                            <text x="195" y="42" font-family="Georgia, serif" font-size="28" fill="rgba(255,255,255,0.16)" font-weight="bold">A</text>
+                            <text x="468" y="108" font-family="Georgia, serif" font-size="20" fill="rgba(255,255,255,0.13)" font-style="italic">b</text>
+                            <text x="290" y="178" font-family="Georgia, serif" font-size="18" fill="rgba(255,255,255,0.14)">α</text>
+                            <text x="500" y="60" font-family="Georgia, serif" font-size="16" fill="rgba(255,255,255,0.12)" font-style="italic">f(x)</text>
+
+                            <!-- Sinal de soma flutuando -->
+                            <text x="210" y="168" font-family="Georgia, serif" font-size="34" fill="rgba(255,255,255,0.15)">∑</text>
+
+                            <!-- Estrelinhas / pontos decorativos -->
+                            <circle cx="178" cy="80" r="2.5" fill="rgba(255,255,255,0.28)"/>
+                            <circle cx="450" cy="38" r="2" fill="rgba(255,255,255,0.22)"/>
+                            <circle cx="395" cy="170" r="3" fill="rgba(255,255,255,0.18)"/>
+                            <circle cx="315" cy="30" r="2" fill="rgba(255,255,255,0.20)"/>
+                            <circle cx="490" cy="140" r="2.5" fill="rgba(255,255,255,0.16)"/>
+
+                            <!-- Anel decorativo atrás do livro -->
+                            <circle cx="170" cy="100" r="55" fill="none" stroke="rgba(255,255,255,0.09)" stroke-width="18"/>
+
+                            <!-- Curva sutil decorativa -->
+                            <path d="M180 185 Q300 140 440 185" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="1.5" stroke-dasharray="5 6"/>
+
+                        </svg>
+                    </div>
+                </section>
+
+                <!-- Seção de Conteúdo -->
+                <section class="secao-conteudos">
+                    <div class="cabecalho-secao">
+                        <h2>Conteúdos</h2>
+                    </div>
+                    <div class="grade-conteudos">
+                        <a class="cartao-conteudo" href="contMat.html">
+                            <span class="icone-conteudo">
+                                <svg viewBox="0 0 56 56" aria-hidden="true">
+                                    <rect x="13" y="8" width="30" height="40" rx="8" fill="none" stroke="currentColor" stroke-width="3"/>
+                                    <path d="M20 18h16M20 25h4m8 0h4M20 32h4m8 0h4M20 39h16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                                </svg>
+                            </span>
+                            <div class="texto-cartao">
+                                <p>Conteúdo</p>
+                                <h3>Matemática</h3>
+                                <span>Acesse agora &#8594;</span>
+                            </div>
+                        </a>
+                        <a class="cartao-conteudo" href="contPort.html">
+                            <span class="icone-conteudo">
+                                <svg viewBox="0 0 56 56" aria-hidden="true">
+                                    <path d="M18 10h16l6 6v22a8 8 0 0 1-8 8H18a8 8 0 0 1-8-8V18a8 8 0 0 1 8-8Z" fill="none" stroke="currentColor" stroke-width="3"/>
+                                    <path d="M34 10v10h10M18 28h16M18 35h12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                                </svg>
+                            </span>
+                            <div class="texto-cartao">
+                                <p>Conteúdo</p>
+                                <h3>Português</h3>
+                                <span>Acesse agora &#8594;</span>
+                            </div>
+                        </a>
+                        <a class="cartao-conteudo" href="questaoMat.html">
+                            <span class="icone-conteudo selo-texto">x = ?</span>
+                            <div class="texto-cartao">
+                                <p>Questões</p>
+                                <h3>Matemática</h3>
+                                <span>Acesse agora &#8594;</span>
+                            </div>
+                        </a>
+                        <a class="cartao-conteudo" href="questaoPort.html">
+                            <span class="icone-conteudo">
+                                <svg viewBox="0 0 56 56" aria-hidden="true">
+                                    <circle cx="24" cy="24" r="14" fill="none" stroke="currentColor" stroke-width="3"/>
+                                    <path d="M34 34 44 44" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                                    <path d="M20 21a4.5 4.5 0 0 1 4-2.5c3 0 5 1.8 5 4.3 0 3.3-4 3.8-4 7m-.1 4h.1" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                                </svg>
+                            </span>
+                            <div class="texto-cartao">
+                                <p>Questões</p>
+                                <h3>Português</h3>
+                                <span>Acesse agora &#8594;</span>
+                            </div>
+                        </a>
+                        <a class="cartao-conteudo" href="praticaRedacao.html">
+                            <span class="icone-conteudo">
+                                <svg viewBox="0 0 56 56" aria-hidden="true">
+                                    <path d="M18 10h16l6 6v22a8 8 0 0 1-8 8H18a8 8 0 0 1-8-8V18a8 8 0 0 1 8-8Z" fill="none" stroke="currentColor" stroke-width="3"/>
+                                    <path d="M34 10v10h10M18 28h16M18 35h12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                                </svg>
+                            </span>
+                            <div class="texto-cartao">
+                                <h3>Redação</h3>
+                                <span>Acesse agora &#8594;</span>
+                            </div>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Banner do aplicativo -->
+                <section class="banner-aplicativo">
+                    <div class="visual-aplicativo" aria-hidden="true">
+                        <div class="cartao-celular">
+                            <div class="topo-celular"></div>
+                            <div class="tela-celular">
+                                <div class="linha-celular"></div>
+                                <div class="grade-celular">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <div class="traco-celular"></div>
+                                <div class="traco-celular curto"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="texto-aplicativo">
+                        <h2>Leve MegaMind com você!</h2>
+                        <p>Baixe o app e estude de onde estiver. Mais praticidade, mais foco, mais resultados.</p>
+                    </div>
+                    <div class="botoes-loja" aria-label="Lojas de aplicativo">
+                        <a class="botao-loja" href="#">
+                            <small>DISPONÍVEL NO</small>
+                            <strong>Google Play</strong>
+                        </a>
+                        <a class="botao-loja" href="#">
+                            <small>Disponível na</small>
+                            <strong>App Store</strong>
+                        </a>
+                    </div>
+                </section>
+            </section>
+        </div>
+
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Expires" content="0">
+
+        <script type="module" src="js/auth.js"></script>
+
+    </main>
+    <div id="mm-toast" role="status" aria-live="polite"></div>
+    <script src="js/perfil.js"></script>
+</body>
+</html>

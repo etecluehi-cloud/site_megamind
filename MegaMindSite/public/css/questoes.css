@@ -1,0 +1,158 @@
+body {
+    margin: 0;
+    display: flex;
+    min-height: 100vh;
+    background: #ececec;
+}
+
+.navSite {
+    width: 250px;
+    height: 100vh;
+    background: #181718;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding-top: 30px;
+    box-sizing: border-box;
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+
+    width: 100%;
+}
+
+.nav-list a {
+    text-decoration: none;
+    color: white;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    display: block;
+    padding-left: 30px;
+
+    text-align: left;
+    font-family: "Momo Trust Display", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.nav-list a:hover {
+    color: #8f2cff;
+}
+
+.conteudo {
+    flex: 1;
+    padding: 0;
+}
+
+.BoxMath {
+    font-family: "Momo Trust Display", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: white;
+
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(to right, #6c07ab, #b36bff);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 30px;
+    box-sizing: border-box;
+}
+
+.voltar {
+    position: fixed;
+    top: 20px;
+    left: 270px;
+    z-index: 1000;
+}
+
+.btnVoltar {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+}
+
+.imgVoltar {
+    width: 70px;
+    height: 70px;
+}
+
+
+.logo {
+    margin-bottom: 50px;
+}
+
+.logo img {
+    width: 180px;
+}
+
+.containerBtns {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    padding: 40px;
+}
+
+.btn1 {
+    all: unset;
+    
+    width: 225px;
+    height: 225px;
+    background: #6c07ab;
+    border-radius: 20px;
+
+    border: none;
+    outline: none;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    gap: 15px;
+    cursor: pointer;
+
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.btn1:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+
+    outline: none;
+}
+
+.btn1 img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
+
+.button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.nomeMateria {
+    color: white;
+    font-family: "Poppins", sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+}
