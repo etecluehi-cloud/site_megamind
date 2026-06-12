@@ -77,151 +77,140 @@
                         <button class="tab-button ativo" type="button" data-target="aba-usuarios" aria-selected="true">
                             👥 Usuários
                         </button>
+                        <button class="tab-button" type="button" data-target="aba-questoes" aria-selected="false">
+                            ❓ Questões
+                        </button>
                         <button class="tab-button" type="button" data-target="aba-conteudo" aria-selected="false">
                             📚 Conteúdo
-                        </button>
-                        <button class="tab-button" type="button" data-target="aba-estatisticas" aria-selected="false">
-                            📊 Estatísticas
-                        </button>
-                        <button class="tab-button" type="button" data-target="aba-sistema" aria-selected="false">
-                            ⚙️ Sistema
                         </button>
                     </div>
 
                     <!-- Aba Usuários -->
                     <div id="aba-usuarios" class="tab-content ativo">
-                        <h2>Gerenciar Usuários</h2>
-                        <div class="filtros-section">
-                            <input 
-                                type="text" 
-                                class="input-filtro" 
-                                placeholder="Buscar usuário..."
-                            >
-                            <select class="input-filtro">
-                                <option value="">Todos</option>
-                                <option value="ativo">Ativos</option>
-                                <option value="inativo">Inativos</option>
-                                <option value="suspenso">Suspensos</option>
-                            </select>
+                        <div class="tab-topo">
+                            <div>
+                                <h2>Gerenciar Usuários</h2>
+                                <p>Cadastre, edite e exclua usuários.</p>
+                            </div>
+                            <button class="btn-primario btn-add" type="button" data-type="usuarios">+ Adicionar Usuário</button>
                         </div>
+
                         <div class="tabela-container">
                             <table class="tabela-dados">
                                 <thead>
                                     <tr>
                                         <th>Nome</th>
                                         <th>E-mail</th>
-                                        <th>Status</th>
-                                        <th>Data Cadastro</th>
-                                        <th>Ações</th>
+                                        <th>Senha</th>
                                     </tr>
                                 </thead>
                                 <tbody id="corpo-usuarios">
                                     <tr class="sem-dados">
-                                        <td colspan="5">Carregando usuários...</td>
+                                        <td colspan="4">Nenhum usuário cadastrado</td>
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+
+                        <div class="lista-item-section">
+                            <h3>Usuários cadastrados</h3>
+                            <div id="lista-usuarios" class="lista-item-container">
+                                <div class="sem-dados">Ainda não há usuários adicionados.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aba Questões -->
+                    <div id="aba-questoes" class="tab-content">
+                        <div class="tab-topo">
+                            <div>
+                                <h2>Gerenciar Questões</h2>
+                                <p>Crie perguntas com alternativas de A a E e marque apenas uma correta.</p>
+                            </div>
+                            <button class="btn-primario btn-add" type="button" data-type="questoes">+ Adicionar Questão</button>
+                        </div>
+
+                        <div class="tabela-container">
+                            <table class="tabela-dados">
+                                <thead>
+                                    <tr>
+                                        <th>Enunciado</th>
+                                        <th>A</th>
+                                        <th>B</th>
+                                        <th>C</th>
+                                        <th>D</th>
+                                        <th>E</th>
+                                        <th>Certa</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="corpo-questoes">
+                                    <tr class="sem-dados">
+                                        <td colspan="8">Nenhuma questão adicionada</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="lista-item-section">
+                            <h3>Questões adicionadas</h3>
+                            <div id="lista-questoes" class="lista-item-container">
+                                <div class="sem-dados">Ainda não há questões adicionadas.</div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Aba Conteúdo -->
                     <div id="aba-conteudo" class="tab-content">
-                        <h2>Gerenciar Conteúdo</h2>
-                        <div class="filtros-section">
-                            <select class="input-filtro">
-                                <option value="">Todos os tipos</option>
-                                <option value="redacao">Redação</option>
-                                <option value="matematica">Matemática</option>
-                                <option value="portugues">Português</option>
-                            </select>
-                            <select class="input-filtro">
-                                <option value="">Todos os status</option>
-                                <option value="ativo">Ativo</option>
-                                <option value="inativo">Inativo</option>
-                                <option value="revisao">Revisão</option>
-                            </select>
+                        <div class="tab-topo">
+                            <div>
+                                <h2>Gerenciar Conteúdo</h2>
+                                <p>Adicione resumo e até três links de vídeo para cada conteúdo.</p>
+                            </div>
+                            <button class="btn-primario btn-add" type="button" data-type="conteudos">+ Adicionar Conteúdo</button>
                         </div>
+
                         <div class="tabela-container">
                             <table class="tabela-dados">
                                 <thead>
                                     <tr>
-                                        <th>Título</th>
-                                        <th>Tipo</th>
-                                        <th>Status</th>
-                                        <th>Criado em</th>
-                                        <th>Ações</th>
+                                        <th>Resumo</th>
+                                        <th>Vídeo 1</th>
+                                        <th>Vídeo 2</th>
+                                        <th>Vídeo 3</th>
                                     </tr>
                                 </thead>
                                 <tbody id="corpo-conteudo">
                                     <tr class="sem-dados">
-                                        <td colspan="5">Nenhum conteúdo cadastrado</td>
+                                        <td colspan="5">Nenhum conteúdo adicionado</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                    </div>
 
-                    <!-- Aba Estatísticas -->
-                    <div id="aba-estatisticas" class="tab-content">
-                        <h2>Estatísticas do Sistema</h2>
-                        <div class="stats-grid">
-                            <div class="stat-card">
-                                <h3>Total de Usuários</h3>
-                                <p class="stat-numero" id="stat-total-usuarios">0</p>
-                                <p class="stat-label">Usuários cadastrados</p>
-                            </div>
-                            <div class="stat-card">
-                                <h3>Usuários Ativos (30 dias)</h3>
-                                <p class="stat-numero" id="stat-usuarios-ativos">0</p>
-                                <p class="stat-label">Últimos 30 dias</p>
-                            </div>
-                            <div class="stat-card">
-                                <h3>Total de Questões</h3>
-                                <p class="stat-numero" id="stat-total-questoes">0</p>
-                                <p class="stat-label">Questões no sistema</p>
-                            </div>
-                            <div class="stat-card">
-                                <h3>Taxa de Conclusão</h3>
-                                <p class="stat-numero" id="stat-taxa-conclusao">0%</p>
-                                <p class="stat-label">Média geral</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Aba Sistema -->
-                    <div id="aba-sistema" class="tab-content">
-                        <h2>Configurações do Sistema</h2>
-                        <div class="sistema-container">
-                            <div class="config-grupo">
-                                <h3>Backup e Restauração</h3>
-                                <p>Faça backup do banco de dados do sistema</p>
-                                <button class="btn-primario" type="button">💾 Fazer Backup</button>
-                            </div>
-                            <div class="config-grupo">
-                                <h3>Limpeza de Dados</h3>
-                                <p>Limpe dados antigos e temporários</p>
-                                <button class="btn-neutro" type="button">🗑 Limpar Dados</button>
-                            </div>
-                            <div class="config-grupo">
-                                <h3>Logs do Sistema</h3>
-                                <p>Visualize os logs de atividade</p>
-                                <button class="btn-neutro" type="button">📜 Ver Logs</button>
-                            </div>
-                            <div class="config-grupo">
-                                <h3>Enviar Notificação Global</h3>
-                                <textarea 
-                                    id="notificacao-global" 
-                                    class="textarea-form" 
-                                    placeholder="Escreva uma mensagem para todos os usuários..."
-                                    rows="4"
-                                ></textarea>
-                                <button class="btn-primario" type="button">📢 Enviar</button>
+                        <div class="lista-item-section">
+                            <h3>Conteúdos adicionados</h3>
+                            <div id="lista-conteudos" class="lista-item-container">
+                                <div class="sem-dados">Ainda não há conteúdos adicionados.</div>
                             </div>
                         </div>
                     </div>
 
                 </div>
 
+                <div class="modal" id="modal-form">
+                    <div class="modal-content">
+                        <span class="close" id="modal-close">×</span>
+                        <h2 id="modal-title">Adicionar item</h2>
+                        <p id="modal-subtitle"></p>
+                        <form id="form-registro">
+                            <div class="form-grid" id="modal-fields"></div>
+                            <div class="modal-acoes">
+                                <button class="btn-secundario" type="button" id="modal-cancel">Cancelar</button>
+                                <button class="btn-primario" type="submit" id="modal-save">Salvar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </section>
 
         </div>
