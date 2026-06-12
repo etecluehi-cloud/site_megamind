@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metas Diárias - Megamind</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f4f3fb;
+            min-height: 100vh;
+            color: #1a1a2e;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            background: linear-gradient(135deg, #5b1fa8 0%, #8b2fc9 45%, #a855f7 100%);
+            padding: 28px 24px 90px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 260px; height: 260px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            top: -80px; right: -60px;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 160px; height: 160px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            bottom: -40px; left: 20px;
+        }
+
+        .hero-top {
+            display: flex;
+            align-items: center;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-voltar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.15);
+            border: 1.5px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s;
+        }
+        .btn-voltar:hover { background: rgba(255,255,255,0.25); }
+        .btn-voltar svg { width: 16px; height: 16px; }
+
+        .hero-body {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .hero-text {}
+
+        .hero-eyebrow {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .hero-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .hero-sub {
+            margin-top: 6px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.65);
+        }
+
+        .hero-counter {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255,255,255,0.15);
+            border: 1.5px solid rgba(255,255,255,0.25);
+            border-radius: 16px;
+            padding: 12px 20px;
+            flex-shrink: 0;
+        }
+        .hero-counter .num {
+            font-size: 28px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1;
+        }
+        .hero-counter .label {
+            font-size: 11px;
+            color: rgba(255,255,255,0.65);
+            font-weight: 600;
+            margin-top: 3px;
+        }
+
+        /* ── CONTENT ── */
+        .content {
+            max-width: 640px;
+            margin: -44px auto 0;
+            padding: 0 16px 100px;
+            position: relative;
+        }
+
+        /* ── SECTION HEADER ── */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0 2px 14px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #5b1fa8;
+        }
+
+        .count-badge {
+            background: #ede9ff;
+            color: #7c3aed;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 999px;
+        }
+
+        /* ── METAS LIST ── */
+        .metas-list { display: flex; flex-direction: column; gap: 10px; }
+
+        .meta-item {
+            background: #fff;
+            border-radius: 16px;
+            padding: 16px 16px 16px 18px;
+            box-shadow: 0 2px 12px rgba(120,60,200,0.07);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-left: 4px solid #e8e0ff;
+            animation: slideIn 0.22s ease both;
+            transition: transform 0.15s, box-shadow 0.15s, border-color 0.2s;
+        }
+        .meta-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(120,60,200,0.12);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .meta-item.concluida { border-left-color: #7c3aed; }
+        .meta-item.concluida .meta-texto { text-decoration: line-through; color: #aaa; }
+        .meta-item.concluida .meta-check { background: #7c3aed; border-color: #7c3aed; }
+        .meta-item.concluida .meta-check svg { opacity: 1; }
+
+        .meta-check {
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            border: 2px solid #d1c4e9;
+            background: #f7f4ff;
+            flex-shrink: 0;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .meta-check:hover { border-color: #7c3aed; background: #ede9ff; }
+        .meta-check svg { width: 13px; height: 13px; color: #fff; opacity: 0; transition: opacity 0.2s; }
+
+        .meta-texto {
+            flex: 1;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            word-break: break-word;
+            transition: color 0.2s;
+        }
+
+        .meta-acoes { display: flex; gap: 6px; flex-shrink: 0; }
+
+        .btn-icon {
+            width: 34px; height: 34px;
+            border: none; border-radius: 10px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s;
+        }
+        .btn-icon svg { width: 16px; height: 16px; }
+        .btn-edit { background: #f0eaff; color: #7c3aed; }
+        .btn-edit:hover { background: #e0d4ff; }
+        .btn-delete { background: #fff0f0; color: #dc2626; }
+        .btn-delete:hover { background: #fee2e2; }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 48px 20px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 2px 12px rgba(120,60,200,0.07);
+            border: 2px dashed #e0d4ff;
+        }
+        .empty-state.visible { display: flex; }
+
+        .empty-anim {
+            width: 80px; height: 80px;
+            background: linear-gradient(135deg, #ede9ff, #f3e8ff);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 18px;
+            position: relative;
+        }
+        .empty-anim::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px dashed #d1c4e9;
+            animation: spin 12s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .empty-anim svg { width: 36px; height: 36px; color: #a78bfa; }
+
+        .empty-title { font-size: 18px; font-weight: 800; color: #2d2052; margin-bottom: 8px; }
+        .empty-sub { font-size: 14px; color: #9a8bbf; line-height: 1.6; max-width: 240px; margin-bottom: 24px; }
+
+        .btn-empty-add {
+            display: flex; align-items: center; gap: 8px;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            color: #fff; border: none;
+            padding: 12px 24px; border-radius: 14px;
+            font-size: 15px; font-weight: 700;
+            cursor: pointer; font-family: inherit;
+            box-shadow: 0 4px 16px rgba(124,58,237,0.35);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .btn-empty-add:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(124,58,237,0.45); }
+        .btn-empty-add svg { width: 18px; height: 18px; }
+
+        /* ── FAB ── */
+        .fab {
+            position: fixed;
+            bottom: 28px; right: 24px;
+            width: 58px; height: 58px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            color: #fff; border: none;
+            box-shadow: 0 6px 24px rgba(124,58,237,0.5);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 100;
+        }
+        .fab:hover { transform: scale(1.1); box-shadow: 0 8px 30px rgba(124,58,237,0.6); }
+        .fab:active { transform: scale(0.95); }
+        .fab svg { width: 26px; height: 26px; }
+
+        /* ── MODAL ── */
+        .modal-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(10,5,30,0.6);
+            backdrop-filter: blur(6px);
+            z-index: 9000;
+            align-items: center; justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.open { display: flex; }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 22px;
+            padding: 34px 28px 26px;
+            width: min(420px, 100%);
+            box-shadow: 0 32px 80px rgba(0,0,0,0.22);
+            animation: mmIn 0.25s cubic-bezier(.34,1.56,.64,1) both;
+            position: relative;
+        }
+        @keyframes mmIn {
+            from { opacity: 0; transform: scale(0.91) translateY(18px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-icon {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, #ede9ff, #f3e8ff);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 14px;
+        }
+        .modal-icon svg { width: 24px; height: 24px; color: #7c3aed; }
+
+        .modal-close {
+            position: absolute; top: 14px; right: 16px;
+            background: none; border: none; font-size: 18px;
+            color: #aaa; cursor: pointer; padding: 4px 8px; border-radius: 8px;
+            transition: background 0.15s, color 0.15s;
+        }
+        .modal-close:hover { background: #f4f0ff; color: #7c3aed; }
+
+        .modal-title { font-size: 20px; font-weight: 800; color: #1a1a2e; margin-bottom: 4px; }
+        .modal-sub { font-size: 13px; color: #999; margin-bottom: 22px; }
+
+        .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px; }
+        .field label { font-size: 13px; font-weight: 600; color: #555; }
+        .field input {
+            border: 1.5px solid #e8e0ff; border-radius: 12px;
+            padding: 12px 14px; font-size: 15px; color: #1a1a2e;
+            outline: none; font-family: inherit; width: 100%;
+            background: #faf8ff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .field input:focus { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.12); background: #fff; }
+
+        .modal-actions { display: flex; gap: 10px; margin-top: 22px; }
+        .mm-btn-cancel, .mm-btn-save {
+            flex: 1; padding: 13px; border-radius: 12px;
+            font-size: 15px; font-weight: 700; cursor: pointer;
+            border: none; font-family: inherit; transition: opacity 0.15s, transform 0.1s;
+        }
+        .mm-btn-cancel { background: #f3f0fa; color: #7c3aed; }
+        .mm-btn-save { background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; box-shadow: 0 3px 12px rgba(124,58,237,0.3); }
+        .mm-btn-cancel:hover { background: #ebe5ff; }
+        .mm-btn-save:hover { opacity: 0.92; }
+        .mm-btn-save:active { transform: scale(0.97); }
+
+        /* ── TOAST ── */
+        #toast {
+            position: fixed; bottom: 30px; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1a1a2e; color: #fff;
+            padding: 11px 24px; border-radius: 999px;
+            font-size: 13px; font-weight: 600;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 99999; white-space: nowrap;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ── DARK MODE ── */
+        html.dark-mode body { background: #12121f; }
+        html.dark-mode .meta-item { background: #1e1e32; box-shadow: 0 2px 12px rgba(0,0,0,0.3); border-left-color: #2d2060; }
+        html.dark-mode .meta-item.concluida { border-left-color: #7c3aed; }
+        html.dark-mode .meta-texto { color: #e8eaf6; }
+        html.dark-mode .meta-item.concluida .meta-texto { color: #555; }
+        html.dark-mode .meta-check { background: #2a2044; border-color: #4a3a7a; }
+        html.dark-mode .btn-edit { background: #2a1f44; color: #c4b5fd; }
+        html.dark-mode .btn-delete { background: #2a1515; color: #f87171; }
+        html.dark-mode .section-title { color: #a78bfa; }
+        html.dark-mode .count-badge { background: #2a1f44; color: #c4b5fd; }
+        html.dark-mode .empty-state { background: #1e1e32; border-color: #2d2060; }
+        html.dark-mode .empty-title { color: #c5cae9; }
+        html.dark-mode .empty-sub { color: #5a4a7a; }
+        html.dark-mode .modal-box { background: #1e1e32; }
+        html.dark-mode .modal-title { color: #e8eaf6; }
+        html.dark-mode .modal-sub { color: #555; }
+        html.dark-mode .field label { color: #9da3b4; }
+        html.dark-mode .field input { background: #2a2044; color: #e8eaf6; border-color: #3a2a5a; }
+        html.dark-mode .field input:focus { background: #2d2350; }
+        html.dark-mode .mm-btn-cancel { background: #2a2044; color: #c4b5fd; }
+        html.dark-mode .modal-close:hover { background: #2a2044; color: #c4b5fd; }
+        html.dark-mode .modal-icon { background: #2a1f44; }
+
+        @media (max-width: 500px) {
+            .hero { padding: 20px 16px 80px; }
+            .hero-title { font-size: 22px; }
+            .content { padding: 0 12px 100px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <div class="hero-top">
+            <button class="btn-voltar" onclick="history.back()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+                Voltar
+            </button>
+        </div>
+        <div class="hero-body">
+            <div class="hero-text">
+                <span class="hero-eyebrow">Organização</span>
+                <h1 class="hero-title">Metas Diárias</h1>
+                <p class="hero-sub">Acompanhe seus objetivos do dia</p>
+            </div>
+            <div class="hero-counter">
+                <span class="num" id="hero-num">0</span>
+                <span class="label">metas</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="content">
+
+        <div class="section-header">
+            <span class="section-title">Minhas metas</span>
+            <span class="count-badge" id="count-badge">0</span>
+        </div>
+
+        <div class="metas-list" id="metas-list"></div>
+
+        <div class="empty-state" id="empty-state">
+            <div class="empty-anim">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                    <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+                    <rect x="9" y="3" width="6" height="4" rx="1"/>
+                    <path d="M9 12h6M9 16h4"/>
+                </svg>
+            </div>
+            <p class="empty-title">Nenhuma meta ainda</p>
+            <p class="empty-sub">Adicione sua primeira meta e comece a acompanhar seu progresso!</p>
+            <button class="btn-empty-add" onclick="abrirModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Adicionar primeira meta
+            </button>
+        </div>
+
+    </main>
+
+    <!-- FAB -->
+    <button class="fab" onclick="abrirModal()" aria-label="Adicionar meta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M5 12h14"/>
+        </svg>
+    </button>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modal" onclick="fecharFora(event)">
+        <div class="modal-box">
+            <button class="modal-close" onclick="fecharModal()">✕</button>
+            <div class="modal-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+                    <rect x="9" y="3" width="6" height="4" rx="1"/>
+                    <path d="M9 12h6M9 16h4"/>
+                </svg>
+            </div>
+            <h2 class="modal-title" id="modal-titulo">Nova meta</h2>
+            <p class="modal-sub" id="modal-sub">Descreva o que você quer alcançar hoje</p>
+            <div class="field">
+                <label for="input-texto">Descrição</label>
+                <input type="text" id="input-texto" placeholder="Ex: Resolver 10 questões de matemática" maxlength="120">
+            </div>
+            <div class="modal-actions">
+                <button class="mm-btn-cancel" onclick="fecharModal()">Cancelar</button>
+                <button class="mm-btn-save" id="btn-salvar" onclick="salvarMeta()">Salvar meta</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        const KEY = 'megamind_metas_diarias';
+        let metas = [];
+        let editandoId = null;
+
+        function load() {
+            try { metas = JSON.parse(localStorage.getItem(KEY)) || []; } catch { metas = []; }
+        }
+        function save() { localStorage.setItem(KEY, JSON.stringify(metas)); }
+        function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+        function render() {
+            const lista = document.getElementById('metas-list');
+            const empty = document.getElementById('empty-state');
+            const fab = document.querySelector('.fab');
+            lista.innerHTML = '';
+
+            document.getElementById('hero-num').textContent = metas.length;
+            document.getElementById('count-badge').textContent = metas.length;
+
+            if (!metas.length) {
+                empty.classList.add('visible');
+                fab.style.display = 'none';
+                return;
+            }
+            empty.classList.remove('visible');
+            fab.style.display = 'flex';
+
+            metas.forEach((m, i) => {
+                const el = document.createElement('div');
+                el.className = 'meta-item' + (m.concluida ? ' concluida' : '');
+                el.style.animationDelay = (i * 40) + 'ms';
+                el.innerHTML = `
+                    <div class="meta-check" onclick="toggle('${m.id}')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    <span class="meta-texto">${esc(m.texto)}</span>
+                    <div class="meta-acoes">
+                        <button class="btn-icon btn-edit" onclick="abrirEditar('${m.id}')" aria-label="Editar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/>
+                            </svg>
+                        </button>
+                        <button class="btn-icon btn-delete" onclick="excluir('${m.id}')" aria-label="Excluir">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                lista.appendChild(el);
+            });
+        }
+
+        function toggle(id) {
+            const m = metas.find(x => x.id === id);
+            if (m) { m.concluida = !m.concluida; save(); render(); }
+        }
+
+        function excluir(id) {
+            metas = metas.filter(x => x.id !== id);
+            save(); render(); toast('🗑️ Meta removida.');
+        }
+
+        function abrirModal() {
+            editandoId = null;
+            document.getElementById('input-texto').value = '';
+            document.getElementById('modal-titulo').textContent = 'Nova meta';
+            document.getElementById('modal-sub').textContent = 'Descreva o que você quer alcançar hoje';
+            document.getElementById('btn-salvar').textContent = 'Salvar meta';
+            document.getElementById('modal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => document.getElementById('input-texto').focus(), 80);
+        }
+
+        function abrirEditar(id) {
+            const m = metas.find(x => x.id === id);
+            if (!m) return;
+            editandoId = id;
+            document.getElementById('input-texto').value = m.texto;
+            document.getElementById('modal-titulo').textContent = 'Editar meta';
+            document.getElementById('modal-sub').textContent = 'Atualize a descrição da sua meta';
+            document.getElementById('btn-salvar').textContent = 'Salvar alterações';
+            document.getElementById('modal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => document.getElementById('input-texto').focus(), 80);
+        }
+
+        function fecharModal() {
+            document.getElementById('modal').classList.remove('open');
+            document.body.style.overflow = '';
+            editandoId = null;
+        }
+
+        function fecharFora(e) { if (e.target === document.getElementById('modal')) fecharModal(); }
+
+        function salvarMeta() {
+            const texto = document.getElementById('input-texto').value.trim();
+            if (!texto) { document.getElementById('input-texto').focus(); return; }
+
+            if (editandoId) {
+                const m = metas.find(x => x.id === editandoId);
+                if (m) m.texto = texto;
+                toast('✅ Meta atualizada!');
+            } else {
+                metas.push({ id: uid(), texto, concluida: false });
+                toast('✅ Meta adicionada!');
+            }
+            save(); fecharModal(); render();
+        }
+
+        function esc(s) {
+            return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+
+        function toast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') fecharModal();
+            if (e.key === 'Enter' && document.getElementById('modal').classList.contains('open')) salvarMeta();
+        });
+
+        if (localStorage.getItem('megamind_dark') === 'true') document.documentElement.classList.add('dark-mode');
+
+        load(); render();
+    </script>
+</body>
+</html>
