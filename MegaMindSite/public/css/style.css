@@ -200,6 +200,98 @@ input[type="file"] {
     background: #181718;
 }
 
+/* ── Força de senha ── */
+.forca-container {
+    margin-top: 6px;
+    margin-bottom: 10px;
+}
+
+.forca-barras {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.barra {
+    flex: 1;
+    height: 5px;
+    border-radius: 4px;
+    background: #ddd;
+    transition: background 0.3s;
+}
+
+.forca-label {
+    font-size: 12px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.criterios {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+}
+
+.criterios li {
+    color: #999;
+    margin-bottom: 2px;
+    transition: color 0.2s;
+}
+
+.criterios li.ok {
+    color: #4caf50;
+}
+
+.criterios li.ok::first-letter {
+    /* troca ✗ por ✓ via JS */
+}
+
+.forca-container {
+            display: none;
+            margin-top: 8px;
+            margin-bottom: 12px;
+        }
+
+        .forca-barras {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 5px;
+        }
+
+        .barra {
+            flex: 1;
+            height: 5px;
+            border-radius: 4px;
+            background: #ddd;
+            transition: background 0.3s;
+        }
+
+        .forca-label {
+            font-size: 12px;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .criterios {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 12px;
+        }
+
+        .criterios li {
+            color: #999;
+            margin-bottom: 3px;
+            transition: color 0.2s;
+        }
+
+        .criterios li.ok {
+            color: #4caf50;
+        }
+
 @media (max-width: 900px) {
     .box1 {
         display: none;
