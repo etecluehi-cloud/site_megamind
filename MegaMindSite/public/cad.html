@@ -37,16 +37,31 @@
                 <input type="email" id="email" class="txtbox" required>
 
             <label class="txtl">Senha</label>
-
-            <div class="input-container">
-        
-                <input type="password" id="senha" class="txtbox" required>
-
-                <button type="button" class="btnEye" onclick="toggleSenha()">
-                    <img id="IconeSenha" src="../img/invisivel.png" class="Eye" alt="">
-                </button>
-
-            </div>
+ 
+                <div class="input-container">
+                    <input type="password" id="senha" class="txtbox" required oninput="verificarSenha()">
+                    <button type="button" class="btnEye" onclick="toggleSenha()">
+                        <img id="IconeSenha" src="../img/invisivel.png" class="Eye" alt="">
+                    </button>
+                </div>
+ 
+                <!-- INDICADOR DE FORÇA DE SENHA -->
+                <div class="forca-container" id="forcaContainer">
+                    <div class="forca-barras">
+                        <div class="barra" id="barra1"></div>
+                        <div class="barra" id="barra2"></div>
+                        <div class="barra" id="barra3"></div>
+                        <div class="barra" id="barra4"></div>
+                    </div>
+                    <span class="forca-label" id="forcaLabel"></span>
+ 
+                    <ul class="criterios">
+                        <li id="c-tamanho">✗ Mínimo 8 caracteres</li>
+                        <li id="c-maiuscula">✗ Uma letra maiúscula</li>
+                        <li id="c-numero">✗ Um número</li>
+                        <li id="c-simbolo">✗ Um símbolo (!@#$...)</li>
+                    </ul>
+                </div>
 
             <button onclick="cadastrar()" type="button" class="btnlogin">
                 <span class="txtbtnLogin">Cadastre-se</span>

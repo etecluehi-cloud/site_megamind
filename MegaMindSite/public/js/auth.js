@@ -45,6 +45,58 @@ window._mmDb   = db;
 window._mmDoc  = doc;
 window._mmUpdateDoc = updateDoc;
 
+// ─────────────────────────────────────────────────────
+//  VERIFICADOR DE FORÇA DE SENHA
+// ─────────────────────────────────────────────────────
+window.verificarSenha = function () {
+    const senha = document.getElementById("senha").value;
+    const container = document.getElementById("forcaContainer");
+
+    if (!container) return;
+    container.style.display = senha.length > 0 ? "block" : "none";
+
+    const criterios = {
+        tamanho:  senha.length >= 8,
+        maiuscula: /[A-Z]/.test(senha),
+        numero:   /[0-9]/.test(senha),
+        simbolo:  /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(senha)
+    };
+
+    // Atualiza checklist
+    atualizarCriterio("c-tamanho",   criterios.tamanho,   "Mínimo 8 caracteres");
+    atualizarCriterio("c-maiuscula", criterios.maiuscula, "Uma letra maiúscula");
+    atualizarCriterio("c-numero",    criterios.numero,    "Um número");
+    atualizarCriterio("c-simbolo",   criterios.simbolo,   "Um símbolo (!@#$...)");
+
+    // Pontuação (0–4)
+    const pontos = Object.values(criterios).filter(Boolean).length;
+
+    // Atualiza barras
+    const cores = ["#e74c3c", "#e67e22", "#f1c40f", "#2ecc71"];
+    const labels = ["Fraca", "Razoável", "Boa", "Forte"];
+    const barras = ["barra1", "barra2", "barra3", "barra4"];
+
+    barras.forEach((id, i) => {
+        const el = document.getElementById(id);
+        el.style.background = i < pontos ? cores[pontos - 1] : "#ddd";
+    });
+
+    const label = document.getElementById("forcaLabel");
+    if (pontos > 0) {
+        label.textContent = labels[pontos - 1];
+        label.style.color = cores[pontos - 1];
+    } else {
+        label.textContent = "";
+    }
+};
+
+function atualizarCriterio(id, ok, texto) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = (ok ? "✓ " : "✗ ") + texto;
+    el.classList.toggle("ok", ok);
+}
+
 //
 // CADASTRO
 //
@@ -52,26 +104,33 @@ window.cadastrar = async function () {
   const nome  = document.getElementById("nome").value.trim();
   const email = document.getElementById("email").value.trim();
   const senha = document.getElementById("senha").value.trim();
-
+ 
   if (!nome || !email || !senha) {
     alert("Preencha todos os campos.");
     return;
   }
-
+ 
+  // ── VALIDAÇÃO DE FORÇA DE SENHA ──
+  if (!senhaEhForte(senha)) {
+    alert("Crie uma senha mais forte seguindo os critérios indicados.");
+    return;
+  }
+  // ─────────────────────────────────
+ 
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
-
+ 
     // Salva no Firestore
     await setDoc(doc(db, "usuarios", userCredential.user.uid), {
       nome:  nome,
       email: email
     });
-
+ 
     alert("Cadastro realizado com sucesso!");
     window.location.href = "index.html";
   } catch (error) {
     console.error("Erro no cadastro:", error);
-
+ 
     if (error.code === "auth/email-already-in-use") {
       alert("E-mail já cadastrado.");
     } else if (error.code === "auth/invalid-email") {
