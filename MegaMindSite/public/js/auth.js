@@ -1,4 +1,4 @@
-// IMPORTAÇÕES DO FIREBASE
+// importaçoes do firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 
 import {
@@ -17,7 +17,7 @@ import {
   updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// CONFIGURAÇÃO DO FIREBASE
+// configuração do firebase
 const firebaseConfig = {
   apiKey: "AIzaSyAXoLRatnIuZSEXYENjFGWgloV3-xaDf9Q",
   authDomain: "megamindapp-4e60c.firebaseapp.com",
@@ -27,27 +27,26 @@ const firebaseConfig = {
   appId: "1:114881660257:web:d0b6ae935486429bfb3120"
 };
 
-// INICIALIZAÇÃO
+//inicialização
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Chave do localStorage — igual ao perfil.js
+// chave do localStorage — igual ao perfil.js
 const KEYS = {
   name:   'megamind_nome',
   handle: 'megamind_handle',
   email:  'megamind_email',
 };
 
-// Expõe auth e db globalmente para que perfil.js possa usar
+// expõe auth e db globalmente para que perfil.js possa usar
 window._mmAuth = auth;
 window._mmDb   = db;
 window._mmDoc  = doc;
 window._mmUpdateDoc = updateDoc;
 
-// ─────────────────────────────────────────────────────
-//  VERIFICADOR DE FORÇA DE SENHA
-// ─────────────────────────────────────────────────────
+
+//  verificador de força de senha
 window.verificarSenha = function () {
     const senha = document.getElementById("senha").value;
     const container = document.getElementById("forcaContainer");
@@ -62,13 +61,13 @@ window.verificarSenha = function () {
         simbolo:  /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(senha)
     };
 
-    // Atualiza checklist
+    // atualiza checklist
     atualizarCriterio("c-tamanho",   criterios.tamanho,   "Mínimo 8 caracteres");
     atualizarCriterio("c-maiuscula", criterios.maiuscula, "Uma letra maiúscula");
     atualizarCriterio("c-numero",    criterios.numero,    "Um número");
     atualizarCriterio("c-simbolo",   criterios.simbolo,   "Um símbolo (!@#$...)");
 
-    // Pontuação (0–4)
+    // pontuação (0–4)
     const pontos = Object.values(criterios).filter(Boolean).length;
 
     // Atualiza barras
@@ -97,9 +96,8 @@ function atualizarCriterio(id, ok, texto) {
     el.classList.toggle("ok", ok);
 }
 
-//
-// CADASTRO
-//
+
+// cadastro
 window.cadastrar = async function () {
   const nome  = document.getElementById("nome").value.trim();
   const email = document.getElementById("email").value.trim();
@@ -110,12 +108,12 @@ window.cadastrar = async function () {
     return;
   }
  
-  // ── VALIDAÇÃO DE FORÇA DE SENHA ──
+  // validação de força de senha
   if (!senhaEhForte(senha)) {
     alert("Crie uma senha mais forte seguindo os critérios indicados.");
     return;
   }
-  // ─────────────────────────────────
+  
  
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
@@ -143,9 +141,8 @@ window.cadastrar = async function () {
   }
 };
 
-//
-// LOGIN
-//
+
+// login
 window.login = async function () {
   const email = document.getElementById("email").value.trim();
   const senha = document.getElementById("senha").value.trim();
@@ -173,9 +170,8 @@ window.login = async function () {
   }
 };
 
-//
-// RECUPERAR SENHA
-//
+
+// recuperar senha
 window.recuperarSenha = async function () {
   const email = document.getElementById("email").value.trim();
 
@@ -273,10 +269,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// ─────────────────────────────────────────────────────────────
+
 //  PERFIL.HTML — preenche nome e e-mail
 //  Mostra imediatamente do localStorage; confirma com Firebase
-// ─────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
   const nomePerfil  = document.querySelector(".js-student-name");
   const emailPerfil = document.querySelector(".js-student-handle");

@@ -10,7 +10,7 @@
         trigger.addEventListener('click', function () {
             fileInp.click();
         });
-
+ 
         fileInp.addEventListener('change', function () {
             const file = this.files[0];
             if (!file || !file.type.startsWith('image/')) return;
