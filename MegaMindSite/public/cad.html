@@ -1,84 +1,122 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro</title>
+
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- fonte utilizada -->
+    <link href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
-    <div class="box1">
-
-        <img src="img/fundo.png" class="bg">
-
+    <!-- área da imagem de fundo -->
+    <div class="areaImagem">
+        <img src="img/fundo.png" class="imgFundo" alt="">
     </div>
 
-    <div class="box2">
+    <!-- área principal do formulário -->
+    <div class="areaFormulario">
 
-            <a class="voltar" href="index.html">
+        <!-- link para voltar à página de login -->
+        <a class="linkVoltar" href="index.html">
 
-                <button type="submit" class="btnVoltar">
-                    <img class="imgVoltar" src="img/voltar.png" alt="">
-                </button>
+            <button type="submit" class="btnVoltar">
+                <img class="imgVoltar" src="img/voltar.png" alt="">
+            </button>
 
-            </a>
+        </a>
 
-                <div class="box">
+        <!-- caixa do formulário -->
+        <div class="boxFormulario">
 
-                <h1 class="txtLogin">Cadastro</h1>
+            <h1 class="tituloPagina">Cadastro</h1>
 
-            <form class="form" onsubmit="return false;">
+            <!-- formulário de cadastro -->
+            <form class="formulario" onsubmit="return false;">
 
-                <label class="txtl">Nome</label>
-                <input type="text" id="nome" class="txtbox" required>
+                <label class="lblCampo">Nome</label>
+                <input type="text" id="nome" class="inputTexto" required>
 
-                <label class="txtl">E-mail</label>
-                <input type="email" id="email" class="txtbox" required>
+                <label class="lblCampo">E-mail</label>
+                <input type="email" id="email" class="inputTexto" required>
 
-            <label class="txtl">Senha</label>
- 
+                <label class="lblCampo">Senha</label>
+
                 <div class="input-container">
-                    <input type="password" id="senha" class="txtbox" required oninput="verificarSenha()">
-                    <button type="button" class="btnEye" onclick="toggleSenha()">
-                        <img id="IconeSenha" src="../img/invisivel.png" class="Eye" alt="">
+
+                    <input
+                        type="password"
+                        id="senha"
+                        class="inputTexto"
+                        required
+                        oninput="verificarSenha()"
+                    >
+
+                    <!-- botão para mostrar ou ocultar a senha -->
+                    <button
+                        type="button"
+                        class="btnSenha"
+                        onclick="toggleSenha()"
+                    >
+                        <img
+                            id="IconeSenha"
+                            src="../img/invisivel.png"
+                            class="imgSenha"
+                            alt=""
+                        >
                     </button>
+
                 </div>
- 
-                <!-- INDICADOR DE FORÇA DE SENHA -->
+
+                <!-- área de verificação da força da senha -->
                 <div class="forca-container" id="forcaContainer">
+
+                    <!-- barras de força da senha -->
                     <div class="forca-barras">
                         <div class="barra" id="barra1"></div>
                         <div class="barra" id="barra2"></div>
                         <div class="barra" id="barra3"></div>
                         <div class="barra" id="barra4"></div>
                     </div>
+
+                    <!-- texto indicando a força da senha -->
                     <span class="forca-label" id="forcaLabel"></span>
- 
+
+                    <!-- critérios para uma senha forte -->
                     <ul class="criterios">
                         <li id="c-tamanho">✗ Mínimo 8 caracteres</li>
                         <li id="c-maiuscula">✗ Uma letra maiúscula</li>
                         <li id="c-numero">✗ Um número</li>
                         <li id="c-simbolo">✗ Um símbolo (!@#$...)</li>
                     </ul>
+
                 </div>
 
-            <button onclick="cadastrar()" type="button" class="btnlogin">
-                <span class="txtbtnLogin">Cadastre-se</span>
-            </button>
+                <button onclick="cadastrar()" type="button" class="btnPrincipal">
+                    Cadastre-se
+                </button>
 
-            <div class="cadastro">
-                <span>Já tem conta?</span>
-                <a class="cadlink" href="index.html">Logar</a>
-            </div>
+                <!-- link para login -->
+                <div class="boxCadastro">
+                    <span>Já tem conta?</span>
+                    <a class="linkCadastro" href="index.html">Logar</a>
+                </div>
 
-        </form>
+            </form>
+
+        </div>
 
     </div>
 
+    <!-- bibliotecas do Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
 
+    <!-- arquivo JavaScript de autenticação -->
     <script type="module" src="js/auth.js"></script>
 
 </body>
