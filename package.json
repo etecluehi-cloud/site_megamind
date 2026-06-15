@@ -1,0 +1,15 @@
+{
+  "name": "site_megamind",
+  "version": "1.0.0",
+  "description": "- Hillary Gregório\r - Luana Coutinho\r - Pedro Moura\r - Lucas Teixeira\r - Lucas Bazan\r - Gabriel Fraga\r # Título do Projeto\r Desenvolvimento de um Aplicativo e Site Educacional para Apoio à Preparação para o ENEM",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^12.14.0"
+  }
+}
