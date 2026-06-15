@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -13,15 +13,15 @@
 
 <body>
 
-    <!-- área da imagem de fundo -->
+    <!-- Ã¡rea da imagem de fundo -->
     <div class="areaImagem">
         <img src="img/fundo.png" class="imgFundo" alt="">
     </div>
 
-    <!-- área principal do formulário -->
+    <!-- Ã¡rea principal do formulÃ¡rio -->
     <div class="areaFormulario">
 
-        <!-- link para voltar à página de login -->
+        <!-- link para voltar Ã  pÃ¡gina de login -->
         <a class="linkVoltar" href="index.html">
 
             <button type="submit" class="btnVoltar">
@@ -30,12 +30,12 @@
 
         </a>
 
-        <!-- caixa do formulário -->
+        <!-- caixa do formulÃ¡rio -->
         <div class="boxFormulario">
 
             <h1 class="tituloPagina">Cadastro</h1>
 
-            <!-- formulário de cadastro -->
+            <!-- formulÃ¡rio de cadastro -->
             <form class="formulario" onsubmit="return false;">
 
                 <label class="lblCampo">Nome</label>
@@ -56,15 +56,15 @@
                         oninput="verificarSenha()"
                     >
 
-                    <!-- botão para mostrar ou ocultar a senha -->
+                    <!-- botÃ£o para mostrar ou ocultar a senha -->
                     <button
                         type="button"
                         class="btnSenha"
-                        onclick="toggleSenha()"
+                        onclick="toggleSenha(this)"
                     >
                         <img
                             id="IconeSenha"
-                            src="../img/invisivel.png"
+                            src="img/invisivel.png"
                             class="imgSenha"
                             alt=""
                         >
@@ -72,10 +72,10 @@
 
                 </div>
 
-                <!-- área de verificação da força da senha -->
+                <!-- Ã¡rea de verificaÃ§Ã£o da forÃ§a da senha -->
                 <div class="forca-container" id="forcaContainer">
 
-                    <!-- barras de força da senha -->
+                    <!-- barras de forÃ§a da senha -->
                     <div class="forca-barras">
                         <div class="barra" id="barra1"></div>
                         <div class="barra" id="barra2"></div>
@@ -83,15 +83,15 @@
                         <div class="barra" id="barra4"></div>
                     </div>
 
-                    <!-- texto indicando a força da senha -->
+                    <!-- texto indicando a forÃ§a da senha -->
                     <span class="forca-label" id="forcaLabel"></span>
 
-                    <!-- critérios para uma senha forte -->
+                    <!-- critÃ©rios para uma senha forte -->
                     <ul class="criterios">
-                        <li id="c-tamanho">✗ Mínimo 8 caracteres</li>
-                        <li id="c-maiuscula">✗ Uma letra maiúscula</li>
-                        <li id="c-numero">✗ Um número</li>
-                        <li id="c-simbolo">✗ Um símbolo (!@#$...)</li>
+                        <li id="c-tamanho">âœ— MÃ­nimo 8 caracteres</li>
+                        <li id="c-maiuscula">âœ— Uma letra maiÃºscula</li>
+                        <li id="c-numero">âœ— Um nÃºmero</li>
+                        <li id="c-simbolo">âœ— Um sÃ­mbolo (!@#$...)</li>
                     </ul>
 
                 </div>
@@ -102,7 +102,7 @@
 
                 <!-- link para login -->
                 <div class="boxCadastro">
-                    <span>Já tem conta?</span>
+                    <span>JÃ¡ tem conta?</span>
                     <a class="linkCadastro" href="index.html">Logar</a>
                 </div>
 
@@ -116,8 +116,10 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
 
-    <!-- arquivo JavaScript de autenticação -->
+    <!-- arquivo JavaScript de autenticaÃ§Ã£o -->
     <script type="module" src="js/auth.js"></script>
+    <script src="js/script.js"></script>
 
 </body>
 </html>
+

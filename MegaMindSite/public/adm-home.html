@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -6,6 +6,9 @@
     <title>Painel Administrativo - MegaMind</title>
     <link rel="stylesheet" href="css/homeStyle.css">
     <link rel="stylesheet" href="css/admStyle.css">
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 <body class="inicio">
     <main class="pagina-painel">
@@ -54,94 +57,92 @@
                     </a>
                 </nav>
 
-                <a class="btn-logout" href="index.html">
+                <button class="btn-logout" type="button" onclick="sairAdm()">
                     <span class="icone-logout">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="currentColor"/>
                         </svg>
                     </span>
                     Sair
-                </a>
+                </button>
             </aside>
 
-            <!-- Conteúdo principal da página -->
+            <!-- ConteÃºdo principal da pÃ¡gina -->
             <section class="conteudo-painel">
 
-                <!-- Banner de boas-vindas -->
-                <section class="banner-boas-vindas" aria-label="Boas-vindas administrativo">
-                    <div class="avatar-banner">
-                        <img src="img/logo.png" alt="Logo do Megamind">
+                <section class="admin-home-hero" aria-label="Boas-vindas administrativo">
+                    <div class="admin-home-hero-texto">
+                        <span class="admin-home-kicker">Painel administrativo</span>
+                        <h1>Bem-vindo, Administrador <span id="nome-admin-home">MegaMind</span></h1>
+                        <p>Acompanhe o funcionamento do cursinho, revise os dados principais e mantenha a plataforma pronta para os alunos.</p>
                     </div>
-                    <div class="texto-banner">
-                        <h1>Bem-vindo(a), Administrador<span id="saudacao" aria-hidden="true">👋</span>!</h1>
-                        <p class="subtitulo-banner">Gerencie o sistema MegaMind</p>
+                    <div class="admin-home-visual" aria-hidden="true">
+                        <img src="img/logo.png" alt="">
+                        <div class="admin-home-visual-card card-a">ENEM</div>
+                        <div class="admin-home-visual-card card-b">Questões</div>
+                        <div class="admin-home-visual-card card-c">Conteúdos</div>
                     </div>
                 </section>
 
-                <!-- Cards do dashboard -->
-                <section class="cards-dashboard" aria-label="Resumo administrativo">
-                    
-                    <div class="card-admin">
-                        <div class="icone-card">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
-                            </svg>
-                        </div>
-                        <div class="info-card">
-                            <h3>Administradores</h3>
-                            <p id="count-adms" class="numero-card">0</p>
-                        </div>
-                    </div>
-
-                    <div class="card-admin">
-                        <div class="icone-card">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" fill="currentColor"/>
-                            </svg>
-                        </div>
-                        <div class="info-card">
-                            <h3>Mensagens (Fale Conosco)</h3>
-                            <p id="count-messages" class="numero-card">0</p>
-                        </div>
-                    </div>
-
-                    <div class="card-admin">
-                        <div class="icone-card">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2V17zm4 0h-2V7h2V17zm4 0h-2v-4h2V17z" fill="currentColor"/>
-                            </svg>
-                        </div>
-                        <div class="info-card">
-                            <h3>Estatísticas</h3>
-                            <p class="numero-card">Ativas</p>
-                        </div>
-                    </div>
-
+                <section class="admin-home-metricas" aria-label="Resumo do sistema">
+                    <article class="admin-metrica-card">
+                        <span class="admin-metrica-label">Alunos ativos</span>
+                        <strong id="home-alunos-ativos">0</strong>
+                        <small>Usuários comuns liberados</small>
+                    </article>
+                    <article class="admin-metrica-card">
+                        <span class="admin-metrica-label">Conteúdos</span>
+                        <strong id="home-conteudos">0</strong>
+                        <small>Aulas cadastradas no banco</small>
+                    </article>
+                    <article class="admin-metrica-card">
+                        <span class="admin-metrica-label">Questões</span>
+                        <strong id="home-questoes">0</strong>
+                        <small>Itens de Matemática e Português</small>
+                    </article>
+                    <article class="admin-metrica-card alerta">
+                        <span class="admin-metrica-label">Bloqueados</span>
+                        <strong id="home-bloqueados">0</strong>
+                        <small>Contas com acesso pausado</small>
+                    </article>
                 </section>
 
-                <!-- Atalhos rápidos -->
-                <section class="atalhos-admin" aria-label="Atalhos rápidos">
-                    <h2>Ações Rápidas</h2>
-                    <div class="grid-atalhos">
-                        <a href="adm-cadastrar.html" class="atalho-btn">
-                            <span class="icone-atalho">✚</span>
-                            <span>Novo Admin</span>
-                        </a>
-                        <a href="adm-gerenciar-fale.html" class="atalho-btn">
-                            <span class="icone-atalho">✉</span>
-                            <span>Ver Mensagens</span>
-                        </a>
-                        <a href="adm-gerenciar-dashboard.html" class="atalho-btn">
-                            <span class="icone-atalho">📊</span>
-                            <span>Gerenciar</span>
-                        </a>
-                    </div>
+                <section class="admin-home-grid" aria-label="Rotina administrativa">
+                    <article class="admin-home-panel">
+                        <h2>Resumo da rotina</h2>
+                        <div class="admin-checklist">
+                            <div>
+                                <span class="check-dot"></span>
+                                <p>Revise conteúdos novos antes de liberar para os alunos.</p>
+                            </div>
+                            <div>
+                                <span class="check-dot"></span>
+                                <p>Confira se cada questão tem cinco alternativas e resposta correta.</p>
+                            </div>
+                            <div>
+                                <span class="check-dot"></span>
+                                <p>Acompanhe usuários bloqueados para evitar acessos indevidos.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="admin-home-panel destaque">
+                        <h2>Status do ambiente</h2>
+                        <p id="home-status-admin">Verificando acesso administrativo...</p>
+                        <div class="admin-status-line">
+                            <span></span>
+                            <strong>Firestore conectado</strong>
+                        </div>
+                    </article>
                 </section>
 
             </section>
-
         </div>
     </main>
 
+    <script src="js/admin-home.js"></script>
+    <script src="js/admin-guard.js"></script>
 </body>
 </html>
+
+

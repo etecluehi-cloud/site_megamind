@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-br">
 <head>
 
@@ -9,7 +9,7 @@
 
     <link rel="stylesheet" href="css/style.css">
 
-    <!-- conexão com fontes do google -->
+    <!-- conexÃ£o com fontes do google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -19,21 +19,21 @@
 
 <body>
 
-    <!-- área da imagem de fundo -->
+    <!-- Ã¡rea da imagem de fundo -->
     <div class="areaImagem">
         <img src="img/fundo.png" class="imgFundo" alt="">
     </div>
 
-    <!-- área principal do formulário -->
+    <!-- Ã¡rea principal do formulÃ¡rio -->
     <div class="areaFormulario">
 
-        <!-- caixa que contém o formulário -->
+        <!-- caixa que contÃ©m o formulÃ¡rio -->
         <div class="boxFormulario">
 
-            <!-- título -->
+            <!-- tÃ­tulo -->
             <h1 class="tituloPagina">Login</h1>
 
-            <!-- formulário de login -->
+            <!-- formulÃ¡rio de login -->
             <form class="formulario" onsubmit="event.preventDefault(); login();">
 
                 <label class="lblCampo">E-mail</label>
@@ -45,25 +45,25 @@
 
                     <input type="password" id="senha" class="inputTexto" required>
 
-                    <!-- botão para mostrar ou ocultar a senha -->
+                    <!-- botÃ£o para mostrar ou ocultar a senha -->
                     <button type="button" class="btnSenha" onclick="toggleSenha()">
                         <img id="IconeSenha" src="img/invisivel.png" class="imgSenha" alt="">
                     </button>
 
                 </div>
 
-                <button type="submit" class="btnPrincipal">
-                    Login
-                </button>
+                <button type="submit" class="btnPrincipal">Login</button>
 
-                <!-- link para recuperação de senha -->
+                <a class="btnLoginAdm" href="adm-login.html">Entrar como ADM</a>
+
+                <!-- link para recuperaÃ§Ã£o de senha -->
                 <a class="linkSenha" href="ForgotKey.html">
                     <span style="color: #6c07ab;">Esqueceu a senha?</span>
                 </a>
 
-                <!-- área de cadastro -->
+                <!-- Ã¡rea de cadastro -->
                 <div class="boxCadastro">
-                    <span>Não tem uma conta?</span>
+                    <span>NÃ£o tem uma conta?</span>
                     <a class="linkCadastro" href="cad.html">Cadastre-se</a>
                 </div>
 
@@ -73,7 +73,7 @@
 
     </div>
 
-    <!-- arquivo JavaScript de autenticação -->
+    <!-- arquivo JavaScript de autenticaÃ§Ã£o -->
     <script type="module" src="js/auth.js"></script>
 
     <!-- arquivo JavaScript principal -->
@@ -81,3 +81,4 @@
 
 </body>
 </html>
+

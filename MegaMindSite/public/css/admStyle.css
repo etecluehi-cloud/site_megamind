@@ -697,3 +697,330 @@
         width: 100%;
     }
 }
+
+/* Gerenciamento de questões */
+.cabecalho-aba,
+.lista-questoes-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.cabecalho-aba h2,
+.lista-questoes-topo h3 {
+    margin-bottom: 6px;
+}
+
+.cabecalho-aba p,
+.lista-questoes-topo p {
+    color: var(--text-soft);
+    font-size: 14px;
+}
+
+.questoes-admin-card {
+    margin-bottom: 24px;
+}
+
+.form-questao-admin {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.grupo-form-full {
+    grid-column: 1 / -1;
+}
+
+.badge-danger-adm {
+    background: rgba(231, 76, 60, 0.18);
+    color: var(--status-danger);
+}
+
+.badge-resposta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    background: var(--admin-accent-soft);
+    color: var(--admin-accent);
+    font-weight: 700;
+}
+
+.questao-opcoes-resumo {
+    margin-top: 8px;
+    color: var(--text-soft);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.tabela-questoes th:first-child,
+.tabela-questoes td:first-child {
+    width: 56px;
+}
+
+.tabela-questoes th:nth-child(3),
+.tabela-questoes td:nth-child(3),
+.tabela-questoes th:nth-child(4),
+.tabela-questoes td:nth-child(4) {
+    width: 120px;
+    text-align: center;
+}
+
+.btn-tabela-excluir {
+    padding: 9px 14px;
+}
+
+@media (max-width: 768px) {
+    .cabecalho-aba,
+    .lista-questoes-topo {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .form-questao-admin {
+        grid-template-columns: 1fr;
+    }
+
+    .tabela-questoes {
+        min-width: 720px;
+    }
+}
+
+/* Gerenciamento de usuários comuns */
+.usuario-admin-card {
+    margin-bottom: 20px;
+}
+
+.form-usuario-admin {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.acoes-usuario {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-acao-usuario {
+    padding: 8px 12px;
+}
+
+@media (max-width: 768px) {
+    .form-usuario-admin {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Gerenciamento de conteúdos */
+.conteudo-admin-card {
+    margin-bottom: 20px;
+}
+
+.form-conteudo-admin {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.tabela-conteudos td:first-child {
+    min-width: 240px;
+}
+
+@media (max-width: 768px) {
+    .form-conteudo-admin {
+        grid-template-columns: 1fr;
+    }
+
+    .tabela-conteudos {
+        min-width: 760px;
+    }
+}
+
+/* Home administrativa renovada */
+.admin-home-hero {
+    min-height: 220px;
+    border-radius: 18px;
+    padding: 30px;
+    background: linear-gradient(135deg, #4b168f 0%, #7b1fc2 48%, #1f9d8a 100%);
+    color: #fff;
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(260px, .7fr);
+    align-items: center;
+    gap: 28px;
+    overflow: hidden;
+    margin-bottom: 22px;
+}
+
+.admin-home-kicker {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    opacity: .84;
+    margin-bottom: 10px;
+}
+
+.admin-home-hero h1 {
+    font-size: clamp(26px, 3.2vw, 42px);
+    line-height: 1.05;
+    margin-bottom: 12px;
+    color: #fff;
+}
+
+.admin-home-hero p {
+    max-width: 620px;
+    color: rgba(255,255,255,.86);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.admin-home-visual {
+    min-height: 170px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-home-visual img {
+    width: 112px;
+    height: 112px;
+    border-radius: 28px;
+    background: rgba(255,255,255,.16);
+    padding: 14px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.2);
+}
+
+.admin-home-visual-card {
+    position: absolute;
+    border-radius: 12px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.26);
+    font-weight: 800;
+    backdrop-filter: blur(8px);
+}
+
+.admin-home-visual-card.card-a { top: 4px; left: 16px; }
+.admin-home-visual-card.card-b { right: 8px; top: 54px; }
+.admin-home-visual-card.card-c { left: 44px; bottom: 6px; }
+
+.admin-home-metricas {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.admin-metrica-card {
+    border: 1px solid var(--line-soft);
+    border-radius: 12px;
+    padding: 18px;
+    background: #fff;
+    box-shadow: 0 8px 22px rgba(78, 36, 128, .06);
+}
+
+.admin-metrica-card.alerta {
+    border-color: rgba(231, 76, 60, .25);
+}
+
+.admin-metrica-label {
+    color: var(--text-soft);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.admin-metrica-card strong {
+    display: block;
+    color: var(--admin-accent);
+    font-size: 34px;
+    line-height: 1;
+    margin: 10px 0 6px;
+}
+
+.admin-metrica-card small {
+    color: var(--text-soft);
+    font-size: 12px;
+}
+
+.admin-home-grid {
+    display: grid;
+    grid-template-columns: 1.15fr .85fr;
+    gap: 18px;
+}
+
+.admin-home-panel {
+    background: #fff;
+    border: 1px solid var(--line-soft);
+    border-radius: 12px;
+    padding: 22px;
+}
+
+.admin-home-panel h2 {
+    font-size: 18px;
+    margin-bottom: 16px;
+}
+
+.admin-checklist {
+    display: grid;
+    gap: 14px;
+}
+
+.admin-checklist div,
+.admin-status-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.check-dot,
+.admin-status-line span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #16a34a;
+    flex: 0 0 auto;
+}
+
+.admin-checklist p,
+.admin-home-panel p {
+    color: var(--text-soft);
+    line-height: 1.55;
+}
+
+.admin-home-panel.destaque {
+    background: linear-gradient(180deg, #fff, #f7f3ff);
+}
+
+.admin-status-line {
+    margin-top: 18px;
+    padding: 14px;
+    border-radius: 10px;
+    background: rgba(22, 163, 74, .1);
+    color: #15803d;
+}
+
+@media (max-width: 980px) {
+    .admin-home-hero,
+    .admin-home-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-home-metricas {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .admin-home-metricas {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login ADM - MegaMind</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admStyle.css">
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div class="areaImagem">
+    <img src="img/fundo.png" class="imgFundo" alt="">
+  </div>
+
+  <div class="areaFormulario">
+    <div class="boxFormulario">
+      <h1 class="tituloPagina">Login ADM</h1>
+
+      <form id="form-login-adm" class="formulario">
+        <label class="lblCampo" for="email-adm">E-mail</label>
+        <input type="email" id="email-adm" class="inputTexto" required>
+
+        <label class="lblCampo" for="senha-adm">Senha</label>
+        <div class="input-container">
+          <input type="password" id="senha-adm" class="inputTexto" required>
+          <button type="button" class="btnSenha" onclick="toggleSenhaAdm()">
+            <img id="IconeSenhaAdm" src="img/invisivel.png" class="imgSenha" alt="">
+          </button>
+        </div>
+
+        <p id="mensagem-login-adm" class="mensagem-login-adm"></p>
+
+        <button type="submit" class="btnPrincipal">Entrar no painel</button>
+
+        <div class="boxCadastro">
+          <span>Voltar para</span>
+          <a class="linkCadastro" href="index.html">login do aluno</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function toggleSenhaAdm() {
+      const input = document.getElementById("senha-adm");
+      const icone = document.getElementById("IconeSenhaAdm");
+      const mostrar = input.type === "password";
+      input.type = mostrar ? "text" : "password";
+      icone.src = mostrar ? "img/visivel.png" : "img/invisivel.png";
+    }
+  </script>
+  <script src="js/adm-login.js"></script>
+</body>
+</html>

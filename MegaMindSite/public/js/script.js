@@ -1,13 +1,13 @@
-function toggleSenha(botao) {
+﻿function toggleSenha(botao) {
     const input = botao.parentElement.querySelector("input");
     const icone = botao.querySelector("img");
 
     if (input.type === "password") {
         input.type = "text";
-        icone.src = "../img/olho.png";
+        icone.src = "img/olho.png";
     } else {
         input.type = "password";
-        icone.src = "../img/invisivel.png";
+        icone.src = "img/invisivel.png";
     }
 }
 

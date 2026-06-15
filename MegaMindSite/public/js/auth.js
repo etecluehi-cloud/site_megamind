@@ -1,4 +1,4 @@
-// importaçoes do firebase
+﻿// importaÃ§oes do firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 
 import {
@@ -6,7 +6,8 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
-  onAuthStateChanged
+  onAuthStateChanged,
+  signOut
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 import {
@@ -17,7 +18,7 @@ import {
   updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// configuração do firebase
+// configuraÃ§Ã£o do firebase
 const firebaseConfig = {
   apiKey: "AIzaSyAXoLRatnIuZSEXYENjFGWgloV3-xaDf9Q",
   authDomain: "megamindapp-4e60c.firebaseapp.com",
@@ -27,26 +28,26 @@ const firebaseConfig = {
   appId: "1:114881660257:web:d0b6ae935486429bfb3120"
 };
 
-//inicialização
+//inicializaÃ§Ã£o
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// chave do localStorage — igual ao perfil.js
+// chave do localStorage â€” igual ao perfil.js
 const KEYS = {
   name:   'megamind_nome',
   handle: 'megamind_handle',
   email:  'megamind_email',
 };
 
-// expõe auth e db globalmente para que perfil.js possa usar
+// expÃµe auth e db globalmente para que perfil.js possa usar
 window._mmAuth = auth;
 window._mmDb   = db;
 window._mmDoc  = doc;
 window._mmUpdateDoc = updateDoc;
 
 
-//  verificador de força de senha
+//  verificador de forÃ§a de senha
 window.verificarSenha = function () {
     const senha = document.getElementById("senha").value;
     const container = document.getElementById("forcaContainer");
@@ -62,17 +63,17 @@ window.verificarSenha = function () {
     };
 
     // atualiza checklist
-    atualizarCriterio("c-tamanho",   criterios.tamanho,   "Mínimo 8 caracteres");
-    atualizarCriterio("c-maiuscula", criterios.maiuscula, "Uma letra maiúscula");
-    atualizarCriterio("c-numero",    criterios.numero,    "Um número");
-    atualizarCriterio("c-simbolo",   criterios.simbolo,   "Um símbolo (!@#$...)");
+    atualizarCriterio("c-tamanho",   criterios.tamanho,   "MÃ­nimo 8 caracteres");
+    atualizarCriterio("c-maiuscula", criterios.maiuscula, "Uma letra maiÃºscula");
+    atualizarCriterio("c-numero",    criterios.numero,    "Um nÃºmero");
+    atualizarCriterio("c-simbolo",   criterios.simbolo,   "Um sÃ­mbolo (!@#$...)");
 
-    // pontuação (0–4)
+    // pontuaÃ§Ã£o (0â€“4)
     const pontos = Object.values(criterios).filter(Boolean).length;
 
     // Atualiza barras
     const cores = ["#e74c3c", "#e67e22", "#f1c40f", "#2ecc71"];
-    const labels = ["Fraca", "Razoável", "Boa", "Forte"];
+    const labels = ["Fraca", "RazoÃ¡vel", "Boa", "Forte"];
     const barras = ["barra1", "barra2", "barra3", "barra4"];
 
     barras.forEach((id, i) => {
@@ -92,11 +93,19 @@ window.verificarSenha = function () {
 function atualizarCriterio(id, ok, texto) {
     const el = document.getElementById(id);
     if (!el) return;
-    el.textContent = (ok ? "✓ " : "✗ ") + texto;
+    el.textContent = (ok ? "âœ“ " : "âœ— ") + texto;
     el.classList.toggle("ok", ok);
 }
 
 
+
+function senhaEhForte(senha) {
+  const temTamanho = senha.length >= 8;
+  const temMaiuscula = /[A-Z]/.test(senha);
+  const temNumero = /[0-9]/.test(senha);
+  const temSimbolo = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(senha);
+  return temTamanho && temMaiuscula && temNumero && temSimbolo;
+}
 // cadastro
 window.cadastrar = async function () {
   const nome  = document.getElementById("nome").value.trim();
@@ -108,9 +117,9 @@ window.cadastrar = async function () {
     return;
   }
  
-  // validação de força de senha
+  // validaÃ§Ã£o de forÃ§a de senha
   if (!senhaEhForte(senha)) {
-    alert("Crie uma senha mais forte seguindo os critérios indicados.");
+    alert("Crie uma senha mais forte seguindo os critÃ©rios indicados.");
     return;
   }
   
@@ -120,8 +129,11 @@ window.cadastrar = async function () {
  
     // Salva no Firestore
     await setDoc(doc(db, "usuarios", userCredential.user.uid), {
-      nome:  nome,
-      email: email
+      nome: nome,
+      email: email,
+      status: "ativo",
+      admin: false,
+      tipo: "aluno"
     });
  
     alert("Cadastro realizado com sucesso!");
@@ -130,11 +142,11 @@ window.cadastrar = async function () {
     console.error("Erro no cadastro:", error);
  
     if (error.code === "auth/email-already-in-use") {
-      alert("E-mail já cadastrado.");
+      alert("E-mail jÃ¡ cadastrado.");
     } else if (error.code === "auth/invalid-email") {
-      alert("E-mail inválido.");
+      alert("E-mail invÃ¡lido.");
     } else if (error.code === "auth/weak-password") {
-      alert("Senha fraca (mínimo 6 caracteres).");
+      alert("Senha fraca (mÃ­nimo 6 caracteres).");
     } else {
       alert("Erro: " + error.message);
     }
@@ -153,17 +165,27 @@ window.login = async function () {
   }
 
   try {
-    await signInWithEmailAndPassword(auth, email, senha);
+    const cred = await signInWithEmailAndPassword(auth, email, senha);
+    const usuarioRef = doc(db, "usuarios", cred.user.uid);
+    const usuarioSnap = await getDoc(usuarioRef);
+    const dadosUsuario = usuarioSnap.exists() ? usuarioSnap.data() : {};
+
+    if (dadosUsuario.status === "bloqueado" || dadosUsuario.status === "excluido") {
+      await signOut(auth);
+      alert("Seu acesso está bloqueado. Entre em contato com o suporte.");
+      return;
+    }
+
     window.location.href = "home.html";
   } catch (error) {
     console.error("Erro no login:", error);
 
     if (error.code === "auth/user-not-found") {
-      alert("Usuário não encontrado.");
+      alert("UsuÃ¡rio nÃ£o encontrado.");
     } else if (error.code === "auth/wrong-password") {
       alert("Senha incorreta.");
     } else if (error.code === "auth/invalid-email") {
-      alert("E-mail inválido.");
+      alert("E-mail invÃ¡lido.");
     } else {
       alert("Erro: " + error.message);
     }
@@ -188,31 +210,31 @@ window.recuperarSenha = async function () {
 
     await sendPasswordResetEmail(auth, email, actionCodeSettings);
 
-    alert("Se o e-mail existir, o link de recuperação foi enviado.");
+    alert("Se o e-mail existir, o link de recuperaÃ§Ã£o foi enviado.");
     window.location.href = "index.html";
   } catch (error) {
     console.error("Erro ao recuperar senha:", error);
 
     if (error.code === "auth/invalid-email") {
-      alert("E-mail inválido.");
+      alert("E-mail invÃ¡lido.");
     } else {
       alert("Erro: " + error.message);
     }
   }
 };
 
-// ─────────────────────────────────────────────────────────────
-//  UTILITÁRIO — sincroniza dados do Firestore → localStorage
-//  Regra: localStorage tem prioridade se já estiver preenchido
-//  (significa que o usuário editou o nome no app).
-//  Firestore só é usado na primeira carga (localStorage vazio).
-// ─────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  UTILITÃRIO â€” sincroniza dados do Firestore â†’ localStorage
+//  Regra: localStorage tem prioridade se jÃ¡ estiver preenchido
+//  (significa que o usuÃ¡rio editou o nome no app).
+//  Firestore sÃ³ Ã© usado na primeira carga (localStorage vazio).
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function sincronizarUsuario(user) {
   try {
     // E-mail sempre vem do Firebase Auth
     localStorage.setItem(KEYS.email, user.email);
 
-    // Se o localStorage já tem um nome salvo, mantém ele
+    // Se o localStorage jÃ¡ tem um nome salvo, mantÃ©m ele
     const nomeSalvo = localStorage.getItem(KEYS.name);
     if (nomeSalvo) {
       if (!localStorage.getItem(KEYS.handle)) {
@@ -233,23 +255,23 @@ async function sincronizarUsuario(user) {
     // Fallback: parte do e-mail
     if (!nome) nome = user.email.split("@")[0];
 
-    // Salva no localStorage para as próximas páginas
+    // Salva no localStorage para as prÃ³ximas pÃ¡ginas
     localStorage.setItem(KEYS.name, nome);
     localStorage.setItem(KEYS.handle, nome.split(" ")[0].toLowerCase());
 
     return { nome, email: user.email };
 
   } catch (error) {
-    console.error("Erro ao sincronizar usuário:", error);
+    console.error("Erro ao sincronizar usuÃ¡rio:", error);
     const nomeFallback = localStorage.getItem(KEYS.name) || "Aluno";
     return { nome: nomeFallback, email: user.email };
   }
 }
 
-// ─────────────────────────────────────────────────────────────
-//  HOME.HTML — exibe saudação com nome do usuário
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  HOME.HTML â€” exibe saudaÃ§Ã£o com nome do usuÃ¡rio
 //  Mostra imediatamente do localStorage; confirma com Firebase
-// ─────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 document.addEventListener("DOMContentLoaded", () => {
   const bemVindo = document.getElementById("bemvindo");
   if (!bemVindo) return;
@@ -270,7 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-//  PERFIL.HTML — preenche nome e e-mail
+//  PERFIL.HTML â€” preenche nome e e-mail
 //  Mostra imediatamente do localStorage; confirma com Firebase
 document.addEventListener("DOMContentLoaded", () => {
   const nomePerfil  = document.querySelector(".js-student-name");
@@ -294,3 +316,6 @@ document.addEventListener("DOMContentLoaded", () => {
     emailPerfil.textContent = email;
   });
 });
+
+
+

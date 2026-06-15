@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -6,6 +6,9 @@
     <title>Gerenciar Fale Conosco - MegaMind</title>
     <link rel="stylesheet" href="css/homeStyle.css">
     <link rel="stylesheet" href="css/admStyle.css">
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 <body class="inicio">
     <main class="pagina-painel">
@@ -54,17 +57,17 @@
                     </a>
                 </nav>
 
-                <a class="btn-logout" href="index.html">
+                <button class="btn-logout" type="button" onclick="sairAdm()">
                     <span class="icone-logout">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="currentColor"/>
                         </svg>
                     </span>
                     Sair
-                </a>
+                </button>
             </aside>
 
-            <!-- Conteúdo principal da página -->
+            <!-- ConteÃºdo principal da pÃ¡gina -->
             <section class="conteudo-painel">
 
                 <section class="titulo-secao">
@@ -98,7 +101,7 @@
                                 <th>Assunto</th>
                                 <th>Data</th>
                                 <th>Status</th>
-                                <th>Ações</th>
+                                <th>AÃ§Ãµes</th>
                             </tr>
                         </thead>
                         <tbody id="corpo-tabela-mensagens">
@@ -109,7 +112,7 @@
                     </table>
                 </div>
 
-                <!-- Modal de visualização de mensagem -->
+                <!-- Modal de visualizaÃ§Ã£o de mensagem -->
                 <div id="modal-mensagem" class="modal">
                     <div class="modal-content">
                         <span class="close">&times;</span>
@@ -134,9 +137,9 @@
                             <button class="btn-primario">Enviar Resposta</button>
                         </div>
                         <div class="modal-acoes">
-                            <button class="btn-sucesso">✓ Marcar como Respondido</button>
-                            <button class="btn-neutro">📋 Arquivar</button>
-                            <button class="btn-danger">🗑 Deletar</button>
+                            <button class="btn-sucesso">âœ“ Marcar como Respondido</button>
+                            <button class="btn-neutro">ðŸ“‹ Arquivar</button>
+                            <button class="btn-danger">ðŸ—‘ Deletar</button>
                         </div>
                     </div>
                 </div>
@@ -146,5 +149,7 @@
         </div>
     </main>
 
+    <script src="js/admin-guard.js"></script>
 </body>
 </html>
+

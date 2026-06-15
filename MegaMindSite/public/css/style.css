@@ -276,3 +276,38 @@ body {
         height: 45px;
     }
 }
+.btnLoginAdm {
+    width: 100%;
+    max-width: 200px;
+    min-height: 44px;
+    border: 2px solid var(--roxo-principal);
+    border-radius: 10px;
+    color: var(--roxo-principal);
+    text-decoration: none;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px auto 0;
+    transition: all 0.3s ease;
+}
+
+.btnLoginAdm:hover {
+    background: var(--roxo-principal);
+    color: #fff;
+}
+
+.mensagem-login-adm {
+    min-height: 20px;
+    font-size: 13px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.mensagem-login-adm.erro {
+    color: #e74c3c;
+}
+
+.mensagem-login-adm.info {
+    color: var(--roxo-principal);
+}
