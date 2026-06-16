@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Redação – MegaMind</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="css/transicao.css">
+  <script src="js/transicao.js"></script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -20,6 +24,19 @@
       --border:      #E5E7EB;
     }
 
+    /* ── MODO ESCURO ── */
+    html.dark-mode {
+      --purple:      #A78BFA;
+      --purple-dark: #7C3AED;
+      --purple-light:#2E1A5E;
+      --text:        #EDE9FE;
+      --muted:       #9CA3AF;
+      --red:         #F87171;
+      --bg:          #0F0A1E;
+      --card:        #1A1033;
+      --border:      #2E2450;
+    }
+
     body {
       font-family: 'Poppins', sans-serif;
       background: var(--bg);
@@ -31,7 +48,7 @@
 
     /* ── HEADER (estilo contPort) ── */
     header {
-      background: #fff;
+      background: var(--card);
       border-bottom: 1px solid var(--border);
       padding: 0 24px;
       height: 64px;
@@ -134,7 +151,7 @@
       font-size: 14px;
       font-weight: 600;
       color: var(--text);
-      background: #FAFAFA;
+      background: var(--bg);
       outline: none;
       transition: border-color .2s, box-shadow .2s;
     }
@@ -300,6 +317,16 @@
     const app  = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db   = getFirestore(app);
+
+    // ── Modo escuro (sincroniza com perfil.js via localStorage) ──
+    const DARK_KEY = 'megamind_dark';
+    function aplicarModoEscuro(ativo) {
+      document.documentElement.classList.toggle('dark-mode', ativo);
+    }
+    aplicarModoEscuro(localStorage.getItem(DARK_KEY) === 'true');
+    window.addEventListener('storage', e => {
+      if (e.key === DARK_KEY) aplicarModoEscuro(e.newValue === 'true');
+    });
 
     // ── Contador de linhas ──────────────────────────────────────
     const edtRedacao = document.getElementById("edtRedacao");

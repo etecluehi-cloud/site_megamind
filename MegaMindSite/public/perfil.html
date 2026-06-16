@@ -5,21 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil - Megamind</title>
     <link rel="stylesheet" href="css/perfil.css">
+    <link rel="stylesheet" href="css/transicao.css">
+    <script src="js/transicao.js"></script>
 </head>
 
 <body>
 
-    <!-- â”€â”€ HERO BANNER â”€â”€ -->
+    <!-- ── HERO BANNER ── -->
     <header class="perfil-hero">
 
         <div class="hero-topo">
-    <button class="btn-voltar" onclick="history.back()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M15 18l-6-6 6-6"/>
-        </svg> 
-        Voltar
-    </button>
-</div>
+            <button class="btn-voltar" onclick="history.back()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg> 
+                Voltar
+            </button>
+        </div>
 
         <div class="student-card">
 
@@ -47,7 +49,6 @@
             <div class="student-info">
                 <strong class="student-name js-student-name">Nome do estudante</strong>
                 <span class="student-email js-student-handle">email@exemplo.com</span>
-
             </div>
 
             <button class="edit-profile-btn" id="edit-profile-btn" type="button">
@@ -62,7 +63,7 @@
 
     </header>
 
-    <!-- â”€â”€ CONFIGURAÃ‡Ã•ES â”€â”€ -->
+    <!-- ── CONFIGURAÇÕES ── -->
     <section class="perfil-content">
 
         <div class="settings-group">
@@ -94,6 +95,21 @@
                     <span>Defina sua meta de estudos</span>
                 </div>
                 <span class="row-value js-meta-valor"></span>
+                <span class="arrow-link">></span>
+            </div>
+
+            <!-- NOVA OPÇÃO: Trocar Senha -->
+            <div class="profile-row" id="btn-trocar-senha">
+                <div class="row-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                </div>
+                <div class="settings-info">
+                    <strong>Trocar senha</strong>
+                    <span>Altere sua senha de acesso</span>
+                </div>
                 <span class="arrow-link">></span>
             </div>
         </div>
@@ -135,10 +151,10 @@
 
     </section>
 
-    <!-- â”€â”€ TOAST â”€â”€ -->
+    <!-- ── TOAST ── -->
     <div id="mm-toast" role="status" aria-live="polite"></div>
 
-    <!-- â”€â”€ MODAL PERFIL â”€â”€ -->
+    <!-- ── MODAL PERFIL ── -->
     <div id="mm-modal-perfil">
         <div class="mm-backdrop" id="mm-backdrop-perfil"></div>
         <div class="mm-box">
@@ -173,7 +189,7 @@
         </div>
     </div>
 
-    <!-- â”€â”€ MODAL METAS â”€â”€ -->
+    <!-- ── MODAL METAS ── -->
     <div id="mm-modal-metas">
         <div class="mm-backdrop" id="mm-backdrop-metas"></div>
         <div class="mm-box mm-box-metas">
@@ -183,30 +199,30 @@
 
             <div class="mm-metas-grid">
                 <div class="mm-meta-card">
-                    <span class="mm-meta-icon">ðŸ“</span>
+                    <span class="mm-meta-icon">📝</span>
                     <label>Questões Mat.</label>
                     <div class="mm-meta-input-wrap">
-                        <button class="mm-meta-dec" data-meta="mat">âˆ’</button>
+                        <button class="mm-meta-dec" data-meta="mat">−</button>
                         <input type="number" id="meta-mat" value="10" min="0" max="100">
                         <button class="mm-meta-inc" data-meta="mat">+</button>
                     </div>
                     <span class="mm-meta-label">por dia</span>
                 </div>
                 <div class="mm-meta-card">
-                    <span class="mm-meta-icon">ðŸ“–</span>
+                    <span class="mm-meta-icon">📖</span>
                     <label>Questões Port.</label>
                     <div class="mm-meta-input-wrap">
-                        <button class="mm-meta-dec" data-meta="port">âˆ’</button>
+                        <button class="mm-meta-dec" data-meta="port">−</button>
                         <input type="number" id="meta-port" value="10" min="0" max="100">
                         <button class="mm-meta-inc" data-meta="port">+</button>
                     </div>
                     <span class="mm-meta-label">por dia</span>
                 </div>
                 <div class="mm-meta-card">
-                    <span class="mm-meta-icon">âœï¸</span>
+                    <span class="mm-meta-icon">✏️</span>
                     <label>Redações</label>
                     <div class="mm-meta-input-wrap">
-                        <button class="mm-meta-dec" data-meta="red">âˆ’</button>
+                        <button class="mm-meta-dec" data-meta="red">−</button>
                         <input type="number" id="meta-red" value="1" min="0" max="10">
                         <button class="mm-meta-inc" data-meta="red">+</button>
                     </div>
@@ -221,13 +237,98 @@
         </div>
     </div>
 
+    <!-- ── MODAL TROCAR SENHA ── -->
+    <div id="mm-modal-senha" style="display:none; position:fixed; inset:0; z-index:999; align-items:center; justify-content:center;">
+        <div class="mm-backdrop" id="mm-backdrop-senha" style="position:absolute; inset:0; background:rgba(0,0,0,0.5);"></div>
+        <div class="mm-box" style="position:relative; z-index:1000; margin:auto;" role="dialog" aria-modal="true" aria-labelledby="mm-senha-title">
+            <button class="mm-close" id="mm-close-senha" aria-label="Fechar">&#x2715;</button>
+            <h2 id="mm-senha-title">Trocar senha</h2>
+
+            <div class="mm-field">
+                <label for="mm-senha-atual">Senha atual</label>
+                <div style="position:relative;">
+                    <input type="password" id="mm-senha-atual" placeholder="Digite sua senha atual" autocomplete="current-password">
+                    <button type="button" class="mm-toggle-pass" data-target="mm-senha-atual" aria-label="Mostrar senha">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mm-field">
+                <label for="mm-senha-nova">Nova senha</label>
+                <div style="position:relative;">
+                    <input type="password" id="mm-senha-nova" placeholder="Digite a nova senha" autocomplete="new-password">
+                    <button type="button" class="mm-toggle-pass" data-target="mm-senha-nova" aria-label="Mostrar senha">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mm-field">
+                <label for="mm-senha-confirmar">Confirmar nova senha</label>
+                <div style="position:relative;">
+                    <input type="password" id="mm-senha-confirmar" placeholder="Repita a nova senha" autocomplete="new-password">
+                    <button type="button" class="mm-toggle-pass" data-target="mm-senha-confirmar" aria-label="Mostrar senha">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <p id="mm-senha-erro" style="
+                display: none;
+                font-size: 13px;
+                color: #c0392b;
+                background: #fdecea;
+                border-radius: 8px;
+                padding: 10px 12px;
+                margin: 4px 0 8px;
+            "></p>
+
+            <div class="mm-actions">
+                <button class="mm-btn-cancel" id="mm-cancel-senha">Cancelar</button>
+                <button class="mm-btn-save"   id="mm-save-senha">Salvar senha</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .mm-toggle-pass {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: #888;
+            display: flex;
+            align-items: center;
+        }
+        .mm-toggle-pass svg {
+            width: 18px;
+            height: 18px;
+        }
+        .mm-toggle-pass:hover {
+            color: #6c07ab;
+        }
+        #mm-modal-senha .mm-field input {
+            padding-right: 38px;
+        }
+    </style>
+
     <script src="js/perfil.js"></script>
     <script src="js/avatarUpload.js"></script>
     <script type="module" src="js/auth.js"></script>
 
-
-
 </body>
 </html>
-
-

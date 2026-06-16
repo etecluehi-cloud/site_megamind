@@ -4,15 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Desempenho – Megamind</title>
+<link rel="stylesheet" href="css/transicao.css">
+<script src="js/transicao.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
 <style>
-/* ═══════════════════════════════════════════════════════
-   TOKENS
-═══════════════════════════════════════════════════════ */
 :root {
   --brand:       #6c07ab;
   --brand-deep:  #4a0578;
@@ -38,14 +37,35 @@
   --font:        'Inter', sans-serif;
 }
 
+/*modo escuro*/
+html.dark-mode {
+  --brand:       #a855f7;
+  --brand-deep:  #7c3aed;
+  --brand-mid:   #c084fc;
+  --brand-light: #d8b4fe;
+  --accent:      #e879f9;
+  --accent-2:    #f9a8d4;
+
+  --bg:          #0a0514;
+  --surface:     #120b24;
+  --surface-2:   #1c1035;
+  --surface-3:   #251540;
+
+  --text-1:      #ede9fe;
+  --text-2:      #c4b5fd;
+  --text-3:      #8b7aaa;
+
+  --border:      rgba(168, 85, 247, 0.18);
+  --glow:        0 0 40px rgba(168, 85, 247, 0.20);
+  --shadow-card: 0 8px 32px rgba(0,0,0,0.40);
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { min-height: 100%; font-family: var(--font); background: var(--bg); color: var(--text-1); -webkit-font-smoothing: antialiased; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; border: none; }
 
-/* ═══════════════════════════════════════════════════════
-   FUNDO ANIMADO
-═══════════════════════════════════════════════════════ */
+/*Fundo animado*/
 .bg-deco {
   position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
 }
@@ -58,7 +78,7 @@ button { font: inherit; cursor: pointer; border: none; }
     radial-gradient(ellipse 40% 40% at 50% 110%, rgba(155,56,208,0.12) 0%, transparent 50%);
 }
 
-/* SVG cérebros flutuantes */
+/*Svg cérebros flutuantes*/
 .brain-float {
   position: absolute;
   opacity: 0.06;
@@ -73,9 +93,7 @@ button { font: inherit; cursor: pointer; border: none; }
   66%       { transform: translateY(14px) rotate(-2deg); }
 }
 
-/* ═══════════════════════════════════════════════════════
-   TOPO
-═══════════════════════════════════════════════════════ */
+/*Topo*/
 .topo {
   position: sticky; top: 0; z-index: 100;
   display: flex; align-items: center; gap: 16px;
@@ -84,6 +102,10 @@ button { font: inherit; cursor: pointer; border: none; }
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border-bottom: 1px solid var(--border);
+  transition: background 0.3s;
+}
+html.dark-mode .topo {
+  background: rgba(10, 5, 20, 0.90);
 }
 .topo::after {
   content: ""; position: absolute; bottom: 0; left: 0; right: 0;
@@ -115,9 +137,7 @@ button { font: inherit; cursor: pointer; border: none; }
   font-size: 26px; opacity: .35; user-select: none; min-width: 40px; text-align: right;
 }
 
-/* ═══════════════════════════════════════════════════════
-   PÁGINA
-═══════════════════════════════════════════════════════ */
+/*PÁGINA*/
 .pagina {
   position: relative; z-index: 1;
   padding: 40px 32px 80px;
@@ -125,9 +145,7 @@ button { font: inherit; cursor: pointer; border: none; }
   display: flex; flex-direction: column; gap: 36px;
 }
 
-/* ═══════════════════════════════════════════════════════
-   HERO STATS
-═══════════════════════════════════════════════════════ */
+/*HERO STATS*/
 .hero-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -168,9 +186,7 @@ button { font: inherit; cursor: pointer; border: none; }
 }
 .stat-label { font-size: 12px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; }
 
-/* ═══════════════════════════════════════════════════════
-   SEÇÃO DE GRÁFICOS
-═══════════════════════════════════════════════════════ */
+/*Seção de gráficos*/
 .section-label {
   font-size: 11px; font-weight: 700; letter-spacing: .14em;
   text-transform: uppercase; color: var(--brand-mid);
@@ -496,6 +512,23 @@ const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
+// ── Modo escuro (sincroniza com perfil.js via localStorage) ──
+const DARK_KEY = 'megamind_dark';
+const isDark = () => localStorage.getItem(DARK_KEY) === 'true';
+
+function aplicarModoEscuro(ativo) {
+  document.documentElement.classList.toggle('dark-mode', ativo);
+  // Atualiza cores dos gráficos já instanciados
+  Chart.defaults.color = ativo ? "#c4b5fd" : "#7a6a99";
+  Chart.defaults.borderColor = ativo ? "rgba(168,85,247,0.18)" : "rgba(155,56,208,0.15)";
+  Chart.instances && Object.values(Chart.instances).forEach(c => c.update());
+}
+
+aplicarModoEscuro(isDark());
+window.addEventListener('storage', e => {
+  if (e.key === DARK_KEY) aplicarModoEscuro(e.newValue === 'true');
+});
+
 const CONTEUDOS_MAT = [
   { id: "matematica_basica",                 label: "Mat. Básica",       icon: "2+2" },
   { id: "porcentagem",                       label: "Porcentagem",       icon: "%"   },
@@ -524,15 +557,9 @@ const MATERIAS = [
   { label: "Português",  conteudos: CONTEUDOS_PORT, color: "#d946ef" }
 ];
 
-// Paleta para gráficos
-const PALETTE = [
-  "#9b38d0","#d946ef","#6c07ab","#c97ef5","#f472b6",
-  "#a855f7","#e879f9","#7c3aed","#db2777","#8b5cf6"
-];
-
-// Chart.js defaults para tema escuro
-Chart.defaults.color = "#7a6a99";
-Chart.defaults.borderColor = "rgba(155,56,208,0.15)";
+// Chart.js defaults
+Chart.defaults.color = isDark() ? "#c4b5fd" : "#7a6a99";
+Chart.defaults.borderColor = isDark() ? "rgba(168,85,247,0.18)" : "rgba(155,56,208,0.15)";
 Chart.defaults.font.family = "'Inter', sans-serif";
 
 // ─── Auth guard ──────────────────────────────────────────
@@ -644,6 +671,7 @@ function renderHeroStats(vistos, total, pct, concluidos) {
 
 // ─── Gráfico Pizza ────────────────────────────────────────
 function renderPizza(vistos, pendentes) {
+  const dark = isDark();
   const ctx = document.getElementById("chart-pizza").getContext("2d");
   new Chart(ctx, {
     type: "doughnut",
@@ -651,8 +679,8 @@ function renderPizza(vistos, pendentes) {
       labels: ["Assistidos", "Pendentes"],
       datasets: [{
         data: [vistos, pendentes],
-        backgroundColor: ["#9b38d0", "#eadcff"],
-        borderColor: ["#d946ef", "#d8c2f3"],
+        backgroundColor: ["#9b38d0", dark ? "#1c1035" : "#eadcff"],
+        borderColor:     ["#d946ef", dark ? "#251540" : "#d8c2f3"],
         borderWidth: 2,
         hoverOffset: 8
       }]
@@ -680,7 +708,7 @@ function renderPizza(vistos, pendentes) {
       <span class="legend-pct">${total > 0 ? Math.round(vistos/total*100) : 0}%</span>
     </div>
     <div class="legend-item">
-      <span class="legend-dot" style="background:#eadcff;border:1px solid #d8c2f3"></span>
+      <span class="legend-dot" style="background:${dark ? '#1c1035' : '#eadcff'};border:1px solid ${dark ? '#251540' : '#d8c2f3'}"></span>
       Pendentes
       <span class="legend-pct">${total > 0 ? Math.round(pendentes/total*100) : 0}%</span>
     </div>
@@ -719,7 +747,7 @@ function renderBarMateria(dados) {
         },
         y: {
           grid: { display: false },
-          ticks: { font: { size: 11, weight: "600" }, color: "#b8a8d4" }
+          ticks: { font: { size: 11, weight: "600" }, color: isDark() ? "#c4b5fd" : "#b8a8d4" }
         }
       },
       plugins: {
@@ -734,6 +762,7 @@ function renderBarMateria(dados) {
 }
 
 function renderColCont(dados) {
+  const dark = isDark();
   const ctx = document.getElementById("chart-col").getContext("2d");
   new Chart(ctx, {
     type: "bar",
@@ -752,7 +781,7 @@ function renderColCont(dados) {
         {
           label: "Pendentes",
           data: dados.map(d => d.total - d.vistos),
-          backgroundColor: "rgba(39,28,64,0.85)",
+          backgroundColor: dark ? "rgba(18,11,36,0.95)" : "rgba(39,28,64,0.85)",
           borderColor: "rgba(108,7,171,0.5)",
           borderWidth: 1,
           borderRadius: 8,
@@ -767,17 +796,17 @@ function renderColCont(dados) {
         x: {
           stacked: true,
           grid: { display: false },
-          ticks: { font: { size: 10, weight: "600" }, color: "#b8a8d4", maxRotation: 30 }
+          ticks: { font: { size: 10, weight: "600" }, color: dark ? "#c4b5fd" : "#b8a8d4", maxRotation: 30 }
         },
         y: {
           stacked: true,
-          ticks: { stepSize: 1, color: "#7a6a99" },
+          ticks: { stepSize: 1, color: dark ? "#8b7aaa" : "#7a6a99" },
           grid: { color: "rgba(155,56,208,0.10)" }
         }
       },
       plugins: {
         legend: {
-          labels: { color: "#b8a8d4", font: { size: 12, weight: "600" }, boxWidth: 14, borderRadius: 4 }
+          labels: { color: dark ? "#c4b5fd" : "#b8a8d4", font: { size: 12, weight: "600" }, boxWidth: 14, borderRadius: 4 }
         },
         tooltip: {
           mode: "index",

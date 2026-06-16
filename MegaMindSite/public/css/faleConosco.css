@@ -113,3 +113,87 @@ body.fale-page {
   font-weight: 800;
   cursor: pointer;
 }
+
+/* ═══════════════════════════════════════
+   MODO ESCURO
+═══════════════════════════════════════ */
+
+html.dark-mode body.fale-page {
+  background: #0f1117;
+  color: #f4f4f5;
+}
+
+/* Card principal */
+html.dark-mode .fale-chat-card {
+  background: #181c24;
+  border-color: rgba(255,255,255,.08);
+  box-shadow: 0 16px 45px rgba(0,0,0,.35);
+}
+
+/* Cabeçalho */
+html.dark-mode .fale-chat-header {
+  border-bottom-color: rgba(255,255,255,.08);
+}
+
+html.dark-mode .fale-chat-header h2 {
+  color: #ffffff;
+}
+
+html.dark-mode .fale-chat-header p {
+  color: #aeb6c3;
+}
+
+/* Status */
+html.dark-mode .fale-status {
+  background: rgba(22,163,74,.15);
+  color: #4ade80;
+}
+
+/* Histórico */
+html.dark-mode .fale-historico {
+  background: linear-gradient(
+    180deg,
+    #131720,
+    #181c24
+  );
+}
+
+/* Mensagens */
+html.dark-mode .msg.admin .msg-bolha {
+  background: #252b38;
+  color: #f4f4f5;
+}
+
+html.dark-mode .msg.aguardando .msg-bolha {
+  color: #aeb6c3;
+}
+
+/* Formulário */
+html.dark-mode .fale-form {
+  border-top-color: rgba(255,255,255,.08);
+}
+
+html.dark-mode .fale-form label {
+  color: #c97ef5;
+}
+
+html.dark-mode .fale-form textarea {
+  background: #252b38;
+  color: #ffffff;
+  border-color: rgba(255,255,255,.08);
+}
+
+html.dark-mode .fale-form textarea::placeholder {
+  color: #8d96a6;
+}
+
+html.dark-mode .fale-form textarea:focus {
+  border-color: #9b38d0;
+  box-shadow: 0 0 0 3px rgba(123,47,190,.20);
+}
+
+/* Textos auxiliares */
+html.dark-mode .fale-empty,
+html.dark-mode .painel-vazio {
+  color: #aeb6c3;
+}

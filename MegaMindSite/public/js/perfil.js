@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════
 //  perfil.js — MegaMind
-//  Gerencia: perfil, modo escuro, metas
+//  Gerencia: perfil, modo escuro, metas, senha
 // ═══════════════════════════════════════════════
 
 const KEYS = {
@@ -196,9 +196,9 @@ function inicializarModalPerfil() {
       salvar(KEYS.handle, n.split(' ')[0].toLowerCase());
 
       try {
-        const auth = window._mmAuth;
-        const db = window._mmDb;
-        const docFn = window._mmDoc;
+        const auth     = window._mmAuth;
+        const db       = window._mmDb;
+        const docFn    = window._mmDoc;
         const updateFn = window._mmUpdateDoc;
 
         if (auth && db && docFn && updateFn && auth.currentUser) {
@@ -223,7 +223,7 @@ function inicializarModalPerfil() {
 }
 
 // ───────────────────────────────────────────────
-// METAS — agora redireciona para página
+// METAS — redireciona para página
 // ───────────────────────────────────────────────
 function inicializarModalMetas() {
   const btn = document.getElementById('btn-metas');
@@ -235,11 +235,158 @@ function inicializarModalMetas() {
 }
 
 // ───────────────────────────────────────────────
-// INIT
+// MODAL — TROCAR SENHA
+// ───────────────────────────────────────────────
+function inicializarModalSenha() {
+  const btnAbrirSenha = document.getElementById('btn-trocar-senha');
+  if (!btnAbrirSenha) return;
+
+  const modal         = document.getElementById('mm-modal-senha');
+  const backdrop      = document.getElementById('mm-backdrop-senha');
+  const btnFechar     = document.getElementById('mm-close-senha');
+  const btnCancelar   = document.getElementById('mm-cancel-senha');
+  const btnSalvar     = document.getElementById('mm-save-senha');
+  const inputAtual    = document.getElementById('mm-senha-atual');
+  const inputNova     = document.getElementById('mm-senha-nova');
+  const inputConfirm  = document.getElementById('mm-senha-confirmar');
+  const erroEl        = document.getElementById('mm-senha-erro');
+
+  function mostrarErro(msg) {
+    erroEl.textContent = msg;
+    erroEl.style.display = 'block';
+  }
+
+  function limparErro() {
+    erroEl.textContent = '';
+    erroEl.style.display = 'none';
+  }
+
+  function abrirModal() {
+    inputAtual.value   = '';
+    inputNova.value    = '';
+    inputConfirm.value = '';
+    limparErro();
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    inputAtual.focus();
+  }
+
+  function fecharModal() {
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  btnAbrirSenha.addEventListener('click', abrirModal);
+  btnFechar.addEventListener('click', fecharModal);
+  btnCancelar.addEventListener('click', fecharModal);
+  backdrop.addEventListener('click', fecharModal);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.style.display === 'block') fecharModal();
+  });
+
+  // Botões mostrar/ocultar senha
+  document.querySelectorAll('.mm-toggle-pass').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const targetId = this.dataset.target;
+      const input    = document.getElementById(targetId);
+      if (!input) return;
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+  });
+
+  // Salvar nova senha
+  btnSalvar.addEventListener('click', async () => {
+    limparErro();
+
+    const senhaAtual   = inputAtual.value;
+    const senhaNova    = inputNova.value;
+    const senhaConfirm = inputConfirm.value;
+
+    // Validações básicas
+    if (!senhaAtual || !senhaNova || !senhaConfirm) {
+      mostrarErro('⚠️ Preencha todos os campos.');
+      return;
+    }
+
+    if (senhaNova.length < 8) {
+      mostrarErro('⚠️ A nova senha deve ter pelo menos 8 caracteres.');
+      return;
+    }
+
+    if (senhaNova !== senhaConfirm) {
+      mostrarErro('⚠️ A nova senha e a confirmação não coincidem.');
+      inputConfirm.focus();
+      return;
+    }
+
+    if (senhaAtual === senhaNova) {
+      mostrarErro('⚠️ A nova senha deve ser diferente da senha atual.');
+      return;
+    }
+
+    const auth              = window._mmAuth;
+    const EmailAuthProvider = window._mmEmailAuthProvider;
+    const reauthenticate    = window._mmReauthenticate;
+    const updatePassword    = window._mmUpdatePassword;
+
+    if (!auth || !auth.currentUser) {
+      mostrarErro('⚠️ Usuário não autenticado. Faça login novamente.');
+      return;
+    }
+
+    if (!EmailAuthProvider || !reauthenticate || !updatePassword) {
+      mostrarErro('⚠️ Erro interno: módulo de autenticação não carregado.');
+      return;
+    }
+
+    btnSalvar.disabled    = true;
+    btnSalvar.textContent = 'Salvando...';
+
+    try {
+      // Reautentica com a senha atual para confirmar identidade
+      const credential = EmailAuthProvider.credential(
+        auth.currentUser.email,
+        senhaAtual
+      );
+      await reauthenticate(auth.currentUser, credential);
+
+      // Atualiza a senha
+      await updatePassword(auth.currentUser, senhaNova);
+
+      fecharModal();
+      showToast('✅ Senha alterada com sucesso!');
+
+    } catch (err) {
+      console.error('Erro ao trocar senha:', err);
+
+      if (
+        err.code === 'auth/wrong-password' ||
+        err.code === 'auth/invalid-credential'
+      ) {
+        mostrarErro('❌ Senha atual incorreta. Tente novamente.');
+        inputAtual.focus();
+      } else if (err.code === 'auth/weak-password') {
+        mostrarErro('⚠️ A nova senha é muito fraca. Use letras, números e símbolos.');
+      } else if (err.code === 'auth/requires-recent-login') {
+        mostrarErro('⚠️ Por segurança, faça login novamente antes de trocar a senha.');
+      } else {
+        mostrarErro('❌ Erro ao alterar senha: ' + err.message);
+      }
+    } finally {
+      btnSalvar.disabled    = false;
+      btnSalvar.textContent = 'Salvar senha';
+    }
+  });
+}
+
+// ───────────────────────────────────────────────
+// INIT — apenas uma vez, quando o DOM estiver pronto
 // ───────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   inicializarModoEscuro();
   carregarPerfil();
   inicializarModalPerfil();
   inicializarModalMetas();
+  inicializarModalSenha();
 });

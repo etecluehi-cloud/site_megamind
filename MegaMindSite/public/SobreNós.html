@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/otherStyle.css">
+<link rel="stylesheet" href="css/transicao.css">
+<script src="js/transicao.js"></script>
 <link rel="stylesheet" href="css/perfil.css">
 
 <style>
@@ -225,6 +227,101 @@ button { font: inherit; cursor: pointer; border: none; }
   margin-bottom: 4px;
 }
 .strip-label { font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; }
+
+/* ═══════════════════════════════════════
+   MODO ESCURO
+═══════════════════════════════════════ */
+
+html.dark-mode {
+  --bg: #0f1117;
+  --surface: #181c24;
+  --surface-2: #212734;
+  --surface-3: #2a3142;
+
+  --text-1: #f4f4f5;
+  --text-2: #c7cad1;
+  --text-3: #9aa1af;
+
+  --border: rgba(255,255,255,.08);
+
+  --glow: 0 0 40px rgba(108,7,171,.18);
+  --shadow: 0 8px 32px rgba(0,0,0,.35);
+}
+
+/* Fundo */
+html.dark-mode body {
+  background: var(--bg);
+  color: var(--text-1);
+}
+
+/* Topo */
+html.dark-mode .topo {
+  background: rgba(15,17,23,.90);
+  border-bottom-color: rgba(255,255,255,.08);
+}
+
+html.dark-mode .topo-titulo {
+  color: var(--text-1);
+}
+
+html.dark-mode .btn-voltar {
+  background: rgba(108,7,171,.25);
+}
+
+/* Cards */
+html.dark-mode .card,
+html.dark-mode .team-card,
+html.dark-mode .valor-item,
+html.dark-mode .strip-item {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+/* Títulos */
+html.dark-mode .card-title,
+html.dark-mode .valor-titulo,
+html.dark-mode .team-name {
+  color: var(--text-1);
+}
+
+/* Textos */
+html.dark-mode .card p,
+html.dark-mode .valor-desc,
+html.dark-mode .team-role,
+html.dark-mode .strip-label {
+  color: var(--text-2);
+}
+
+/* Seção */
+html.dark-mode .section-label::after {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,.10),
+    transparent
+  );
+}
+
+/* Faixa de estatísticas */
+html.dark-mode .strip-item {
+  background: var(--surface-2);
+}
+
+/* Valores */
+html.dark-mode .valor-item {
+  background: var(--surface-2);
+}
+
+/* Time */
+html.dark-mode .team-card {
+  background: var(--surface-2);
+}
+
+/* Hero continua com destaque */
+html.dark-mode .hero-sobre {
+  box-shadow:
+    0 0 40px rgba(108,7,171,.25),
+    0 8px 32px rgba(0,0,0,.45);
+}
 
 /* ── Responsivo ── */
 @media (max-width: 700px) {

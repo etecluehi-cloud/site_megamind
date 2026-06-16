@@ -6,10 +6,21 @@
   <title>Questões – EduApp TCC</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
-  <!-- Firebase SDK (compat) -->
+  <link rel="stylesheet" href="css/transicao.css">
+  <script src="js/transicao.js"></script>
+
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+  <!-- ── MODO ESCURO: aplica ANTES do render para evitar flash ── -->
+  <script>
+    (function () {
+      if (localStorage.getItem('megamind_dark') === 'true') {
+        document.documentElement.classList.add('dark-mode');
+      }
+    })();
+  </script>
 
   <style>
     :root {
@@ -30,6 +41,33 @@
       --radius-sm: 10px;
     }
 
+    /* ── MODO ESCURO ── */
+    html.dark-mode {
+      --bg:        #0F0F1A;
+      --card:      #1C1C2E;
+      --border:    rgba(157,85,212,.18);
+      --purple-bg: #2A1A3E;
+      --green-bg:  #0D2818;
+      --red-bg:    #2D0E0E;
+      --text:      #E8E8F0;
+      --muted:     #9CA3AF;
+    }
+    html.dark-mode body            { background: var(--bg); color: var(--text); }
+    html.dark-mode .topbar         { background: #1C1C2E; border-bottom-color: rgba(157,85,212,.15); }
+    html.dark-mode .mat-card       { background: var(--card); border-color: var(--border); }
+    html.dark-mode .mat-card:hover { box-shadow: 0 6px 24px rgba(157,85,212,.18); }
+    html.dark-mode .q-card         { background: var(--card); border-color: var(--border); }
+    html.dark-mode .alt-btn        { background: var(--card); border-color: var(--border); color: var(--text); }
+    html.dark-mode .alt-btn:hover:not(:disabled) { background: var(--purple-bg); }
+    html.dark-mode .alt-btn.correta { background: var(--green-bg); }
+    html.dark-mode .alt-btn.errada  { background: var(--red-bg); }
+    html.dark-mode .progress-bar-wrap { background: rgba(157,85,212,.15); }
+    html.dark-mode .stat-box       { background: var(--card); border-color: var(--border); }
+    html.dark-mode .result-bar-wrap { background: rgba(157,85,212,.12); }
+    html.dark-mode .result-msg     { background: var(--card); border-color: var(--border); color: var(--muted); }
+    html.dark-mode .result-msg strong { color: var(--text); }
+    html.dark-mode .toast          { background: #E8E8F0; color: #0F0F1A; }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -43,9 +81,6 @@
     .screen { display: none; }
     .screen.active { display: block; }
 
-    /* ══════════════════════════════════════════
-       HEADER — igual ao contPort.html do site
-    ══════════════════════════════════════════ */
     .topbar {
       background: #FFFFFF;
       border-bottom: 1px solid rgba(123,47,190,.1);
@@ -58,7 +93,6 @@
       z-index: 100;
     }
 
-    /* Lado esquerdo: botão voltar */
     .topbar-left { width: 120px; display: flex; align-items: center; }
 
     .topbar-back {
@@ -79,7 +113,6 @@
     .topbar-back:hover { background: var(--purple-bg); }
     .topbar-back svg { flex-shrink: 0; }
 
-    /* Centro: label + título */
     .topbar-center {
       flex: 1;
       display: flex;
@@ -101,12 +134,8 @@
       color: var(--text);
     }
 
-    /* Lado direito: espaço espelho */
     .topbar-right { width: 120px; }
 
-    /* ══════════════════════════════════════════
-       TELA 1 — SELEÇÃO DE MATÉRIAS
-    ══════════════════════════════════════════ */
     #screen-materias-content {
       max-width: 1080px;
       margin: 0 auto;
@@ -121,7 +150,6 @@
     @media (max-width: 860px) { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 520px) { .cards-grid { grid-template-columns: 1fr; } }
 
-    /* Card — idêntico ao padrão contPort */
     .mat-card {
       background: #FFFFFF;
       border: 1px solid var(--border);
@@ -146,7 +174,6 @@
       margin-bottom: 12px;
     }
 
-    /* Ícone — quadrado roxo com gradiente, igual ao português */
     .mat-card-icon {
       width: 44px; height: 44px;
       border-radius: 11px;
@@ -171,7 +198,6 @@
       line-height: 1.4;
     }
 
-    /* Linha divisória fina */
     .mat-card-divider {
       height: 1px;
       background: rgba(123,47,190,.1);
@@ -183,16 +209,12 @@
       color: var(--muted);
     }
 
-    /* ══════════════════════════════════════════
-       TELA 2 — QUESTÕES
-    ══════════════════════════════════════════ */
     #screen-questoes-content {
       max-width: 720px;
       margin: 0 auto;
       padding: 32px 24px 60px;
     }
 
-    /* Barra de progresso */
     .progress-bar-wrap {
       background: rgba(123,47,190,.1);
       border-radius: 100px;
@@ -313,7 +335,6 @@
     .btn-proxima.show { display: block; }
     .btn-proxima:hover { opacity: .88; transform: translateY(-1px); }
 
-    /* Loading */
     .loading { text-align: center; padding: 56px 0; color: var(--muted); font-size: .92rem; }
     .spinner {
       width: 36px; height: 36px;
@@ -325,9 +346,6 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ══════════════════════════════════════════
-       TELA 3 — RESULTADO
-    ══════════════════════════════════════════ */
     #screen-resultado-content {
       max-width: 500px;
       margin: 0 auto;
@@ -414,7 +432,6 @@
     }
     .btn-voltar-mat:hover { opacity: .88; }
 
-    /* Toast */
     .toast {
       position: fixed;
       bottom: 28px;
@@ -547,11 +564,7 @@
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- ══════════════════════════════════════════════════════════
-     LÓGICA — espelha TelaQuestoes.java + salvarBlocoGamificacao
-══════════════════════════════════════════════════════════ -->
 <script>
-  // ── CONFIG FIREBASE ─────────────────────────────────────
   const firebaseConfig = {
     apiKey: "AIzaSyAXoLRatnIuZSEXYENjFGWgloV3-xaDf9Q",
     authDomain: "megamindapp-4e60c.firebaseapp.com",
@@ -560,11 +573,10 @@
     messagingSenderId: "114881660257",
     appId: "1:114881660257:web:d0b6ae935486429bfb3120"
   };
-firebase.initializeApp(firebaseConfig);
+  firebase.initializeApp(firebaseConfig);
   const db   = firebase.firestore();
   const auth = firebase.auth();
 
-  // ── CATÁLOGO DE MATÉRIAS (mesmo TelaSecaoQuestoesMat) ───
   const MATERIAS = [
     { id: "geometria_plana",       nome: "Geometria Plana",       desc: "Perímetros, áreas e figuras planas",         icon: "📐" },
     { id: "geometria_espacial",    nome: "Geometria Espacial",    desc: "Sólidos, volumes e superfícies",             icon: "🔷" },
@@ -584,7 +596,6 @@ firebase.initializeApp(firebaseConfig);
   const COLECAO   = "questoes_matematica";
   const MAX_QUEST = 5;
 
-  // ── ESTADO ───────────────────────────────────────────────
   let listaQuestoes    = [];
   let indiceAtual      = 0;
   let jaRespondeu      = false;
@@ -593,7 +604,6 @@ firebase.initializeApp(firebaseConfig);
   let materiaAtualNome = "";
   let materiaAtualId   = "";
 
-  // ── UTILITÁRIOS ──────────────────────────────────────────
   function shuffle(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -615,7 +625,6 @@ firebase.initializeApp(firebaseConfig);
     setTimeout(() => t.classList.remove('show'), dur);
   }
 
-  // ── RENDERIZA CARDS ──────────────────────────────────────
   function renderCards() {
     const grid = document.getElementById('cards-container');
     grid.innerHTML = '';
@@ -638,7 +647,6 @@ firebase.initializeApp(firebaseConfig);
     });
   }
 
-  // ── INICIA BLOCO ─────────────────────────────────────────
   function iniciarBloco(conteudoId, nomeMateria) {
     materiaAtualNome = nomeMateria;
     materiaAtualId   = conteudoId;
@@ -659,7 +667,6 @@ firebase.initializeApp(firebaseConfig);
     buscarQuestoes(conteudoId);
   }
 
-  // ── BUSCA QUESTÕES NO FIRESTORE ──────────────────────────
   function buscarQuestoes(conteudoId) {
     db.collection(COLECAO).doc(conteudoId).get()
       .then(doc => {
@@ -688,7 +695,6 @@ firebase.initializeApp(firebaseConfig);
       .catch(err => { showToast("Erro: " + err.message); showScreen('screen-materias'); });
   }
 
-  // ── EXIBE QUESTÃO ────────────────────────────────────────
   function exibirQuestao(idx) {
     jaRespondeu = false;
     const q     = listaQuestoes[idx];
@@ -698,7 +704,6 @@ firebase.initializeApp(firebaseConfig);
     document.getElementById('progress-fill').style.width     = `${(idx / total) * 100}%`;
     document.getElementById('q-enunciado').textContent       = q.enunciado;
 
-    // Shuffle das alternativas — igual ao app
     const alts = [
       { texto: q.alternativa_a, correta: q.resposta_correta === 'A' },
       { texto: q.alternativa_b, correta: q.resposta_correta === 'B' },
@@ -726,7 +731,6 @@ firebase.initializeApp(firebaseConfig);
     document.getElementById('btn-proxima').classList.remove('show');
   }
 
-  // ── RESPONDER ────────────────────────────────────────────
   function responder(btn, letraEscolhida, letraCorreta) {
     if (jaRespondeu) return;
     jaRespondeu = true;
@@ -755,7 +759,6 @@ firebase.initializeApp(firebaseConfig);
     document.getElementById('btn-proxima').classList.add('show');
   }
 
-  // ── PRÓXIMA / FIM ────────────────────────────────────────
   document.getElementById('btn-proxima').addEventListener('click', () => {
     if (indiceAtual < listaQuestoes.length - 1) {
       indiceAtual++;
@@ -765,7 +768,6 @@ firebase.initializeApp(firebaseConfig);
     }
   });
 
-  // ── RESULTADO ────────────────────────────────────────────
   function mostrarResultado() {
     const total = listaQuestoes.length;
     const pct   = Math.round((totalAcertos / total) * 100);
@@ -793,7 +795,6 @@ firebase.initializeApp(firebaseConfig);
     if (user) salvarXP(user.uid, totalAcertos);
   }
 
-  // ── SALVAR XP — mesma lógica de salvarBlocoGamificacao ──
   function salvarXP(uid, acertos) {
     const hoje  = new Date().toLocaleDateString('pt-BR');
     const acertouMinimo = acertos >= 3;
@@ -815,11 +816,10 @@ firebase.initializeApp(firebaseConfig);
       if (acertouMinimo) {
         novosPontos = pontos + 50;
         if (hoje === ultimoBloco) {
-          // já jogou hoje — streak inalterado
         } else if (ontemStr === ultimoBloco || ultimoBloco === '') {
           novoStreak = streak + 1;
         } else {
-          novoStreak = 1; // pulou um dia → reinicia
+          novoStreak = 1;
         }
       }
 
@@ -831,12 +831,10 @@ firebase.initializeApp(firebaseConfig);
     });
   }
 
-  // ── NAVEGAÇÃO ────────────────────────────────────────────
   document.getElementById('btn-back-questoes').addEventListener('click',  () => showScreen('screen-materias'));
   document.getElementById('btn-back-resultado').addEventListener('click', () => showScreen('screen-materias'));
   document.getElementById('btn-voltar-materias').addEventListener('click',() => showScreen('screen-materias'));
 
-  // ── INIT ─────────────────────────────────────────────────
   renderCards();
 </script>
 </body>
