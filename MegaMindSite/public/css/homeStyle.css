@@ -188,7 +188,7 @@ svg:not(.icone-conteudo svg):not(.icone-navegacao svg) {
     background: linear-gradient(130deg, #4a0480 0%, #6c07ab 40%, #8e1acc 70%, #a020d8 100%);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 16px;
 }
 
