@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <base href="../">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - MegaMind</title>
+    <link rel="stylesheet" href="css/homeStyle.css">
+    <link rel="stylesheet" href="css/admStyle.css">
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="inicio">
+    <main class="pagina-painel">
+        <div class="estrutura-painel">
+            <!-- Menu lateral principal -->
+            <aside class="barra-lateral-painel" aria-label="Menu lateral administrativo">
+                <nav class="navegacao-lateral">
+                    <div class="admin-header">
+                        <h2>Painel Admin</h2>
+                    </div>
+                    
+                    <a class="link-lateral ativo" href="adm-home.html" aria-current="page">
+                        <span class="icone-navegacao">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M4 11.2 12 5l8 6.2V19a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z" fill="currentColor"/>
+                            </svg>
+                        </span>
+                        Dashboard
+                    </a>
+                    
+                    <a class="link-lateral" href="adm-cadastrar.html">
+                        <span class="icone-navegacao">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="currentColor"/>
+                            </svg>
+                        </span>
+                        Cadastrar Adms
+                    </a>
+                    
+                    <a class="link-lateral" href="adm-gerenciar-fale.html">
+                        <span class="icone-navegacao">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" fill="currentColor"/>
+                            </svg>
+                        </span>
+                        Gerenciar Fale Conosco
+                    </a>
+                    
+                    <a class="link-lateral" href="adm-gerenciar-dashboard.html">
+                        <span class="icone-navegacao">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M3 13h2v8H3zm4-8h2v16H7zm4-2h2v18h-2zm4 4h2v14h-2zm4-2h2v16h-2z" fill="currentColor"/>
+                            </svg>
+                        </span>
+                        Gerenciar Dashboard
+                    </a>
+                </nav>
+
+                <button class="btn-logout" type="button" onclick="sairAdm()">
+                    <span class="icone-logout">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="currentColor"/>
+                        </svg>
+                    </span>
+                    Sair
+                </button>
+            </aside>
+
+            <!-- ConteÃºdo principal da pÃ¡gina -->
+            <section class="conteudo-painel">
+
+                <section class="admin-home-hero" aria-label="Boas-vindas administrativo">
+                    <div class="admin-home-hero-texto">
+                        <span class="admin-home-kicker">Painel administrativo</span>
+                        <h1>Bem-vindo, Administrador <span id="nome-admin-home">MegaMind</span></h1>
+                        <p>Acompanhe o funcionamento do cursinho, revise os dados principais e mantenha a plataforma pronta para os alunos.</p>
+                    </div>
+                    <div class="admin-home-visual" aria-hidden="true">
+                        <img src="img/logo.png" alt="">
+                        <div class="admin-home-visual-card card-a">ENEM</div>
+                        <div class="admin-home-visual-card card-b">Questões</div>
+                        <div class="admin-home-visual-card card-c">Conteúdos</div>
+                    </div>
+                </section>
+
+                <section class="admin-home-metricas" aria-label="Resumo do sistema">
+                    <article class="admin-metrica-card">
+                        <span class="admin-metrica-label">Alunos ativos</span>
+                        <strong id="home-alunos-ativos">0</strong>
+                        <small>Usuários comuns liberados</small>
+                    </article>
+                    <article class="admin-metrica-card">
+                        <span class="admin-metrica-label">Conteúdos</span>
+                        <strong id="home-conteudos">0</strong>
+                        <small>Aulas cadastradas no banco</small>
+                    </article>
+                    <article class="admin-metrica-card">
+                        <span class="admin-metrica-label">Questões</span>
+                        <strong id="home-questoes">0</strong>
+                        <small>Itens de Matemática e Português</small>
+                    </article>
+                    <article class="admin-metrica-card alerta">
+                        <span class="admin-metrica-label">Bloqueados</span>
+                        <strong id="home-bloqueados">0</strong>
+                        <small>Contas com acesso pausado</small>
+                    </article>
+                </section>
+
+                <section class="admin-home-grid" aria-label="Rotina administrativa">
+                    <article class="admin-home-panel">
+                        <h2>Resumo da rotina</h2>
+                        <div class="admin-checklist">
+                            <div>
+                                <span class="check-dot"></span>
+                                <p>Revise conteúdos novos antes de liberar para os alunos.</p>
+                            </div>
+                            <div>
+                                <span class="check-dot"></span>
+                                <p>Confira se cada questão tem cinco alternativas e resposta correta.</p>
+                            </div>
+                            <div>
+                                <span class="check-dot"></span>
+                                <p>Acompanhe usuários bloqueados para evitar acessos indevidos.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="admin-home-panel destaque">
+                        <h2>Status do ambiente</h2>
+                        <p id="home-status-admin">Verificando acesso administrativo...</p>
+                        <div class="admin-status-line">
+                            <span></span>
+                            <strong>Firestore conectado</strong>
+                        </div>
+                    </article>
+                </section>
+
+            </section>
+        </div>
+    </main>
+
+    
+    
+</body>
+</html>
+
+
+
+
+

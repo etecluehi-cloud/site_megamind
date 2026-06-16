@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <base href="../">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matemática – Megamind</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/conteudo-matematica.css">
+    
+    
+</head>
+<body>
+
+    <header class="topo">
+        <a class="btn-voltar" href="home.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Voltar
+        </a>
+        <div class="topo-centro">
+            <span class="topo-materia">Matemática</span>
+            <h1 class="topo-titulo">Escolha um conteúdo</h1>
+        </div>
+        <div class="topo-deco" aria-hidden="true">∑</div>
+    </header>
+
+    <main class="pagina">
+        <div class="grade" id="grade-conteudos">
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+            <div class="card-skeleton"></div>
+        </div>
+    </main>
+
+    <div id="modal-overlay" class="modal-overlay"></div>
+
+    <aside id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+        <div class="modal-inner">
+            <button class="modal-fechar" id="modal-fechar" aria-label="Fechar">✕</button>
+            <h2 id="modal-titulo" class="modal-titulo"></h2>
+            <p  id="modal-resumo"  class="modal-resumo"></p>
+            <div class="modal-secao-label">Vídeos</div>
+            <div id="modal-videos" class="modal-videos"></div>
+            <button id="modal-btn-questoes" class="btn-questoes" disabled>
+                Ir para as Questões →
+            </button>
+        </div>
+    </aside>
+
+    <div id="mm-toast" role="status" aria-live="polite"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const grade = document.getElementById('grade-conteudos');
+      if (grade) grade.innerHTML = `<div class="card-conteudo">
+        <div class="card-icon">2+2</div>
+        <div class="card-body"><h3>Matem?tica B?sica</h3><p>Opera??es fundamentais e aritm?tica</p>
+        <div class="progress-wrap"><div class="progress-bar" style="width:40%"></div></div>
+        <span class="progress-label">Progresso: 40%</span></div></div><div class="card-conteudo">
+        <div class="card-icon">%</div>
+        <div class="card-body"><h3>Porcentagem</h3><p>Raz?es, propor??es e porcentagem</p>
+        <div class="progress-wrap"><div class="progress-bar" style="width:20%"></div></div>
+        <span class="progress-label">Progresso: 20%</span></div></div><div class="card-conteudo">
+        <div class="card-icon">?</div>
+        <div class="card-body"><h3>?lgebra</h3><p>Equa??es e express?es alg?bricas</p>
+        <div class="progress-wrap"><div class="progress-bar" style="width:60%"></div></div>
+        <span class="progress-label">Progresso: 60%</span></div></div><div class="card-conteudo">
+        <div class="card-icon">f(x)</div>
+        <div class="card-body"><h3>Fun??es</h3><p>Fun??es e seus gr?ficos</p>
+        <div class="progress-wrap"><div class="progress-bar" style="width:0%"></div></div>
+        <span class="progress-label">Progresso: 0%</span></div></div><div class="card-conteudo">
+        <div class="card-icon">?</div>
+        <div class="card-body"><h3>Geometria Plana</h3><p>Figuras bidimensionais e seus atributos</p>
+        <div class="progress-wrap"><div class="progress-bar" style="width:30%"></div></div>
+        <span class="progress-label">Progresso: 30%</span></div></div><div class="card-conteudo">
+        <div class="card-icon">?</div>
+        <div class="card-body"><h3>Geometria Espacial</h3><p>Figuras tridimensionais e volumes</p>
+        <div class="progress-wrap"><div class="progress-bar" style="width:10%"></div></div>
+        <span class="progress-label">Progresso: 10%</span></div></div>`;
+    });
+    </script>
+</body>
+</html>

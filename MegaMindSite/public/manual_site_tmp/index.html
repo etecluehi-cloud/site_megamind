@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <base href="../">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- conexÃ£o com fontes do google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- fonte utilizada -->
+    <link href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Ã¡rea da imagem de fundo -->
+    <div class="areaImagem">
+        <img src="img/fundo.png" class="imgFundo" alt="">
+    </div>
+
+    <!-- Ã¡rea principal do formulÃ¡rio -->
+    <div class="areaFormulario">
+
+        <!-- caixa que contÃ©m o formulÃ¡rio -->
+        <div class="boxFormulario">
+
+            <!-- tÃ­tulo -->
+            <h1 class="tituloPagina">Login</h1>
+
+            <!-- formulÃ¡rio de login -->
+            <form class="formulario" onsubmit="event.preventDefault(); login();">
+
+                <label class="lblCampo">E-mail</label>
+                <input type="email" id="email" class="inputTexto" required>
+
+                <label class="lblCampo">Senha</label>
+
+                <div class="input-container">
+
+                    <input type="password" id="senha" class="inputTexto" required>
+
+                    <!-- botÃ£o para mostrar ou ocultar a senha -->
+                    <button type="button" class="btnSenha" onclick="toggleSenha()">
+                        <img id="IconeSenha" src="img/invisivel.png" class="imgSenha" alt="">
+                    </button>
+
+                </div>
+
+                <button type="submit" class="btnPrincipal">Login</button>
+
+                <a class="btnLoginAdm" href="adm-login.html">Entrar como ADM</a>
+
+                <!-- link para recuperaÃ§Ã£o de senha -->
+                <a class="linkSenha" href="ForgotKey.html">
+                    <span style="color: #6c07ab;">Esqueceu a senha?</span>
+                </a>
+
+                <!-- Ã¡rea de cadastro -->
+                <div class="boxCadastro">
+                    <span>NÃ£o tem uma conta?</span>
+                    <a class="linkCadastro" href="cad.html">Cadastre-se</a>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- arquivo JavaScript de autenticaÃ§Ã£o -->
+    
+
+    <!-- arquivo JavaScript principal -->
+    <script src="js/script.js"></script>
+
+</body>
+</html>
+
+

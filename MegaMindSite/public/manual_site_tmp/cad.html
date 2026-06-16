@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <base href="../">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- fonte utilizada -->
+    <link href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Ã¡rea da imagem de fundo -->
+    <div class="areaImagem">
+        <img src="img/fundo.png" class="imgFundo" alt="">
+    </div>
+
+    <!-- Ã¡rea principal do formulÃ¡rio -->
+    <div class="areaFormulario">
+
+        <!-- link para voltar Ã  pÃ¡gina de login -->
+        <a class="linkVoltar" href="index.html">
+
+            <button type="submit" class="btnVoltar">
+                <img class="imgVoltar" src="img/voltar.png" alt="">
+            </button>
+
+        </a>
+
+        <!-- caixa do formulÃ¡rio -->
+        <div class="boxFormulario">
+
+            <h1 class="tituloPagina">Cadastro</h1>
+
+            <!-- formulÃ¡rio de cadastro -->
+            <form class="formulario" onsubmit="return false;">
+
+                <label class="lblCampo">Nome</label>
+                <input type="text" id="nome" class="inputTexto" required>
+
+                <label class="lblCampo">E-mail</label>
+                <input type="email" id="email" class="inputTexto" required>
+
+                <label class="lblCampo">Senha</label>
+
+                <div class="input-container">
+
+                    <input
+                        type="password"
+                        id="senha"
+                        class="inputTexto"
+                        required
+                        oninput="verificarSenha()"
+                    >
+
+                    <!-- botÃ£o para mostrar ou ocultar a senha -->
+                    <button
+                        type="button"
+                        class="btnSenha"
+                        onclick="toggleSenha(this)"
+                    >
+                        <img
+                            id="IconeSenha"
+                            src="img/invisivel.png"
+                            class="imgSenha"
+                            alt=""
+                        >
+                    </button>
+
+                </div>
+
+                <!-- Ã¡rea de verificaÃ§Ã£o da forÃ§a da senha -->
+                <div class="forca-container" id="forcaContainer">
+
+                    <!-- barras de forÃ§a da senha -->
+                    <div class="forca-barras">
+                        <div class="barra" id="barra1"></div>
+                        <div class="barra" id="barra2"></div>
+                        <div class="barra" id="barra3"></div>
+                        <div class="barra" id="barra4"></div>
+                    </div>
+
+                    <!-- texto indicando a forÃ§a da senha -->
+                    <span class="forca-label" id="forcaLabel"></span>
+
+                    <!-- critÃ©rios para uma senha forte -->
+                    <ul class="criterios">
+                        <li id="c-tamanho">âœ— MÃ­nimo 8 caracteres</li>
+                        <li id="c-maiuscula">âœ— Uma letra maiÃºscula</li>
+                        <li id="c-numero">âœ— Um nÃºmero</li>
+                        <li id="c-simbolo">âœ— Um sÃ­mbolo (!@#$...)</li>
+                    </ul>
+
+                </div>
+
+                <button onclick="cadastrar()" type="button" class="btnPrincipal">
+                    Cadastre-se
+                </button>
+
+                <!-- link para login -->
+                <div class="boxCadastro">
+                    <span>JÃ¡ tem conta?</span>
+                    <a class="linkCadastro" href="index.html">Logar</a>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- bibliotecas do Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+
+    <!-- arquivo JavaScript de autenticaÃ§Ã£o -->
+    
+    <script src="js/script.js"></script>
+
+</body>
+</html>
+
+

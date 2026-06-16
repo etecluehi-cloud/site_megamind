@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <base href="../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fale Conosco - MegaMind</title>
+  <link rel="stylesheet" href="css/perfil.css">
+  <link rel="stylesheet" href="css/faleConosco.css">
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="fale-page">
+  <header class="fale-topbar">
+    <button class="btn-voltar" type="button" onclick="history.back()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      Voltar
+    </button>
+    <div>
+      <span>Atendimento</span>
+      <h1>Fale conosco</h1>
+    </div>
+  </header>
+
+  <main class="fale-shell">
+    <section class="fale-chat-card">
+      <div class="fale-chat-header">
+        <div>
+          <h2>Suas dúvidas</h2>
+          <p>Envie uma pergunta e acompanhe a resposta da equipe MegaMind.</p>
+        </div>
+        <span id="fale-status" class="fale-status">Conectando...</span>
+      </div>
+
+      <div id="fale-historico" class="fale-historico">
+        <div class="fale-empty">Carregando histórico...</div>
+      </div>
+
+      <form id="form-duvida" class="fale-form">
+        <label for="campo-duvida">Nova dúvida</label>
+        <textarea id="campo-duvida" rows="4" placeholder="Digite sua dúvida..." required></textarea>
+        <button id="btn-enviar-duvida" type="submit">Enviar dúvida</button>
+      </form>
+    </section>
+  </main>
+
+  <div id="mm-toast" role="status" aria-live="polite"></div>
+  
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const st = document.getElementById('fale-status'); if (st) st.textContent = 'Conectado';
+  const hist = document.getElementById('fale-historico');
+  if (hist) hist.innerHTML = `<article class="msg aluno"><div class="msg-bolha"><span class="msg-label">Voc?</span><p>Tenho uma d?vida sobre meu progresso nos conte?dos.</p><small>Hoje, 10:20</small></div></article><article class="msg admin"><div class="msg-bolha"><span class="msg-label">MegaMind</span><p>Ol?! O progresso ? atualizado conforme voc? marca os v?deos como assistidos.</p><small>Hoje, 10:35</small></div></article>`;
+});
+</script>
+</body>
+</html>
+

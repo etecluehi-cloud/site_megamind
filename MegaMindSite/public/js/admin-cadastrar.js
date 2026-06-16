@@ -22,6 +22,25 @@ function dataFormatada(valor) {
 
 function limparFormularioAdmin() {
   formAdmin.reset();
+  document.querySelectorAll("[data-toggle-senha]").forEach((botao) => {
+    botao.textContent = "Ver";
+  });
+}
+
+function normalizarEmail(email) {
+  return email.trim().toLowerCase();
+}
+
+function definirCarregando(ativo) {
+  const botao = formAdmin?.querySelector("button[type='submit']");
+  if (!botao) return;
+  botao.disabled = ativo;
+  botao.textContent = ativo ? "Cadastrando..." : "Cadastrar Admin";
+}
+
+function statusAdmin(adm) {
+  const status = adm.status || "ativo";
+  return status === "bloqueado" ? "Bloqueado" : "Ativo";
 }
 
 async function carregarAdmins() {
@@ -37,15 +56,19 @@ async function carregarAdmins() {
     }
 
     corpoTabela.innerHTML = "";
-    snapshot.forEach((doc) => {
-      const adm = doc.data();
+    const admins = [];
+    snapshot.forEach((doc) => admins.push({ id: doc.id, ...doc.data() }));
+    admins.sort((a, b) => (a.nome || "").localeCompare(b.nome || ""));
+
+    admins.forEach((adm) => {
       const tr = document.createElement("tr");
+      const status = statusAdmin(adm);
       tr.innerHTML = `
         <td>${adm.nome || "-"}</td>
         <td>${adm.email || "-"}</td>
         <td>${adm.cargo || "Administrador"}</td>
         <td>${dataFormatada(adm.criado_em)}</td>
-        <td><span class="badge-status badge-respondido">Ativo</span></td>
+        <td><span class="badge-status ${status === "Ativo" ? "badge-respondido" : "badge-arquivado"}">${status}</span></td>
       `;
       corpoTabela.appendChild(tr);
     });
@@ -59,7 +82,7 @@ async function cadastrarAdmin(event) {
   event.preventDefault();
 
   const nome = document.getElementById("nome-admin").value.trim();
-  const email = document.getElementById("email-admin").value.trim();
+  const email = normalizarEmail(document.getElementById("email-admin").value);
   const senha = document.getElementById("senha-admin").value.trim();
   const confirmacao = document.getElementById("confirmacao-admin").value.trim();
   const cargo = document.getElementById("cargo-admin").value;
@@ -80,6 +103,8 @@ async function cadastrarAdmin(event) {
   }
 
   try {
+    definirCarregando(true);
+    await authCadastro.setPersistence(firebase.auth.Auth.Persistence.NONE);
     const cred = await authCadastro.createUserWithEmailAndPassword(email, senha);
 
     await dbCadastro.collection("usuarios").doc(cred.user.uid).set({
@@ -88,6 +113,9 @@ async function cadastrarAdmin(event) {
       cargo,
       admin: true,
       tipo: "admin",
+      status: "ativo",
+      criadoPor: window.adminAtual?.uid || "",
+      criadoPorEmail: window.adminAtual?.email || "",
       criado_em: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
 
@@ -98,9 +126,23 @@ async function cadastrarAdmin(event) {
   } catch (error) {
     console.error("Erro ao cadastrar ADM:", error);
     if (error.code === "auth/email-already-in-use") alert("Este e-mail já está cadastrado.");
+    else if (error.code === "auth/weak-password") alert("A senha está fraca. Use pelo menos 6 caracteres.");
+    else if (error.code === "permission-denied") alert("Sem permissão no Firestore. Confira se as rules permitem escrita para admins.");
     else alert("Erro ao cadastrar ADM: " + error.message);
+  } finally {
+    definirCarregando(false);
   }
 }
 
 if (formAdmin) formAdmin.addEventListener("submit", cadastrarAdmin);
 document.addEventListener("admin-autorizado", carregarAdmins);
+
+document.querySelectorAll("[data-toggle-senha]").forEach((botao) => {
+  botao.addEventListener("click", () => {
+    const input = document.getElementById(botao.dataset.toggleSenha);
+    if (!input) return;
+    const mostrar = input.type === "password";
+    input.type = mostrar ? "text" : "password";
+    botao.textContent = mostrar ? "Ocultar" : "Ver";
+  });
+});

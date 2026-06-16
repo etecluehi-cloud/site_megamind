@@ -1,0 +1,290 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <base href="../">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redação – MegaMind</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:      #7C3AED;
+      --purple-dark: #5B21B6;
+      --purple-light:#EDE9FE;
+      --text:        #1F1235;
+      --muted:       #6B7280;
+      --red:         #E53935;
+      --bg:          #F5F3FF;
+      --card:        #FFFFFF;
+      --border:      #E5E7EB;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER (estilo contPort) ── */
+    header {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 8px rgba(124,58,237,.07);
+    }
+
+    .btn-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      color: var(--purple);
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: background .18s;
+      text-decoration: none;
+    }
+    .btn-back:hover { background: var(--purple-light); }
+    .btn-back svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .header-center {
+      flex: 1;
+      text-align: center;
+    }
+    .header-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--purple);
+    }
+    .header-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .btn-notas {
+      background: var(--purple-light);
+      border: none;
+      color: var(--purple);
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .18s;
+      white-space: nowrap;
+    }
+    .btn-notas:hover { background: #ddd6fe; }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      padding: 20px 16px 32px;
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* ── CARD TEMA ── */
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(124,58,237,.08);
+      padding: 16px;
+    }
+
+    .card-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--purple);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    #inputTema {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      background: #FAFAFA;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    #inputTema::placeholder { color: #BBBBBB; font-weight: 400; }
+    #inputTema:focus {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px rgba(124,58,237,.12);
+    }
+
+    /* ── CONTADOR ── */
+    .counter-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2px;
+    }
+    .counter-hint { font-size: 12px; color: var(--muted); }
+    #txtLinhas {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--purple);
+      transition: color .2s;
+    }
+    #txtLinhas.abaixo { color: var(--red); }
+
+    /* ── TEXTAREA CARD ── */
+    .card-editor {
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(124,58,237,.08);
+      flex: 1;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #edtRedacao {
+      flex: 1;
+      border: none;
+      outline: none;
+      resize: none;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      padding: 16px;
+      background: transparent;
+      min-height: 320px;
+      line-height: 1.7;
+    }
+    #edtRedacao::placeholder { color: #BBBBBB; }
+
+    /* ── BOTÃO SALVAR ── */
+    .btn-salvar {
+      width: 100%;
+      height: 52px;
+      background: linear-gradient(135deg, var(--purple-dark), var(--purple));
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .2s, transform .15s;
+      box-shadow: 0 4px 14px rgba(124,58,237,.35);
+    }
+    .btn-salvar:hover:not(:disabled) { opacity: .92; transform: translateY(-1px); }
+    .btn-salvar:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #1F1235;
+      color: #fff;
+      padding: 11px 22px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s, transform .3s;
+      z-index: 200;
+      white-space: nowrap;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #toast.erro { background: var(--red); }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a class="btn-back" href="home.html">
+      <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+      Voltar
+    </a>
+
+    <div class="header-center">
+      <div class="header-eyebrow">Escrita</div>
+      <div class="header-title">Redação</div>
+    </div>
+
+    <a href="notas.html" class="btn-notas">📋 Notas</a>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- Card: Tema -->
+    <div class="card">
+      <div class="card-label">🎯 Tema da redação</div>
+      <input
+        id="inputTema"
+        type="text"
+        maxlength="150"
+        placeholder="Digite o tema sobre o qual você irá escrever..."
+      />
+    </div>
+
+    <!-- Contador -->
+    <div class="counter-row">
+      <span class="counter-hint">Mín. 7 linhas · Máx. 30 linhas</span>
+      <span id="txtLinhas" class="abaixo">0 / 30 linhas</span>
+    </div>
+
+    <!-- Editor -->
+    <div class="card-editor">
+      <textarea
+        id="edtRedacao"
+        placeholder="Introdução: apresente o tema e sua tese..."
+      ></textarea>
+    </div>
+
+    <!-- Salvar -->
+    <button class="btn-salvar" id="btnSalvar">💾 Salvar Redação</button>
+
+  </main>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <!-- Firebase SDK -->
+  
+
+</body>
+</html>
