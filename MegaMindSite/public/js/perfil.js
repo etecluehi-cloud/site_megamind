@@ -222,15 +222,13 @@ function inicializarModalPerfil() {
   });
 }
 
-// ───────────────────────────────────────────────
-// METAS — redireciona para página
-// ───────────────────────────────────────────────
+// Metas — redireciona para página
 function inicializarModalMetas() {
   const btn = document.getElementById('btn-metas');
   if (!btn) return;
 
   btn.addEventListener('click', () => {
-    window.location.href = 'metaDiaria.html';
+    window.location.href = 'metadiaria.html';
   });
 }
 
