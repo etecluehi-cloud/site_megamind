@@ -493,16 +493,69 @@
 
     <div id="toast"></div>
 
-    <script>
-        const KEY = 'megamind_metas_diarias';
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import {
+            getFirestore,
+            collection,
+            getDocs,
+            doc,
+            setDoc,
+            deleteDoc
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAXoLRatnIuZSEXYENjFGWgloV3-xaDf9Q",
+            authDomain: "megamindapp-4e60c.firebaseapp.com",
+            projectId: "megamindapp-4e60c",
+            storageBucket: "megamindapp-4e60c.firebasestorage.app",
+            messagingSenderId: "114881660257",
+            appId: "1:114881660257:web:d0b6ae935486429bfb3120"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let usuarioAtual = null;
         let metas = [];
         let editandoId = null;
 
-        function load() {
-            try { metas = JSON.parse(localStorage.getItem(KEY)) || []; } catch { metas = []; }
+        function metasRef() {
+            return collection(db, "metas", usuarioAtual.uid, "diarias");
         }
-        function save() { localStorage.setItem(KEY, JSON.stringify(metas)); }
-        function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+        function novaId() {
+            return doc(metasRef()).id;
+        }
+
+        async function carregarMetas() {
+            if (!usuarioAtual) return;
+            const snap = await getDocs(metasRef());
+            metas = snap.docs.map(d => ({
+                id: d.id,
+                texto: d.data().texto || "",
+                concluida: d.data().concluida === true,
+                atualizadoEm: d.data().atualizadoEm || 0
+            })).filter(m => m.texto);
+            metas.sort((a, b) => (a.atualizadoEm || 0) - (b.atualizadoEm || 0));
+            render();
+        }
+
+        async function salvarNoFirebase(meta) {
+            if (!usuarioAtual || !meta) return;
+            await setDoc(doc(db, "metas", usuarioAtual.uid, "diarias", meta.id), {
+                texto: meta.texto,
+                concluida: meta.concluida === true,
+                atualizadoEm: Date.now()
+            });
+        }
+
+        async function excluirDoFirebase(id) {
+            if (!usuarioAtual || !id) return;
+            await deleteDoc(doc(db, "metas", usuarioAtual.uid, "diarias", id));
+        }
 
         function render() {
             const lista = document.getElementById('metas-list');
@@ -549,17 +602,22 @@
             });
         }
 
-        function toggle(id) {
+        window.toggle = async function (id) {
             const m = metas.find(x => x.id === id);
-            if (m) { m.concluida = !m.concluida; save(); render(); }
-        }
+            if (!m) return;
+            m.concluida = !m.concluida;
+            render();
+            await salvarNoFirebase(m);
+        };
 
-        function excluir(id) {
+        window.excluir = async function (id) {
             metas = metas.filter(x => x.id !== id);
-            save(); render(); toast('🗑️ Meta removida.');
-        }
+            render();
+            await excluirDoFirebase(id);
+            toast('Meta removida.');
+        };
 
-        function abrirModal() {
+        window.abrirModal = function () {
             editandoId = null;
             document.getElementById('input-texto').value = '';
             document.getElementById('modal-titulo').textContent = 'Nova meta';
@@ -568,9 +626,9 @@
             document.getElementById('modal').classList.add('open');
             document.body.style.overflow = 'hidden';
             setTimeout(() => document.getElementById('input-texto').focus(), 80);
-        }
+        };
 
-        function abrirEditar(id) {
+        window.abrirEditar = function (id) {
             const m = metas.find(x => x.id === id);
             if (!m) return;
             editandoId = id;
@@ -581,33 +639,42 @@
             document.getElementById('modal').classList.add('open');
             document.body.style.overflow = 'hidden';
             setTimeout(() => document.getElementById('input-texto').focus(), 80);
-        }
+        };
 
-        function fecharModal() {
+        window.fecharModal = function () {
             document.getElementById('modal').classList.remove('open');
             document.body.style.overflow = '';
             editandoId = null;
-        }
+        };
 
-        function fecharFora(e) { if (e.target === document.getElementById('modal')) fecharModal(); }
+        window.fecharFora = function (e) {
+            if (e.target === document.getElementById('modal')) fecharModal();
+        };
 
-        function salvarMeta() {
+        window.salvarMeta = async function () {
             const texto = document.getElementById('input-texto').value.trim();
             if (!texto) { document.getElementById('input-texto').focus(); return; }
 
             if (editandoId) {
                 const m = metas.find(x => x.id === editandoId);
-                if (m) m.texto = texto;
-                toast('✅ Meta atualizada!');
+                if (m) {
+                    m.texto = texto;
+                    m.atualizadoEm = Date.now();
+                    await salvarNoFirebase(m);
+                }
+                toast('Meta atualizada!');
             } else {
-                metas.push({ id: uid(), texto, concluida: false });
-                toast('✅ Meta adicionada!');
+                const meta = { id: novaId(), texto, concluida: false, atualizadoEm: Date.now() };
+                metas.push(meta);
+                await salvarNoFirebase(meta);
+                toast('Meta adicionada!');
             }
-            save(); fecharModal(); render();
-        }
+            fecharModal();
+            render();
+        };
 
         function esc(s) {
-            return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
         }
 
         function toast(msg) {
@@ -624,7 +691,14 @@
 
         if (localStorage.getItem('megamind_dark') === 'true') document.documentElement.classList.add('dark-mode');
 
-        load(); render();
+        onAuthStateChanged(auth, async user => {
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            usuarioAtual = user;
+            await carregarMetas();
+        });
     </script>
 </body>
 </html>

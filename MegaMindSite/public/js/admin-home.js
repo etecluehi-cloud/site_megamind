@@ -1,4 +1,4 @@
-﻿const adminHomeFirebaseConfig = {
+const adminHomeFirebaseConfig = {
   apiKey: "AIzaSyAXoLRatnIuZSEXYENjFGWgloV3-xaDf9Q",
   authDomain: "megamindapp-4e60c.firebaseapp.com",
   projectId: "megamindapp-4e60c",
@@ -35,7 +35,7 @@ async function carregarResumoHome(user) {
   try {
     const userDoc = await adminHomeDb.collection("usuarios").doc(user.uid).get();
     const dadosAdmin = userDoc.exists ? userDoc.data() : {};
-    const nome = dadosAdmin.nome || user.email || "Administrador";
+    const nome = dadosAdmin.nome || user.email || "Administrador(a)";
     setHomeText("nome-admin-home", nome.split(" ")[0]);
     setHomeText("home-status-admin", `Acesso confirmado para ${nome}.`);
 

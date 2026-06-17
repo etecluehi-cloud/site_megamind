@@ -1,4 +1,4 @@
-﻿// importações do firebase
+// importações do firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 
 import {
@@ -41,6 +41,7 @@ const KEYS = {
   name:   'megamind_nome',
   handle: 'megamind_handle',
   email:  'megamind_email',
+  uid:    'megamind_uid',
 };
 
 // expõe auth e db globalmente para que perfil.js possa usar
@@ -54,6 +55,22 @@ window._mmEmailAuthProvider = EmailAuthProvider;
 window._mmReauthenticate    = reauthenticateWithCredential;
 window._mmUpdatePassword    = updatePassword;
 
+function limparDadosUsuarioLocal() {
+  localStorage.removeItem(KEYS.name);
+  localStorage.removeItem(KEYS.handle);
+  localStorage.removeItem(KEYS.email);
+  localStorage.removeItem(KEYS.uid);
+  localStorage.removeItem('megamind_avatar');
+}
+
+window.logout = async function () {
+  limparDadosUsuarioLocal();
+  try {
+    await signOut(auth);
+  } finally {
+    window.location.href = "index.html";
+  }
+};
 
 // verificador de força de senha
 window.verificarSenha = function () {
@@ -100,7 +117,7 @@ window.verificarSenha = function () {
 function atualizarCriterio(id, ok, texto) {
     const el = document.getElementById(id);
     if (!el) return;
-    el.textContent = (ok ? "✔ " : "✘ ") + texto;
+    el.textContent = (ok ? "OK - " : "Falta - ") + texto;
     el.classList.toggle("ok", ok);
 }
 
@@ -214,18 +231,21 @@ window.recuperarSenha = async function () {
 // ─────────────────────────────────────────────────────────────────────────────
 //  UTILITÁRIO — sincroniza dados do Firestore → localStorage
 // ─────────────────────────────────────────────────────────────────────────────
+function limparCacheDeOutroUsuario(uidAtual) {
+  const uidSalvo = localStorage.getItem(KEYS.uid);
+  if (uidSalvo && uidSalvo !== uidAtual) {
+    localStorage.removeItem(KEYS.name);
+    localStorage.removeItem(KEYS.handle);
+    localStorage.removeItem(KEYS.email);
+    localStorage.removeItem('megamind_avatar');
+  }
+  localStorage.setItem(KEYS.uid, uidAtual);
+}
+
 async function sincronizarUsuario(user) {
+  limparCacheDeOutroUsuario(user.uid);
+
   try {
-    localStorage.setItem(KEYS.email, user.email);
-
-    const nomeSalvo = localStorage.getItem(KEYS.name);
-    if (nomeSalvo) {
-      if (!localStorage.getItem(KEYS.handle)) {
-        localStorage.setItem(KEYS.handle, nomeSalvo.split(" ")[0].toLowerCase());
-      }
-      return { nome: nomeSalvo, email: user.email };
-    }
-
     const docRef  = doc(db, "usuarios", user.uid);
     const docSnap = await getDoc(docRef);
 
@@ -238,25 +258,24 @@ async function sincronizarUsuario(user) {
 
     localStorage.setItem(KEYS.name,   nome);
     localStorage.setItem(KEYS.handle, nome.split(" ")[0].toLowerCase());
+    localStorage.setItem(KEYS.email,  user.email);
 
     return { nome, email: user.email };
 
   } catch (error) {
     console.error("Erro ao sincronizar usuário:", error);
-    const nomeFallback = localStorage.getItem(KEYS.name) || "Aluno";
-    return { nome: nomeFallback, email: user.email };
+    const nomeFallback = user.email ? user.email.split("@")[0] : "Aluno";
+    localStorage.setItem(KEYS.name, nomeFallback);
+    localStorage.setItem(KEYS.email, user.email || "");
+    return { nome: nomeFallback, email: user.email || "" };
   }
 }
-
 // ─────────────────────────────────────────────────────────────────────────────
 //  HOME.HTML — exibe saudação com nome do usuário
 // ─────────────────────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
   const bemVindo = document.getElementById("bemvindo");
   if (!bemVindo) return;
-
-  const nomeCached = localStorage.getItem(KEYS.name);
-  if (nomeCached) bemVindo.textContent = nomeCached;
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -276,11 +295,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const nomePerfil  = document.querySelector(".js-student-name");
   const emailPerfil = document.querySelector(".js-student-handle");
   if (!nomePerfil || !emailPerfil) return;
-
-  const nomeCached  = localStorage.getItem(KEYS.name);
-  const emailCached = localStorage.getItem(KEYS.email);
-  if (nomeCached)  nomePerfil.textContent  = nomeCached;
-  if (emailCached) emailPerfil.textContent = emailCached;
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) {

@@ -57,10 +57,14 @@ body {
 }
 
 .tituloPagina {
-    padding: 20px;
+    padding: 18px 20px 24px;
     color: var(--roxo-principal);
-    font-family: var(--fonte-principal);
-    font-weight: 400;
+    font-family: var(--fonte-principal), Arial, sans-serif;
+    font-size: clamp(34px, 5vw, 48px);
+    line-height: 1;
+    font-weight: 900;
+    text-shadow: 0.6px 0 currentColor;
+    text-align: center;
 }
 
 /* formulário */
@@ -310,4 +314,9 @@ body {
 
 .mensagem-login-adm.info {
     color: var(--roxo-principal);
+}
+
+.tituloPagina.titulo-adm-login {
+    font-weight: 900;
+    text-shadow: 0.7px 0 currentColor;
 }

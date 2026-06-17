@@ -60,7 +60,7 @@ window.verificarSenha = function () {
 function atualizarCriterio(id, ok, texto) {
   const el = document.getElementById(id);
   if (!el) return;
-  el.textContent = (ok ? "✓ " : "✗ ") + texto;
+  el.textContent = (ok ? "OK - " : "Falta - ") + texto;
   el.classList.toggle("ok", ok);
 }
 
@@ -117,5 +117,5 @@ window.toggleSenha = function () {
   const visivel = input.type === "password";
 
   input.type = visivel ? "text" : "password";
-  if (icone) icone.src = visivel ? "../img/visivel.png" : "../img/invisivel.png";
+  if (icone) icone.src = visivel ? "img/visivel.png" : "img/invisivel.png";
 };

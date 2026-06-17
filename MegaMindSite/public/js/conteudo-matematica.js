@@ -227,7 +227,7 @@ async function abrirModal(conteudoId, titulo) {
                                data-key="${key}"
                                ${visto ? "checked" : ""}>
                         <span class="check-label">
-                            ${visto ? "Assistido ✓" : "Marcar como visto"}
+                            ${visto ? "Assistido" : "Marcar como visto"}
                         </span>
                     </label>
                 </div>
@@ -242,7 +242,7 @@ async function abrirModal(conteudoId, titulo) {
                     cb.checked = true;
                     salvarProgresso(conteudoId, key, true);
                     item.classList.add("visto");
-                    cb.nextElementSibling.textContent = "Assistido ✓";
+                    cb.nextElementSibling.textContent = "Assistido";
                     verificarBotaoQuestoes(videoIds.length);
                     carregarProgressoCard(conteudoId); // atualiza barra no card
                 }
@@ -253,7 +253,7 @@ async function abrirModal(conteudoId, titulo) {
                 const checked = e.target.checked;
                 salvarProgresso(conteudoId, key, checked);
                 item.classList.toggle("visto", checked);
-                e.target.nextElementSibling.textContent = checked ? "Assistido ✓" : "Marcar como visto";
+                e.target.nextElementSibling.textContent = checked ? "Assistido" : "Marcar como visto";
                 verificarBotaoQuestoes(videoIds.length);
                 carregarProgressoCard(conteudoId);
             });
@@ -267,7 +267,7 @@ async function abrirModal(conteudoId, titulo) {
         // ── Botão questões: navega para questoes.html passando o conteudoId
         //    (igual ao btnQuestoes.setOnClickListener → TelaSecaoQuestoesMat)
         mBtn.onclick = () => {
-            window.location.href = `questoes.html?conteudoId=${conteudoId}`;
+            window.location.href = `questaoMat.html?conteudoId=${conteudoId}`;
         };
 
     } catch (err) {
